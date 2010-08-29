@@ -11,4 +11,23 @@ void create_gui(GtkBuilder * builder, gint width) {
 }
 
 
+void on_menu_new_activate(GtkWidget *widget, void * user) {
+	printf("new\n");
+}
+
+void on_menu_open_activate(GtkWidget *widget, void * user) {
+	printf("open\n");
+}
+
+void on_menu_save_activate(GtkWidget *widget, void * user) {
+	printf("save\n");
+}
+
+void on_menu_saveas_activate(GtkWidget *widget, void * user) {
+	printf("saveas\n");
+}
+
+
+
+
 
