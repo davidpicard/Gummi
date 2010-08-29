@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <libintl.h>
+#include <locale.h>
+
+#define _(str) gettext(str)
+
+int main(int argc, char *argv[])
+{
+  /* for main only */
+  bindtextdomain("gummi","/usr/share/locale");
+  setlocale(LC_ALL,"");
+  textdomain("gummi");
+
+  printf(_("put _() around the text you want to translate"));
+  
+  return 0;
+}
