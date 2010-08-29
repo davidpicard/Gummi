@@ -36,14 +36,16 @@ void slog_init(int debug) {
 void slog(int level, const char *fmt, ...) {
     va_list vap;
 
-    if (slog_debug && L_IS_TYPE(level, L_DEBUG)) {
-        fprintf(stderr, "debug: ");
-        va_start(vap, fmt);
-        vfprintf(stdout, fmt, vap);
-        va_end(vap);
+    if (L_IS_TYPE(level, L_DEBUG)) {
+        if (slog_debug) {
+            fprintf(stderr, "[Debug] ");
+            va_start(vap, fmt);
+            vfprintf(stdout, fmt, vap);
+            va_end(vap);
+        }
     } else {
         /* TODO: use autotools macro 'PACKAGE' for program name*/
-        fprintf(stderr, "gummi: ");
+        fprintf(stderr, "[gummi] ");
         va_start(vap, fmt);
         vfprintf(stderr, fmt, vap);
         va_end(vap);

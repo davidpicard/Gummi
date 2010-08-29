@@ -1,3 +1,4 @@
+#include <glib.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,9 +8,14 @@
 #include "preview.h"
 #include "gui.h"
 #include "motion.h"
-
 #include "utils.h"
 
+static int debug = 0;
+
+static GOptionEntry entries[] = {
+    { (const gchar*)"debug", (gchar)'d', 0, G_OPTION_ARG_NONE, &debug, 
+        (gchar*)"show debug info", NULL}
+};
 
 void on_window_destroy (GtkObject *object, gpointer user_data) {
     gtk_main_quit();
@@ -22,17 +28,17 @@ void setup_environment() {
 }
 
 int main (int argc, char *argv[]) {
-    int i = 0, debug = 0;
     GtkBuilder      *builder;
     GtkWidget       *window;
     gint            width, height;
 
-    for (i = 1; i < argc; ++i)
-        if (0 == strcmp("-d", argv[i]))
-            debug = 1;
+    GError* error = NULL;
+    GOptionContext* context = g_option_context_new("files");
+    g_option_context_add_main_entries(context, entries, "gummi");
+    g_option_context_parse(context, &argc, &argv, &error);
 
     slog_init(debug);
-
+    config_init("gummi.cfg");
     gtk_init (&argc, &argv);
     
     builder = gtk_builder_new ();
@@ -44,7 +50,7 @@ int main (int argc, char *argv[]) {
     create_gui(builder, width);
 
     // setup sourceview editor pane:
-    create_editor(builder);
+    editor_init(builder);
 
     // setup poppler preview pane:
     create_preview(builder);

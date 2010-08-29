@@ -1,5 +1,10 @@
+#ifndef GUMMI_EDITOR_H
+#define GUMMI_EDITOR_H
+
 #include <gtk/gtk.h>
-void create_editor(GtkBuilder *);
+
+void editor_init(GtkBuilder *);
 char get_buffer();
 void set_sourceview_config();
-void load_default_text();
+
+#endif

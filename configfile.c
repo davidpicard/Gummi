@@ -26,7 +26,7 @@
 #include <string.h>
 
 #include "utils.h"
-#include "ConfigFile.h"
+#include "configfile.h"
 
 static const char* config_filename = 0;
 
@@ -62,12 +62,12 @@ const char config_str[] =
 "	\\begin{document}\n"
 "	\\begin{center}\n"
 "	\\Huge{Welcome to Gummi} \\\\\\\n"
-"	\\\n"
+"	\\\\\n"
 "	\\LARGE{You are using the svn version.\\\\\n"
 "	I welcome your suggestions at\\\\\n"
 "	http://gummi.midnightcoding.org}\\\\\n"
 "	\\end{center}\n"
-"	\\end{document}\n";
+"	\\end{document}\n\n";
 
 void config_init(const char* filename) {
     config_filename = filename;
@@ -75,7 +75,6 @@ void config_init(const char* filename) {
 
 const char* config_get_value(const char* term) {
     FILE* fh = 0;
-    int i = 0;
     char buf[BUF_MAX];
     static char ret[BUF_MAX];
     char* pstr;
