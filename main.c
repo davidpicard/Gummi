@@ -21,10 +21,17 @@ void setup_environment() {
 
 int main (int argc, char *argv[])
 {
+    int i = 0, debug = 0;
     GtkBuilder      *builder;
     GtkWidget       *window;
     gint            width, height;
-       
+
+    for (i = 1; i < argc; ++i)
+        if (0 == strcmp("-d", argv[i]))
+            debug = 1;
+
+    slog_init(debug);
+
     gtk_init (&argc, &argv);
     
     builder = gtk_builder_new ();

@@ -27,22 +27,28 @@
 
 #include "utils.h"
 
-const char* program_name = "gummi";
+static int slog_debug = 0;
+
+void slog_init(int debug) {
+    slog_debug = debug;
+}
 
 void slog(int level, const char *fmt, ...) {
     va_list vap;
 
-    if (L_IS_TYPE(level, L_MSG)) {
+    if (slog_debug && L_IS_TYPE(level, L_DEBUG)) {
+        fprintf(stderr, "debug: ");
         va_start(vap, fmt);
         vfprintf(stdout, fmt, vap);
         va_end(vap);
     } else {
-        fprintf(stderr, "%s: ", program_name);
+        /* TODO: use autotools macro 'PACKAGE' for program name*/
+        fprintf(stderr, "gummi: ");
         va_start(vap, fmt);
         vfprintf(stderr, fmt, vap);
         va_end(vap);
     }
 
-    if (!L_IS_TYPE(level, L_INFO) && !L_IS_TYPE(level, L_MSG))
+    if (!L_IS_TYPE(level, L_INFO) && !L_IS_TYPE(level, L_DEBUG))
         exit(1);
 }

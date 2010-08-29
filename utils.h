@@ -25,10 +25,22 @@
 #define GUMMI_UTILS
 
 #define L_IS_TYPE(level, type) ((level & type) == type)
-#define L_INFO    0x01
-#define L_DEBUG   0x02
-#define L_FATAL   0x04
+#define L_INFO    0x01    /* for informative messages */
+#define L_DEBUG   0x02    /* debug messages, only print if -d flags is used */
+#define L_FATAL   0x04    /* for fatal errors, program will exit */
 
+/**
+ * @brief slog initlization
+ * @param debug boolean value for whether output debug message or not
+ */
+void slog_init(int debug);
+
+/**
+ * @brief debug interface for gummi
+ * @param level levels or listed above
+ * @param fmt just like the printf function
+ * @param ... parameters for fmt
+ */
 void slog(int level, const char *fmt, ...);
 
 #endif /* GUMMI_UTILS */
