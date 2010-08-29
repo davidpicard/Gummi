@@ -1,26 +1,27 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "editor.h"
 #include "preview.h"
 #include "gui.h"
 #include "motion.h"
 
+#include "utils.h"
 
-void on_window_destroy (GtkObject *object, gpointer user_data)
-{
+
+void on_window_destroy (GtkObject *object, gpointer user_data) {
     gtk_main_quit();
 }
 
 void setup_environment() {
     char tname[1024] = "/tmp/gummi_XXXXXXX"; 
     int fh = mkstemp(tname); 
-    printf("Filename %s", tname); 
+    printf("Filename %s\n", tname); 
 }
 
-int main (int argc, char *argv[])
-{
+int main (int argc, char *argv[]) {
     int i = 0, debug = 0;
     GtkBuilder      *builder;
     GtkWidget       *window;
