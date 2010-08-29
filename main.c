@@ -50,11 +50,10 @@ int main (int argc, char *argv[]) {
     slog(L_DEBUG, PACKAGE" version: "VERSION"\n");
     builder = gtk_builder_new ();
     gtk_builder_add_from_file (builder, "gummi.glade", NULL);
-    window = GTK_WIDGET (gtk_builder_get_object (builder, "mainwindow"));
-    gtk_window_get_size (GTK_WINDOW (window), &width, &height);
+
 
     // setup gummi gui elements:
-    create_gui(builder, width);
+    create_gui(builder);
 
     // setup sourceview editor pane:
     ec = editor_init(builder);
@@ -68,17 +67,13 @@ int main (int argc, char *argv[]) {
     // setup work files and such:
     setup_environment();
 
-
-
     // start motion:
     //g_timeout_add_seconds(1, update_preview, NULL);
-
-
 
     gtk_builder_connect_signals (builder, NULL);       
     g_object_unref (G_OBJECT (builder));
     
-    gtk_widget_show_all (window);
+    gtk_widget_show_all (mainwindow);
        
     gtk_main ();
     

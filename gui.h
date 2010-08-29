@@ -1,2 +1,8 @@
 #include <gtk/gtk.h>
-void create_gui(GtkBuilder *, gint);
+
+extern GtkWidget *mainwindow;
+
+
+void create_gui(GtkBuilder *);
+
+gchar * get_open_filename();

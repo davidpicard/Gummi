@@ -4,10 +4,6 @@
 
 void update_preview() {
     update_workfile();
-    
-    
-
-
 }
 
 
