@@ -1,5 +1,5 @@
 /**
- * @file   configfile.c
+ * @file	 configfile.c
  * @brief  handle configuration file
  * @author Wei-Ning Huang (AZ) <aitjcize@gmail.com>
  *
@@ -70,137 +70,137 @@ const char config_str[] =
 "	\\end{document}\n";
 
 void config_init(const char* filename) {
-  config_filename = filename;
+    config_filename = filename;
 }
 
 const char* config_get_value(const char* term) {
-  FILE* fh = 0;
-  int i = 0;
-  char buf[BUF_MAX];
-  static char ret[BUF_MAX];
-  char* pstr;
+    FILE* fh = 0;
+    int i = 0;
+    char buf[BUF_MAX];
+    static char ret[BUF_MAX];
+    char* pstr;
 
-  if (!(fh = fopen(config_filename, "r"))) {
-    slog(L_INFO, "can't find configuration file, reseting to default\n");
-    config_set_default();
-    return config_get_value(term);
-  }
+    if (!(fh = fopen(config_filename, "r"))) {
+        slog(L_INFO, "can't find configuration file, reseting to default\n");
+        config_set_default();
+        return config_get_value(term);
+    }
 
-  while (!feof(fh)) {
-    fgets(buf, BUF_MAX, fh);
-    buf[strlen(buf) -1] = 0;
-    if (NULL == (pstr = strtok(buf, "[=] ")))
-      continue;
-
-    if (0 != strcmp(pstr, term))
-      continue;
-    if (NULL == (pstr = strtok(NULL, "=")))
-      continue;
-    else {
-      strncpy(ret, pstr + 1, BUF_MAX);
-      while (!feof(fh)) {
+    while (!feof(fh)) {
         fgets(buf, BUF_MAX, fh);
         buf[strlen(buf) -1] = 0;
-        if (buf[0] == '\t') {
-          strncat(ret, buf + 1, BUF_MAX);
-          strncat(ret, "\n", BUF_MAX);
-        } else break;
-      }
-      break;
+        if (NULL == (pstr = strtok(buf, "[=] ")))
+            continue;
+
+        if (0 != strcmp(pstr, term))
+            continue;
+        if (NULL == (pstr = strtok(NULL, "=")))
+            continue;
+        else {
+            strncpy(ret, pstr + 1, BUF_MAX);
+            while (!feof(fh)) {
+                fgets(buf, BUF_MAX, fh);
+                buf[strlen(buf) -1] = 0;
+                if (buf[0] == '\t') {
+                    strncat(ret, buf + 1, BUF_MAX);
+                    strncat(ret, "\n", BUF_MAX);
+                } else break;
+            }
+            break;
+        }
     }
-  }
-  fclose(fh);
-  if (0 == strcmp(ret, "False"))
-    return NULL;
-  return ret;
+    fclose(fh);
+    if (0 == strcmp(ret, "False"))
+        return NULL;
+    return ret;
 }
 
 void config_set_value(const char* term, const char* value) {
-  int i = 0, count = 0;
-  int max = strlen(value) > BUF_MAX -1? BUF_MAX -1: strlen(value);
-  finfo fin = config_load();
-  int index = 0;
-  char buf[BUF_MAX];
+    int i = 0, count = 0;
+    int max = strlen(value) > BUF_MAX -1? BUF_MAX -1: strlen(value);
+    finfo fin = config_load();
+    int index = 0;
+    char buf[BUF_MAX];
 
-  if (-1 == (index = config_find_index_of(fin.pbuf, term)))
-    slog(L_FATAL, "invalid configuration\n");
+    if (-1 == (index = config_find_index_of(fin.pbuf, term)))
+        slog(L_FATAL, "invalid configuration\n");
 
-  fin.pbuf[index][strlen(term) + 3] = 0;
-  for (i = 0; i < max; ++i) {
-    if (count == BUF_MAX -1) break;
-    buf[count++] = value[i];
-    if (value[i] == '\n')
-      buf[count++] = '\t';
-  }
-  buf[count] = 0;
+    fin.pbuf[index][strlen(term) + 3] = 0;
+    for (i = 0; i < max; ++i) {
+        if (count == BUF_MAX -1) break;
+        buf[count++] = value[i];
+        if (value[i] == '\n')
+            buf[count++] = '\t';
+    }
+    buf[count] = 0;
 
-  strncat(fin.pbuf[index], buf, BUF_MAX -2);
-  strncat(fin.pbuf[index], "\n", BUF_MAX);
+    strncat(fin.pbuf[index], buf, BUF_MAX -2);
+    strncat(fin.pbuf[index], "\n", BUF_MAX);
 
-  for (i = index + 1; i < fin.len; ++i) {
-    if (fin.pbuf[i][0] == '\t')
-      fin.pbuf[i][0] = 0;
-    else break;
-  }
+    for (i = index + 1; i < fin.len; ++i) {
+        if (fin.pbuf[i][0] == '\t')
+            fin.pbuf[i][0] = 0;
+        else break;
+    }
 
-  config_save(fin.pbuf, fin.len);
+    config_save(fin.pbuf, fin.len);
 
-  for (i = 0; i < CONFIG_MAX; ++i)
-    free(fin.pbuf[i]);
-  free(fin.pbuf);
+    for (i = 0; i < CONFIG_MAX; ++i)
+        free(fin.pbuf[i]);
+    free(fin.pbuf);
 }
 
 void config_set_default(void) {
-  FILE* fh = 0;
-  if (!(fh = fopen(config_filename, "w")))
-    slog(L_FATAL, "can't open config for writing... abort\n");
+    FILE* fh = 0;
+    if (!(fh = fopen(config_filename, "w")))
+        slog(L_FATAL, "can't open config for writing... abort\n");
 
-  fwrite(config_str, strlen(config_str), 1, fh);
-  fclose(fh);
+    fwrite(config_str, strlen(config_str), 1, fh);
+    fclose(fh);
 }
 
 finfo config_load(void) {
-  int i = 0, count = 0;
-  FILE* fh = 0;
+    int i = 0, count = 0;
+    FILE* fh = 0;
 
-  char** pbuf = (char**) malloc(CONFIG_MAX * sizeof(char*));
-  for (i = 0; i < CONFIG_MAX; ++i)
-    pbuf[i] = (char*) malloc(BUF_MAX * sizeof(char));
+    char** pbuf = (char**) malloc(CONFIG_MAX * sizeof(char*));
+    for (i = 0; i < CONFIG_MAX; ++i)
+        pbuf[i] = (char*) malloc(BUF_MAX * sizeof(char));
 
-  if (!(fh = fopen(config_filename, "r"))) {
-    slog(L_INFO, "can't find configuration file, reseting to default\n");
-    config_set_default();
-    return config_load();
-  }
+    if (!(fh = fopen(config_filename, "r"))) {
+        slog(L_INFO, "can't find configuration file, reseting to default\n");
+        config_set_default();
+        return config_load();
+    }
 
-  while (!feof(fh)) {
-    if (count == BUF_MAX -1)
-      slog(L_FATAL, "maximum buffer size reached\n");
-    fgets(pbuf[count++], BUF_MAX, fh);
-    pbuf[count -1][strlen(pbuf[count -1]) -1] = 0;
-  }
-  fclose(fh);
-  return (finfo){ pbuf, count };
+    while (!feof(fh)) {
+        if (count == BUF_MAX -1)
+            slog(L_FATAL, "maximum buffer size reached\n");
+        fgets(pbuf[count++], BUF_MAX, fh);
+        pbuf[count -1][strlen(pbuf[count -1]) -1] = 0;
+    }
+    fclose(fh);
+    return (finfo){ pbuf, count };
 }
 
 void config_save(char** pbuf, int len) {
-  FILE* fh = 0;
-  int i = 0;
-  if (!(fh = fopen(config_filename, "w")))
-    slog(L_FATAL, "can't open config for writing... abort\n");
+    FILE* fh = 0;
+    int i = 0;
+    if (!(fh = fopen(config_filename, "w")))
+        slog(L_FATAL, "can't open config for writing... abort\n");
 
-  for (i = 0; i < len; ++i) {
-    fputs(pbuf[i], fh);
-    fputs("\n", fh);
-  }
-  fclose(fh);
+    for (i = 0; i < len; ++i) {
+        fputs(pbuf[i], fh);
+        fputs("\n", fh);
+    }
+    fclose(fh);
 }
 
 int config_find_index_of(char** pbuf, const char* term) {
-  int i = 0;
-  for (i = 0; i < CONFIG_MAX; ++i) {
-    if (0 == strncmp(pbuf[i], term, strlen(term)))
-      return i;
-  }
-  return -1;
+    int i = 0;
+    for (i = 0; i < CONFIG_MAX; ++i) {
+        if (0 == strncmp(pbuf[i], term, strlen(term)))
+            return i;
+    }
+    return -1;
 }

@@ -28,8 +28,8 @@
 #define BUF_MAX 256
 
 typedef struct _finfo {
-  char** pbuf;
-  int len;
+    char** pbuf;
+    int len;
 } finfo;
 
 /**

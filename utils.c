@@ -1,5 +1,5 @@
 /**
- * @file   utils.c
+ * @file     utils.c
  * @brief  utility for gummi
  * @author Wei-Ning Huang (AZ) <aitjcize@gmail.com>
  *
@@ -30,19 +30,19 @@
 const char* program_name = "gummi";
 
 void slog(int level, const char *fmt, ...) {
-  va_list vap;
+    va_list vap;
 
-  if (L_IS_TYPE(level, L_MSG)) {
-    va_start(vap, fmt);
-    vfprintf(stdout, fmt, vap);
-    va_end(vap);
-  } else {
-    fprintf(stderr, "%s: ", program_name);
-    va_start(vap, fmt);
-    vfprintf(stderr, fmt, vap);
-    va_end(vap);
-  }
+    if (L_IS_TYPE(level, L_MSG)) {
+        va_start(vap, fmt);
+        vfprintf(stdout, fmt, vap);
+        va_end(vap);
+    } else {
+        fprintf(stderr, "%s: ", program_name);
+        va_start(vap, fmt);
+        vfprintf(stderr, fmt, vap);
+        va_end(vap);
+    }
 
-  if (!L_IS_TYPE(level, L_INFO) && !L_IS_TYPE(level, L_MSG))
-    exit(1);
+    if (!L_IS_TYPE(level, L_INFO) && !L_IS_TYPE(level, L_MSG))
+        exit(1);
 }
