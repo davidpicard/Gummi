@@ -25,6 +25,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
+#include "gummi.h"
 #include "utils.h"
 
 static int slog_debug = 0;
@@ -36,20 +37,18 @@ void slog_init(int debug) {
 void slog(int level, const char *fmt, ...) {
     va_list vap;
 
+    if (L_IS_TYPE(level, L_DEBUG) && !slog_debug) return;
+
     if (L_IS_TYPE(level, L_DEBUG)) {
-        if (slog_debug) {
-            fprintf(stderr, "[Debug] ");
-            va_start(vap, fmt);
-            vfprintf(stdout, fmt, vap);
-            va_end(vap);
-        }
+        fprintf(stderr, "[Debug] ");
+    } else if (L_IS_TYPE(level, L_FATAL)) {
+        fprintf(stderr, "[Fatal] ");
     } else {
-        /* TODO: use autotools macro 'PACKAGE' for program name*/
-        fprintf(stderr, "[gummi] ");
-        va_start(vap, fmt);
-        vfprintf(stderr, fmt, vap);
-        va_end(vap);
+        fprintf(stderr, "[Info] ");
     }
+    va_start(vap, fmt);
+    vfprintf(stderr, fmt, vap);
+    va_end(vap);
 
     if (!L_IS_TYPE(level, L_INFO) && !L_IS_TYPE(level, L_DEBUG))
         exit(1);

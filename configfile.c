@@ -1,5 +1,5 @@
 /**
- * @file	 configfile.c
+ * @file   configfile.c
  * @brief  handle configuration file
  * @author Wei-Ning Huang (AZ) <aitjcize@gmail.com>
  *
@@ -25,8 +25,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "utils.h"
+#include "gummi.h"
 #include "configfile.h"
+#include "utils.h"
 
 static const char* config_filename = 0;
 
@@ -63,7 +64,7 @@ const char config_str[] =
 "	\\begin{center}\n"
 "	\\Huge{Welcome to Gummi} \\\\\\\n"
 "	\\\\\n"
-"	\\LARGE{You are using the svn version.\\\\\n"
+"	\\LARGE{You are using the "VERSION" version.\\\\\n"
 "	I welcome your suggestions at\\\\\n"
 "	http://gummi.midnightcoding.org}\\\\\n"
 "	\\end{center}\n"
@@ -101,8 +102,8 @@ const char* config_get_value(const char* term) {
                 fgets(buf, BUF_MAX, fh);
                 buf[strlen(buf) -1] = 0;
                 if (buf[0] == '\t') {
-                    strncat(ret, buf + 1, BUF_MAX);
                     strncat(ret, "\n", BUF_MAX);
+                    strncat(ret, buf + 1, BUF_MAX);
                 } else break;
             }
             break;

@@ -3,7 +3,7 @@
 TARGET=gummi
 OBJS = main.o gui.o preview.o motion.o editor.o utils.o configfile.o
 
-CFLAGS=-g -Wall -export-dynamic `pkg-config --cflags --libs gtk+-2.0 gtksourceview-2.0 cairo poppler-glib`
+CFLAGS=-g -Wall -export-dynamic `pkg-config --cflags --libs gtk+-2.0 gtksourceview-2.0 cairo poppler-glib gtkspell-2.0`
 
 gummi: $(OBJS)
 	$(CC) -o $(TARGET) $(OBJS) $(CFLAGS)

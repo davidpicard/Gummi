@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+#   include "config.h"
+#endif
+
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
@@ -7,6 +11,7 @@
 #include "editor.h"
 #include "preview.h"
 #include "gui.h"
+#include "gummi.h"
 #include "motion.h"
 #include "utils.h"
 
@@ -24,23 +29,25 @@ void on_window_destroy (GtkObject *object, gpointer user_data) {
 void setup_environment() {
     char tname[1024] = "/tmp/gummi_XXXXXXX"; 
     int fh = mkstemp(tname); 
-    printf("Filename %s\n", tname); 
+    slog(L_INFO, "Filename %s\n", tname); 
 }
 
 int main (int argc, char *argv[]) {
-    GtkBuilder      *builder;
-    GtkWidget       *window;
-    gint            width, height;
+    GtkBuilder* builder;
+    GtkWidget* window;
+    gint width, height;
+    editor_context_t* ec;
 
     GError* error = NULL;
     GOptionContext* context = g_option_context_new("files");
-    g_option_context_add_main_entries(context, entries, "gummi");
+    g_option_context_add_main_entries(context, entries, PACKAGE);
     g_option_context_parse(context, &argc, &argv, &error);
 
     slog_init(debug);
     config_init("gummi.cfg");
     gtk_init (&argc, &argv);
     
+    slog(L_DEBUG, PACKAGE" version: "VERSION"\n");
     builder = gtk_builder_new ();
     gtk_builder_add_from_file (builder, "gummi.glade", NULL);
     window = GTK_WIDGET (gtk_builder_get_object (builder, "mainwindow"));
@@ -50,7 +57,7 @@ int main (int argc, char *argv[]) {
     create_gui(builder, width);
 
     // setup sourceview editor pane:
-    editor_init(builder);
+    ec = editor_init(builder);
 
     // setup poppler preview pane:
     create_preview(builder);

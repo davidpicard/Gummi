@@ -23,8 +23,8 @@ void create_preview(GtkBuilder * builder) {
 
         doc = poppler_document_new_from_file("file:///home/alexander/Desktop/test.pdf", NULL, &err);
     page = poppler_document_get_page(doc, 0); 
-    gtk_signal_connect (GTK_OBJECT (drawarea), "expose-event",
-            GTK_SIGNAL_FUNC (on_expose), NULL);
+    g_signal_connect(GTK_OBJECT (drawarea), "expose-event",
+            G_CALLBACK(on_expose), NULL);
 
 
 
