@@ -45,7 +45,7 @@ int main (int argc, char *argv[]) {
     
     slog(L_DEBUG, PACKAGE" version: "VERSION"\n");
     builder = gtk_builder_new ();
-    gtk_builder_add_from_file (builder, "gummi.glade", NULL);
+    gtk_builder_add_from_file (builder, "gui/gummi.glade", NULL);
 
     // setup sourceview editor pane:
     editor = editor_init(builder);
@@ -77,14 +77,12 @@ int main (int argc, char *argv[]) {
 	    printf("%s\n", gummi->filename);
 	}
 	
+	// make environment
+	// start motion
 	
-    
-    // setup work files and such:
-   
-    // start motion:
     //g_timeout_add_seconds(1, update_preview, NULL);
 
-    //gtk_builder_connect_signals (builder, NULL);       
+    gtk_builder_connect_signals (builder, NULL);       
     g_object_unref (G_OBJECT (builder));
     
     gtk_widget_show_all (mainwindow);
