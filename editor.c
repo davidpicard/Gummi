@@ -1,5 +1,5 @@
 /**
- * @file   editor.h
+ * @file   editor.c
  * @brief  editor related functions for gummi
  * @author Wei-Ning Huang (AZ) <aitjcize@gmail.com>
  *

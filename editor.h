@@ -11,6 +11,7 @@
 #ifndef GUMMI_EDITOR_H
 #define GUMMI_EDITOR_H
 
+#include <glib.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourcebuffer.h>
 #include <gtksourceview/gtksourceview.h>

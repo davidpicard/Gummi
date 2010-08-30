@@ -20,21 +20,21 @@ void create_gui(GtkBuilder * builder) {
 
 
 void on_menu_new_activate(GtkWidget *widget, void * user) {
-	printf("new\n");
+    printf("new\n");
 }
 
 void on_menu_open_activate(GtkWidget *widget, void * user) {
-	printf("open\n");
-	filename = get_open_filename();
-	if (filename != NULL) load_file (filename); 
+    printf("open\n");
+    filename = get_open_filename();
+    if (filename != NULL) load_file (filename); 
 }
 
 void on_menu_save_activate(GtkWidget *widget, void * user) {
-	printf("save\n");
+    printf("save\n");
 }
 
 void on_menu_saveas_activate(GtkWidget *widget, void * user) {
-	printf("saveas\n");
+    printf("saveas\n");
 }
 
 gchar * get_open_filename() {

@@ -10,6 +10,7 @@
 
 #include "configfile.h"
 #include "editor.h"
+#include "iofuncitons.h"
 #include "preview.h"
 #include "gui.h"
 #include "gummi.h"
@@ -36,6 +37,7 @@ void setup_environment() {
 int main (int argc, char *argv[]) {
     GtkBuilder* builder;
     editor_t* ec;
+    iofunctions_t* infunc;
 
     GError* error = NULL;
     GOptionContext* context = g_option_context_new("files");
@@ -56,6 +58,9 @@ int main (int argc, char *argv[]) {
 
     // setup sourceview editor pane:
     ec = editor_init(builder);
+
+    // setup iofunctions
+    iofunc = iofunctions_init(ec);
 
     // setup poppler preview pane:
     create_preview(builder);
