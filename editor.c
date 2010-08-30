@@ -83,8 +83,8 @@ void editor_sourceview_config(editor_t* ec) {
     g_object_set(G_OBJECT(ec->searchtag), "background", "yellow", NULL);
 }
 
-#ifdef USE_GTKSPELL
 void editor_activate_spellchecking(editor_t* ec, gboolean status) {
+#ifdef USE_GTKSPELL
     const gchar* lang = config_get_value("spell_language");
     GError* err = NULL;
     if (status) {
@@ -99,8 +99,8 @@ void editor_activate_spellchecking(editor_t* ec, gboolean status) {
                 GTK_TEXT_VIEW(ec->sourceview));
         gtkspell_detach(spell);
     }
-}
 #endif
+}
 
 void editor_fill_buffer(editor_t* ec, const gchar* text) {
     GtkTextIter start;
@@ -183,7 +183,7 @@ void editor_apply_errortags(editor_t* ec, gint line) {
 void editor_apply_searchtags(editor_t* ec, result_t result) {
     gint i = 0;
     gtk_text_tag_table_remove(ec->editortags, ec->searchtag);
-    ec->search_result = (result_t){ 0, 0, 0, 0 };
+    ec->search_result = (result_t){ 0, 0, 0, 0, 0 };
     gtk_text_tag_table_add(ec->editortags, ec->searchtag);
     for (i = 0; i < result.len; ++i) {
         search_result_append(&ec->search_result, result.a_start[i],
@@ -201,6 +201,11 @@ void editor_jumpto_search_result(editor_t* ec, gint direction) {
         pos = 0;
     gtk_text_buffer_place_cursor(GTK_TEXT_BUFFER(ec->sourcebuffer),
             ec->search_result.a_start[pos]);
+}
+
+void editor_start_search(editor_t* ec, const gchar* term, gboolean backwards,
+        gboolean wholeword, gboolean matchcase) {
+    ec->search_result = (result_t){ 0, 0, 0, 0, 0 };
 }
 
 void editor_set_buffer_changed(editor_t* ec) {

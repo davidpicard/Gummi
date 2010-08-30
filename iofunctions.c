@@ -5,6 +5,12 @@
 
 // maybe create an environment struct with filename, statusbar, etc?
 
+iofunctions_t* iofunctions_init(editor_t* ec) {
+    iofunctions_t* iofunc = (iofunctions_t*)malloc(sizeof(iofunctions_t));
+    iofunc->editor = ec;
+    return iofunc;
+}
+
 
 void error_message (const gchar *message) {
         GtkWidget               *dialog;
@@ -24,7 +30,7 @@ void error_message (const gchar *message) {
         gtk_widget_destroy (dialog);         
 }
 
-void load_file(gchar *filename) {
+void load_file(iofunctions_t* iofunc, gchar *filename) {
         GError                  *err=NULL;
         gchar                   *status;
         gchar                   *text;
@@ -48,11 +54,13 @@ void load_file(gchar *filename) {
         }
         
         /* disable the text view while loading the buffer with the text */    
-        gtk_widget_set_sensitive (sourceview, FALSE);
+        gtk_widget_set_sensitive(iofunc->editor->sourceview, FALSE);
         //buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (editor->text_view));
-        gtk_text_buffer_set_text (GTK_TEXT_BUFFER(sourcebuffer), text, -1);
-        gtk_text_buffer_set_modified (GTK_TEXT_BUFFER (sourcebuffer), FALSE);
-        gtk_widget_set_sensitive (sourceview, TRUE);
+        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(iofunc->editor->sourcebuffer),
+                text, -1);
+        gtk_text_buffer_set_modified(GTK_TEXT_BUFFER
+                (iofunc->editor->sourcebuffer), FALSE);
+        gtk_widget_set_sensitive(iofunc->editor->sourceview, TRUE);
         g_free (text); 
         
         /* now we can set the current filename since loading was a success */

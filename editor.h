@@ -36,9 +36,7 @@ typedef struct _editor_context {
 
 editor_t* editor_init(GtkBuilder *builder);
 void editor_sourceview_config(editor_t* ec);
-#ifdef USE_GTKSPELL
 void editor_activate_spellchecking(editor_t* ec, gboolean status);
-#endif
 void editor_fill_buffer(editor_t* ec, const gchar* text);
 gchar* editor_grab_buffer(editor_t* ec);
 void editor_insert_package(editor_t* ec, const gchar* package);
@@ -47,6 +45,8 @@ void editor_set_selection_textstyle(editor_t* ec);
 void editor_apply_errortags(editor_t* ec, gint line);
 void editor_apply_searchtags(editor_t* ec, result_t result);
 void editor_jumpto_search_result(editor_t* ec, gint direction);
+void editor_start_search(editor_t* ec, const gchar* term, gboolean backwards,
+        gboolean wholeword, gboolean matchcase = FALSE);
 gboolean editor_check_buffer_changed(editor_t* ec);
 void editor_set_buffer_changed(editor_t* ec);
 
