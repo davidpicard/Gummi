@@ -16,9 +16,12 @@
 extern gummi_t* gummi;
 int workfd = -1;
 
+
 gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
         preview_t* prev) {
     gummi_t* g = (gummi_t*)malloc(sizeof(gummi_t));
+    
+    tmpdir = g_get_tmp_dir();
     g->editor = ed;
     g->iofunc = iof;
     g->motion = mo;
@@ -26,11 +29,13 @@ gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
     return g;
 }
 
+
 void create_environment(gchar *filename) {
     if (workfd != -1) {
         close(workfd);
     } // close previous work file using its file descriptor
-	
+    
+    // TODO: use const char TMPDIR (see environment.h)
     char tname[1024] = "/tmp/gummi_XXXXXXX"; 
     workfd = mkstemp(tname); 
     gummi->workfile = tname;
@@ -46,8 +51,6 @@ void create_environment(gchar *filename) {
               gummi->filename,
               gummi->workfile,
               gummi->pdffile); 
-    
-    
 }
 
 

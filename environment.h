@@ -22,6 +22,8 @@
 #include "motion.h"
 #include "preview.h"
 
+const gchar *tmpdir;
+
 typedef struct _gummi {
 	gchar* filename;
     gchar* pdffile;
