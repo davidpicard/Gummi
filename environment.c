@@ -1,8 +1,20 @@
+/**
+ * @file   environment.c
+ * @brief  
+ * @author Wei-Ning Huang (AZ) <aitjcize@gmail.com>
+ *
+ * Copyright (C) 2010 -  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
+ * All Rights reserved.
+ */
 
+#include "environment.h"
 
-
-void setup_environment() {
-    char tname[1024] = "/tmp/gummi_XXXXXXX"; 
-    int fh = mkstemp(tname); 
-    slog(L_INFO, "Filename %s\n", tname); 
+gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
+        preview_t* prev) {
+    gummi_t* g = (gummi_t*)malloc(sizeof(gummi_t));
+    g->editor = ed;
+    g->iofunc = iof;
+    g->motion = mo;
+    g->preview = prev;
+    return g;
 }
