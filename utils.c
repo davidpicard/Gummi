@@ -25,7 +25,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-#include "gummi.h"
+#include "environment.h"
 #include "utils.h"
 
 static int slog_debug = 0;

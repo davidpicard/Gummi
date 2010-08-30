@@ -1,3 +1,11 @@
+/**
+ * @file   preview.c
+ * @brief  
+ * @author Alexander van der Mey <alexvandermey@gmail.com>
+ *
+ * Copyright (C) 2010 - Alexander van der Mey <alexvandermey@gmail.com>
+ * All Rights reserved.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,8 +20,8 @@
 PopplerDocument* doc;
 PopplerPage* page;
 
-void create_preview(GtkBuilder * builder) {
-
+preview_t* preview_init(GtkBuilder * builder) {
+    preview_t* p = (preview_t*)malloc(sizeof(preview_t));
     GtkWidget *drawarea;
     GError *err = NULL;
     GdkColor white = {0,0xffff,0xffff,0xffff};
@@ -25,9 +33,7 @@ void create_preview(GtkBuilder * builder) {
     page = poppler_document_get_page(doc, 0); 
     g_signal_connect(GTK_OBJECT (drawarea), "expose-event",
             G_CALLBACK(on_expose), NULL);
-
-
-
+    return p;
 }
 
 

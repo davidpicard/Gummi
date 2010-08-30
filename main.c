@@ -9,16 +9,12 @@
 #include <string.h>
 
 #include "configfile.h"
-#include "editor.h"
-#include "iofunctions.h"
-#include "preview.h"
+#include "environment.h"
 #include "gui.h"
-#include "gummi.h"
-#include "motion.h"
 #include "utils.h"
 
-/* global gui instance */
-gui_t* gui;
+/* global environment instance */
+gummi_t* gummi = 0;
 
 static int debug = 0;
 
@@ -33,8 +29,10 @@ void on_window_destroy (GtkObject *object, gpointer user_data) {
 
 int main (int argc, char *argv[]) {
     GtkBuilder* builder;
-    editor_t* ec;
+    editor_t* editor;
     iofunctions_t* iofunc;
+    motion_t* motion;
+    preview_t* preview;
 
     GError* error = NULL;
     GOptionContext* context = g_option_context_new("files");
@@ -51,17 +49,23 @@ int main (int argc, char *argv[]) {
 
 
     // setup sourceview editor pane:
-    ec = editor_init(builder);
-    //editor_start_search(ec, "svn", FALSE, TRUE, FALSE);
+    editor = editor_init(builder);
+    editor_start_search(editor, "svn", FALSE, TRUE, FALSE);
 
     // setup iofunctions
-    iofunc = iofunctions_init(ec);
+    iofunc = iofunctions_init();
 
-    // setup poppler preview pane:
-    create_preview(builder);
-    
-    // setup gui:
-    gui = gui_init(iofunc, builder);
+    // setup preview pane:
+    preview = preview_init(builder);
+
+    // setup motion
+    motion = motion_init(0);
+
+    // setup global environment
+    gummi = gummi_init(editor, iofunc, motion, preview);
+
+    // setup gui
+    gui_init();
     
     // either load a file or load the default text based on cli arguments:
     // ... 

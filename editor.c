@@ -25,8 +25,11 @@
 #include <gtk/gtk.h>
 
 #include "configfile.h"
-#include "editor.h"
+#include "environment.h"
 #include "utils.h"
+
+/* reference to global environment instance */
+extern gummi_t* gummi;
 
 editor_t* editor_init(GtkBuilder* builder) {
     GtkWidget *scroll;

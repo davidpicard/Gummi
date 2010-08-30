@@ -1,6 +1,16 @@
+#include <stdlib.h>
 
+#include "environment.h"
 #include "motion.h"
-#include "editor.h"
+
+/* reference to global environment instance */
+extern gummi_t* gummi;
+
+motion_t* motion_init(gint dum) {
+    motion_t* m = (motion_t*)malloc(sizeof(motion_t));
+    m->dummy = dum;
+    return m;
+}
 
 void update_preview() {
     update_workfile();

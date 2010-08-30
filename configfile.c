@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "gummi.h"
+#include "environment.h"
 #include "configfile.h"
 #include "utils.h"
 

@@ -1,18 +1,24 @@
+/**
+ * @file   iofunctions.c
+ * @brief  
+ * @author Alexander van der Mey <alexvandermey@gmail.com>
+ *
+ * Copyright (C) 2010 - Alexander van der Mey <alexvandermey@gmail.com>
+ * All Rights reserved.
+ */
 
 #include <stdlib.h>
+#include "environment.h"
 
-#include "iofunctions.h"
-#include "editor.h"
-
+/* reference to global environment instance */
+extern gummi_t* gummi;
 
 // maybe create an environment struct with filename, statusbar, etc?
 
-iofunctions_t* iofunctions_init(editor_t* ec) {
+iofunctions_t* iofunctions_init(void) {
     iofunctions_t* iofunc = (iofunctions_t*)malloc(sizeof(iofunctions_t));
-    iofunc->editor = ec;
     return iofunc;
 }
-
 
 void iofunctions_error_message (const gchar *message) {
     GtkWidget           *dialog;
@@ -56,13 +62,13 @@ void iofunctions_load_file(iofunctions_t* iofunc, gchar *filename) {
     }
     
     /* disable the text view while loading the buffer with the text */    
-    gtk_widget_set_sensitive(iofunc->editor->sourceview, FALSE);
+    gtk_widget_set_sensitive(gummi->editor->sourceview, FALSE);
     //buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (editor->text_view));
-    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(iofunc->editor->sourcebuffer),
+    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(gummi->editor->sourcebuffer),
         text, -1);
     gtk_text_buffer_set_modified(GTK_TEXT_BUFFER
-        (iofunc->editor->sourcebuffer), FALSE);
-    gtk_widget_set_sensitive(iofunc->editor->sourceview, TRUE);
+        (gummi->editor->sourcebuffer), FALSE);
+    gtk_widget_set_sensitive(gummi->editor->sourceview, TRUE);
     g_free (text); 
     
     /* now we can set the current filename since loading was a success */

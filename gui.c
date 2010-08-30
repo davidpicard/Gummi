@@ -1,15 +1,15 @@
 
 #include <stdlib.h>
 
+#include "environment.h"
 #include "gui.h"
-#include "editor.h"
-#include "iofunctions.h"
 
-extern gui_t* gui;
+extern gummi_t* gummi;
+
 GtkWidget   *mainwindow;
 gchar       *filename=NULL;
 
-gui_t* gui_init(iofunctions_t* iofunc, GtkBuilder* builder) {
+void gui_init(iofunctions_t* iofunc, GtkBuilder* builder) {
     GtkWidget    *hpaned;
     gint         width, height;
     
@@ -18,10 +18,6 @@ gui_t* gui_init(iofunctions_t* iofunc, GtkBuilder* builder) {
     
     hpaned= GTK_WIDGET (gtk_builder_get_object(builder, "hpaned" ));
     gtk_paned_set_position (GTK_PANED (hpaned), (width/2)); 
-
-    gui_t* gui = (gui_t*)malloc(sizeof(gui_t));
-    gui->iof = iofunc;
-    return gui;
 }
 
 void on_menu_new_activate(GtkWidget *widget, void * user) {
@@ -31,7 +27,7 @@ void on_menu_new_activate(GtkWidget *widget, void * user) {
 void on_menu_open_activate(GtkWidget *widget, void * user) {
     printf("open\n");
     filename = get_open_filename();
-    if (filename != NULL) iofunctions_load_file(gui->iof, filename); 
+    if (filename != NULL) iofunctions_load_file(gummi->iofunc, filename); 
 }
 
 void on_menu_save_activate(GtkWidget *widget, void * user) {
