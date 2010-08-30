@@ -5,16 +5,11 @@
 #include "editor.h"
 #include "iofunctions.h"
 
+extern gui_t* gui;
 GtkWidget   *mainwindow;
 gchar       *filename=NULL;
 
-gui_t* gui_init(iofunctions_t* iofunc) {
-    gui_t* gui = (gui_t*)malloc(sizeof(gui_t));
-    gui->iof = iofunc;
-    return gui;
-}
-
-void create_gui(GtkBuilder * builder) {
+gui_t* gui_init(iofunctions_t* iofunc, GtkBuilder* builder) {
     GtkWidget    *hpaned;
     gint         width, height;
     
@@ -23,17 +18,20 @@ void create_gui(GtkBuilder * builder) {
     
     hpaned= GTK_WIDGET (gtk_builder_get_object(builder, "hpaned" ));
     gtk_paned_set_position (GTK_PANED (hpaned), (width/2)); 
-}
 
+    gui_t* gui = (gui_t*)malloc(sizeof(gui_t));
+    gui->iof = iofunc;
+    return gui;
+}
 
 void on_menu_new_activate(GtkWidget *widget, void * user) {
     printf("new\n");
 }
 
-void on_menu_open_activate(gui_t* gui, GtkWidget *widget, void * user) {
+void on_menu_open_activate(GtkWidget *widget, void * user) {
     printf("open\n");
     filename = get_open_filename();
-    if (filename != NULL) load_file (gui->iof,filename); 
+    if (filename != NULL) iofunctions_load_file(gui->iof, filename); 
 }
 
 void on_menu_save_activate(GtkWidget *widget, void * user) {
@@ -44,7 +42,7 @@ void on_menu_saveas_activate(GtkWidget *widget, void * user) {
     printf("saveas\n");
 }
 
-gchar * get_open_filename() {
+gchar* get_open_filename() {
     GtkWidget   *chooser;
        
     chooser = gtk_file_chooser_dialog_new ("Open File...",
@@ -62,7 +60,3 @@ gchar * get_open_filename() {
     gtk_widget_destroy (chooser);
     return filename;
 }
-
-
-
-

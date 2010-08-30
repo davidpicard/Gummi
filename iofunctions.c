@@ -14,7 +14,7 @@ iofunctions_t* iofunctions_init(editor_t* ec) {
 }
 
 
-void error_message (const gchar *message) {
+void iofunctions_error_message (const gchar *message) {
     GtkWidget           *dialog;
     
     /* log to terminal window */
@@ -32,7 +32,7 @@ void error_message (const gchar *message) {
     gtk_widget_destroy (dialog);     
 }
 
-void load_file(iofunctions_t* iofunc, gchar *filename) {
+void iofunctions_load_file(iofunctions_t* iofunc, gchar *filename) {
     GError          *err=NULL;
     gchar           *status;
     gchar           *text;
@@ -50,7 +50,7 @@ void load_file(iofunctions_t* iofunc, gchar *filename) {
     if (result == FALSE)
     {
         /* error loading file, show message to user */
-        error_message (err->message);
+        iofunctions_error_message(err->message);
         g_error_free (err);
         g_free (filename);
     }

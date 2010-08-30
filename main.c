@@ -17,6 +17,9 @@
 #include "motion.h"
 #include "utils.h"
 
+/* global gui instance */
+gui_t* gui;
+
 static int debug = 0;
 
 static GOptionEntry entries[] = {
@@ -38,7 +41,6 @@ int main (int argc, char *argv[]) {
     GtkBuilder* builder;
     editor_t* ec;
     iofunctions_t* iofunc;
-    gui_t* gui;
 
     GError* error = NULL;
     GOptionContext* context = g_option_context_new("files");
@@ -56,6 +58,7 @@ int main (int argc, char *argv[]) {
 
     // setup sourceview editor pane:
     ec = editor_init(builder);
+    //editor_start_search(ec, "svn", FALSE, TRUE, FALSE);
 
     // setup iofunctions
     iofunc = iofunctions_init(ec);
@@ -64,8 +67,7 @@ int main (int argc, char *argv[]) {
     create_preview(builder);
     
     // setup gui:
-    gui = gui_init(iofunc);
-    create_gui(builder);
+    gui = gui_init(iofunc, builder);
     
     // either load a file or load the default text based on cli arguments:
     // ... 

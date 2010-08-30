@@ -16,6 +16,7 @@
 #include <gtksourceview/gtksourceview.h>
 
 #define USE_GTKSPELL
+#define GTK_SOURCE_SEARCH_CASE_INSENSITIVE 0
 
 #ifdef USE_GTKSPELL
 #   include <gtkspell/gtkspell.h>
@@ -35,12 +36,10 @@ editor_t* editor_init(GtkBuilder* builder) {
     editor_t* ec = (editor_t*)malloc(sizeof(editor_t));
     ec->sourcebuffer = gtk_source_buffer_new_with_language(lang);
     ec->sourceview = gtk_source_view_new_with_buffer(ec->sourcebuffer);
-    ec->errortag = gtk_text_tag_new(NULL);
-    ec->searchtag = gtk_text_tag_new(NULL);
-    ec->editortags = gtk_text_buffer_get_tag_table(GTK_TEXT_BUFFER(
-                ec->sourcebuffer));
-    time(&ec->textchange);
-    time(&ec->prevchange);
+    ec->errortag = gtk_text_tag_new("error");
+    ec->searchtag = gtk_text_tag_new("search");
+    ec->editortags = gtk_text_buffer_get_tag_table(ec_sourcebuffer);
+    ec->sresult = search_result_init();
     
     scroll = GTK_WIDGET (gtk_builder_get_object (builder, "editor_scroll"));
     gtk_container_add (GTK_CONTAINER (scroll), ec->sourceview);
@@ -57,7 +56,7 @@ editor_t* editor_init(GtkBuilder* builder) {
 void editor_sourceview_config(editor_t* ec) {
     GtkWrapMode wrapmode = 0;
     slog(L_DEBUG, "loading default text\n");
-    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(ec->sourcebuffer),
+    gtk_text_buffer_set_text(ec_sourcebuffer,
             config_get_value("welcome"), -1);
 
     gtk_source_buffer_set_highlight_matching_brackets(ec->sourcebuffer, TRUE);
@@ -77,7 +76,7 @@ void editor_sourceview_config(editor_t* ec) {
         wrapmode += 1;
     if (config_get_value("wordwrapping"))
         wrapmode += 2;
-    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(ec->sourceview), wrapmode);
+    gtk_text_view_set_wrap_mode(ec_sourceview, wrapmode);
     g_object_set(G_OBJECT(ec->errortag), "background", "red",
             "foreground", "white", NULL);
     g_object_set(G_OBJECT(ec->searchtag), "background", "yellow", NULL);
@@ -88,15 +87,14 @@ void editor_activate_spellchecking(editor_t* ec, gboolean status) {
     const gchar* lang = config_get_value("spell_language");
     GError* err = NULL;
     if (status) {
-        GtkSpell* spell = gtkspell_new_attach(GTK_TEXT_VIEW(ec->sourceview),
-                NULL, &err);
+        GtkSpell* spell = gtkspell_new_attach(ec_sourceview, NULL, &err);
         if (!spell)
             slog(L_INFO, "gtkspell: %s\n", err->message);
         if (!gtkspell_set_language(spell, lang, &err))
             slog(L_INFO, "gtkspell: %s\n", err->message);
     } else {
         GtkSpell* spell = gtkspell_get_from_text_view(
-                GTK_TEXT_VIEW(ec->sourceview));
+                ec_sourceview);
         gtkspell_detach(spell);
     }
 #endif
@@ -104,23 +102,23 @@ void editor_activate_spellchecking(editor_t* ec, gboolean status) {
 
 void editor_fill_buffer(editor_t* ec, const gchar* text) {
     GtkTextIter start;
-    gtk_text_buffer_begin_user_action(GTK_TEXT_BUFFER(ec->sourcebuffer));
-    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(ec->sourcebuffer), (gchar*)"", 0);
+    gtk_text_buffer_begin_user_action(ec_sourcebuffer);
+    gtk_text_buffer_set_text(ec_sourcebuffer, (gchar*)"", 0);
     gtk_source_buffer_begin_not_undoable_action(ec->sourcebuffer);
-    gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(ec->sourcebuffer), &start);
+    gtk_text_buffer_get_start_iter(ec_sourcebuffer, &start);
     gtk_widget_set_sensitive(GTK_WIDGET(ec->sourceview), FALSE);
-    gtk_text_buffer_insert(GTK_TEXT_BUFFER(ec->sourcebuffer), &start,
+    gtk_text_buffer_insert(ec_sourcebuffer, &start,
             text, strlen(text));
-    gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(ec->sourcebuffer), FALSE);
+    gtk_text_buffer_set_modified(ec_sourcebuffer, FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(ec->sourceview), TRUE);
     gtk_source_buffer_end_not_undoable_action(ec->sourcebuffer);
-    gtk_text_buffer_end_user_action(GTK_TEXT_BUFFER(ec->sourcebuffer));
+    gtk_text_buffer_end_user_action(ec_sourcebuffer);
 }
 
 gchar* editor_grab_buffer(editor_t* ec) {
     GtkTextIter start, end;
     gtk_widget_set_sensitive(GTK_WIDGET(ec->sourceview), FALSE);
-    gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(ec->sourcebuffer), &start, &end);
+    gtk_text_buffer_get_bounds(ec_sourcebuffer, &start, &end);
     gtk_widget_set_sensitive(GTK_WIDGET(ec->sourceview), TRUE);
     gchar* pstr = gtk_text_iter_get_text (&start, &end);
     return pstr;
@@ -129,14 +127,14 @@ gchar* editor_grab_buffer(editor_t* ec) {
 void editor_insert_package(editor_t* ec, const gchar* package) {
     GtkTextIter start, mstart, mend, sstart, send;
     gchar pkgstr[BUFSIZ / 64];
-    gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(ec->sourcebuffer), &start);
+    gtk_text_buffer_get_start_iter(ec_sourcebuffer, &start);
     gtk_text_iter_forward_search(&start, (gchar*)"\\begin{document}", 0,
             &mstart, &mend, NULL);
     snprintf(pkgstr, BUFSIZ / 64, "\\usepackage{%s}\n", package);
     if (!gtk_text_iter_backward_search(&mstart, pkgstr, 0,
                 &sstart, &send, NULL)) {
         gtk_source_buffer_begin_not_undoable_action(ec->sourcebuffer);
-        gtk_text_buffer_insert(GTK_TEXT_BUFFER(ec->sourcebuffer), &mstart,
+        gtk_text_buffer_insert(ec_sourcebuffer, &mstart,
                 pkgstr, strlen(pkgstr));
         gtk_source_buffer_end_not_undoable_action(ec->sourcebuffer);
     }
@@ -145,8 +143,8 @@ void editor_insert_package(editor_t* ec, const gchar* package) {
 void editor_insert_bib(editor_t* ec, const gchar* package) {
     GtkTextIter start, end, mstart, mend, sstart, send;
     gchar pkgstr[BUFSIZ / 64];
-    gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(ec->sourcebuffer), &start);
-    gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER(ec->sourcebuffer), &end);
+    gtk_text_buffer_get_start_iter(ec_sourcebuffer, &start);
+    gtk_text_buffer_get_end_iter(ec_sourcebuffer, &end);
     gtk_text_iter_backward_search(&end, (gchar*)"\\end{document}", 0,
             &mstart, &mend, NULL);
     snprintf(pkgstr, BUFSIZ / 64,
@@ -154,7 +152,7 @@ void editor_insert_bib(editor_t* ec, const gchar* package) {
     if (!gtk_text_iter_forward_search(&start, "\\bibliography{", 0,
                 &sstart, &send, NULL)) {
         gtk_source_buffer_begin_not_undoable_action(ec->sourcebuffer);
-        gtk_text_buffer_insert(GTK_TEXT_BUFFER(ec->sourcebuffer), &mstart,
+        gtk_text_buffer_insert(ec_sourcebuffer, &mstart,
                 pkgstr, strlen(pkgstr));
         gtk_source_buffer_end_not_undoable_action(ec->sourcebuffer);
     }
@@ -162,79 +160,118 @@ void editor_insert_bib(editor_t* ec, const gchar* package) {
 
 void editor_set_selection_textstyle(editor_t* ec) {
     //formatting();
-    editor_set_buffer_changed(ec);
+    gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
 }
 
 void editor_apply_errortags(editor_t* ec, gint line) {
     GtkTextIter start, end;
     /* remove the tag from the table if it is in threre */
-    gtk_text_tag_table_remove(ec->editortags, ec->errortag);
+    if (gtk_text_tag_table_lookup(ec->editortags, "error"))
+        gtk_text_tag_table_remove(ec->editortags, ec->errortag);
+
     if (line) {
         gtk_text_tag_table_add(ec->editortags, ec->errortag);
-        gtk_text_buffer_get_iter_at_line(GTK_TEXT_BUFFER(ec->sourcebuffer),
-                &start, line -1);
-        gtk_text_buffer_get_iter_at_line(GTK_TEXT_BUFFER(ec->sourcebuffer),
-                &end, line);
-        gtk_text_buffer_apply_tag(GTK_TEXT_BUFFER(ec->sourcebuffer),
-                ec->errortag, &start, &end);
+        gtk_text_buffer_get_iter_at_line(ec_sourcebuffer, &start, line -1);
+        gtk_text_buffer_get_iter_at_line(ec_sourcebuffer, &end, line);
+        gtk_text_buffer_apply_tag(ec_sourcebuffer, ec->errortag, &start, &end);
     }
 }
 
-void editor_apply_searchtags(editor_t* ec, result_t result) {
+void editor_apply_searchtags(editor_t* ec) {
     gint i = 0;
-    gtk_text_tag_table_remove(ec->editortags, ec->searchtag);
-    ec->search_result = (result_t){ 0, 0, 0, 0, 0 };
+    if (gtk_text_tag_table_lookup(ec->editortags, "search"))
+        gtk_text_tag_table_remove(ec->editortags, ec->searchtag);
     gtk_text_tag_table_add(ec->editortags, ec->searchtag);
-    for (i = 0; i < result.len; ++i) {
-        search_result_append(&ec->search_result, result.a_start[i],
-                result.a_end[i]);
-        gtk_text_buffer_apply_tag(GTK_TEXT_BUFFER(ec->sourcebuffer),
-                ec->searchtag, result.a_start[i], result.a_end[i]);
+    for (i = 0; i < ec->sresult->len; ++i) {
+        gtk_text_buffer_apply_tag(ec_sourcebuffer,
+            ec->searchtag, ec->sresult->a_start[i],
+            ec->sresult->a_end[i]);
     }
 }
 
 void editor_jumpto_search_result(editor_t* ec, gint direction) {
-    gint pos = ec->search_result.pos + direction;
+    gint pos = ec->sresult->pos + direction;
     if (pos < 0)
-        pos = ec->search_result.size -1;
-    else if (pos >= ec->search_result.size)
+        pos = ec->sresult->size -1;
+    else if (pos >= ec->sresult->size)
         pos = 0;
-    gtk_text_buffer_place_cursor(GTK_TEXT_BUFFER(ec->sourcebuffer),
-            ec->search_result.a_start[pos]);
+    gtk_text_buffer_place_cursor(ec_sourcebuffer, ec->sresult->a_start[pos]);
 }
 
 void editor_start_search(editor_t* ec, const gchar* term, gboolean backwards,
         gboolean wholeword, gboolean matchcase) {
-    ec->search_result = (result_t){ 0, 0, 0, 0, 0 };
+    if (backwards)
+        editor_search_buffer_backward(ec, term, wholeword, matchcase);
+    else
+        editor_search_buffer_forward(ec, term, wholeword, matchcase);
+    editor_apply_searchtags(ec);
+
+    if (backwards)
+        gtk_text_buffer_place_cursor(ec_sourcebuffer, ec->sresult->a_start[0]);
+    else
+        gtk_text_buffer_place_cursor(ec_sourcebuffer, ec->sresult->a_end[0]);
 }
 
-void editor_set_buffer_changed(editor_t* ec) {
-    time(&ec->textchange);
-    //if (config_get_value("compile_status") &&
-    //    0 == strcmp(config_get_value("compile_scheme"), "on_idle"))
-    //    motion_start_timer();
+void editor_search_buffer_forward(editor_t* ec, const gchar* term,
+        gboolean wholeword, gboolean matchcase) {
+    GtkTextIter current, mstart, mend;
+    free(ec->sresult);
+    ec->sresult = search_result_init();
+    GtkTextMark* mark = gtk_text_buffer_get_insert(ec_sourcebuffer);
+    gtk_text_buffer_get_iter_at_mark(ec_sourcebuffer, &current, mark);
+
+    while (TRUE) {
+        if (gtk_text_iter_forward_search(&current, term,
+                    (matchcase?GTK_SOURCE_SEARCH_CASE_INSENSITIVE:0),
+                    &mstart, &mend, NULL)) {
+            if (!wholeword || (wholeword && gtk_text_iter_starts_word(&mstart)
+                        && gtk_text_iter_ends_word(&mend)))
+                search_result_append(ec->sresult, &mstart, &mend);
+        } else break;
+    }
 }
 
-gboolean editor_check_buffer_changed(editor_t* ec) {
-    if (ec->prevchange != ec->textchange) {
-        ec->prevchange = ec->textchange;
-        return TRUE;
-    } else
-        return FALSE;
+void editor_search_buffer_backward(editor_t* ec, const gchar* term,
+        gboolean wholeword, gboolean matchcase) {
+    GtkTextIter current, mstart, mend;
+    free(ec->sresult);
+    ec->sresult = search_result_init();
+    GtkTextMark* mark = gtk_text_buffer_get_insert(ec_sourcebuffer);
+    gtk_text_buffer_get_iter_at_mark(ec_sourcebuffer, &current, mark);
+
+    while (TRUE) {
+        if (gtk_text_iter_backward_search(&current, term,
+                    (matchcase?GTK_SOURCE_SEARCH_CASE_INSENSITIVE:0),
+                    &mstart, &mend, NULL)) {
+            if (!wholeword || (wholeword && gtk_text_iter_starts_word(&mstart)
+                        && gtk_text_iter_ends_word(&mend)))
+                search_result_append(ec->sresult, &mstart, &mend);
+        } else break;
+    }
 }
 
 void undo_change(editor_t* ec) {
     if (gtk_source_buffer_can_undo(ec->sourcebuffer)) {
         gtk_source_buffer_redo(ec->sourcebuffer);
-        editor_set_buffer_changed(ec);
+        gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     }
 }
 
 void redo_change(editor_t* ec) {
     if (gtk_source_buffer_can_redo(ec->sourcebuffer)) {
         gtk_source_buffer_redo(ec->sourcebuffer);
-        editor_set_buffer_changed(ec);
+        gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     }
+}
+
+result_t* search_result_init(void) {
+    result_t* res = (result_t*)malloc(sizeof(result_t));
+    res->len = SEARCH_RESULT_INIT_SIZE;
+    res->size = 0;
+    res->pos = 0;
+    res->a_start = (GtkTextIter**)malloc(sizeof(GtkTextIter*));
+    res->a_end = (GtkTextIter**)malloc(sizeof(GtkTextIter*));
+    return res;
 }
 
 void search_result_append(result_t* sc, GtkTextIter* start, GtkTextIter* end) {
