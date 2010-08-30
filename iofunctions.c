@@ -20,24 +20,6 @@ iofunctions_t* iofunctions_init(void) {
     return iofunc;
 }
 
-void iofunctions_error_message (const gchar *message) {
-    GtkWidget           *dialog;
-    
-    /* log to terminal window */
-    g_warning ("%s", message);
-    
-    /* create an error message dialog and display modally to the user */
-    dialog = gtk_message_dialog_new (NULL, 
-                     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-                     GTK_MESSAGE_ERROR,
-                     GTK_BUTTONS_OK,
-                     "%s", message);
-    
-    gtk_window_set_title (GTK_WINDOW (dialog), "Error!");
-    gtk_dialog_run (GTK_DIALOG (dialog));      
-    gtk_widget_destroy (dialog);     
-}
-
 void iofunctions_load_file(iofunctions_t* iofunc, gchar *filename) {
     GError          *err=NULL;
     gchar           *status;
@@ -56,7 +38,7 @@ void iofunctions_load_file(iofunctions_t* iofunc, gchar *filename) {
     if (result == FALSE)
     {
         /* error loading file, show message to user */
-        iofunctions_error_message(err->message);
+        //iofunctions_error_message(err->message);
         g_error_free (err);
         g_free (filename);
     }

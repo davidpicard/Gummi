@@ -75,8 +75,10 @@ int main (int argc, char *argv[]) {
     else { // TODO check if file path is valid!
 	    gummi->filename = argv[1];
 	    printf("%s\n", gummi->filename);
+	    iofunctions_load_file(iofunc, gummi->filename);
 	}
 	
+	//create_environment();
 	// make environment
 	// start motion
 	
