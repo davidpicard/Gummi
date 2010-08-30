@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include "environment.h"
+#include "gui.h"
 
 /* reference to global environment instance */
 extern gummi_t* gummi;
@@ -28,8 +29,7 @@ void iofunctions_load_file(iofunctions_t* iofunc, gchar *filename) {
 
     /* add Loading message to status bar and  ensure GUI is current */
     status = g_strdup_printf ("Loading %s...", filename);
-    //gtk_statusbar_push (GTK_STATUSBAR (editor->statusbar),
-    //            editor->statusbar_context_id, status);
+    statusbar_set_message(status);
     g_free (status);
     while (gtk_events_pending()) gtk_main_iteration();
     
@@ -52,15 +52,10 @@ void iofunctions_load_file(iofunctions_t* iofunc, gchar *filename) {
         (gummi->editor->sourcebuffer), FALSE);
     gtk_widget_set_sensitive(gummi->editor->sourceview, TRUE);
     g_free (text); 
-    
     /* now we can set the current filename since loading was a success */
-    //editor->filename = filename;
-    
-    /* clear loading status and restore default  */
-    //gtk_statusbar_pop (GTK_STATUSBAR (editor->statusbar),
-    //           editor->statusbar_context_id);
-    //reset_default_status (editor);
+    gummi->filename = filename;
 }
+
 
 void iofunctions_write_file(iofunctions_t* iofunc, gchar *filename) {
     GError          *err=NULL;
@@ -75,9 +70,7 @@ void iofunctions_write_file(iofunctions_t* iofunc, gchar *filename) {
         status = g_strdup_printf ("Saving %s...", filename);
     //else
     //    status = g_strdup_printf ("Saving %s...", editor->filename);
-        
-    //gtk_statusbar_push (GTK_STATUSBAR (editor->statusbar),
-     //           editor->statusbar_context_id, status);
+    statusbar_set_message(status);    
     g_free (status);
     while (gtk_events_pending()) gtk_main_iteration();
     
@@ -111,12 +104,9 @@ void iofunctions_write_file(iofunctions_t* iofunc, gchar *filename) {
         /* we need to free the memory used by editor->filename and set 
          it to the new filename instead */
         if (filename != NULL) g_free (filename);
-        //editor->filename = filename;
+        gummi->filename = filename;
     }
     
-    /* clear saving status and restore default */
-    //gtk_statusbar_pop (GTK_STATUSBAR (editor->statusbar),
-    //           editor->statusbar_context_id);
-    //reset_default_status (editor);   
+
 }
 

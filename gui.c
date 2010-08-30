@@ -1,5 +1,6 @@
 
 #include <stdlib.h>
+#include <glib.h>
 
 #include "environment.h"
 #include "gui.h"
@@ -7,6 +8,8 @@
 extern gummi_t* gummi;
 
 GtkWidget   *mainwindow;
+GtkWidget   *statusbar;
+guint        statusid;
 gchar       *filename=NULL;
 
 /* Many of the functions in this file are based on the excellent GTK+
@@ -18,6 +21,8 @@ void gui_init(GtkBuilder* builder) {
     gint     width, height;
     
     mainwindow = GTK_WIDGET (gtk_builder_get_object (builder, "mainwindow"));
+    statusbar = GTK_WIDGET (gtk_builder_get_object (builder, "statusbar"));
+    statusid = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "Gummi");
     gtk_window_get_size (GTK_WINDOW (mainwindow), &width, &height);
     
     hpaned= GTK_WIDGET (gtk_builder_get_object(builder, "hpaned" ));
@@ -121,3 +126,17 @@ gchar* get_save_filename() {
     gtk_widget_destroy (chooser);
     return filename;
 }
+
+void statusbar_set_message(gchar *message) {
+    gtk_statusbar_push (GTK_STATUSBAR(statusbar), statusid, message);
+    g_timeout_add_seconds(4,statusbar_del_message, NULL);
+}
+
+gboolean statusbar_del_message() {
+    gtk_statusbar_pop(GTK_STATUSBAR(statusbar),statusid);
+    return FALSE;
+}
+
+
+
+

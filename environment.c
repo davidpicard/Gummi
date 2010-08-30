@@ -19,3 +19,8 @@ gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
     g->preview = prev;
     return g;
 }
+
+void create_environment() {
+	
+}
+
