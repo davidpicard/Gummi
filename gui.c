@@ -46,7 +46,7 @@ gchar* get_open_filename() {
     GtkWidget   *chooser;
        
     chooser = gtk_file_chooser_dialog_new ("Open File...",
-                           GTK_WINDOW (mainwindow->window),
+                           GTK_WINDOW (mainwindow),
                            GTK_FILE_CHOOSER_ACTION_OPEN,
                            GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                            GTK_STOCK_OPEN, GTK_RESPONSE_OK,
