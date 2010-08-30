@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+
 #include "iofunctions.h"
 #include "editor.h"
 
