@@ -8,7 +8,12 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include "environment.h"
+
+/* reference to global environment instance */
+extern gummi_t* gummi;
+int workfd;
 
 gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
         preview_t* prev) {
@@ -20,7 +25,28 @@ gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
     return g;
 }
 
-void create_environment() {
+void create_environment(gchar *filename) {
 	
+    char tname[1024] = "/tmp/gummi_XXXXXXX"; 
+    int fh = mkstemp(tname); 
+    gummi->workfile = tname;
+    gummi->filename = filename;
+    workfd = fh;
+    
+    char *tmp;
+    
+    strcpy(tmp, tname);
+    
+    size_t tmpsize = strlen(tmp);
+    strncat(tmp, ".pdf", tmpsize);
+    gummi->pdffile = tmp;
+    
+    printf("Environment created for:\nTEX: %s\nTMP: %s\nPDF: %s\n", \
+              gummi->filename,
+              gummi->workfile,
+              gummi->pdffile); 
+    
+    
 }
+
 

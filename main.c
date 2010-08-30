@@ -75,19 +75,19 @@ int main (int argc, char *argv[]) {
         gtk_text_buffer_set_text(GTK_TEXT_BUFFER(gummi->editor->sourcebuffer),
             config_get_value("welcome"), -1);
     } else { // TODO check if file path is valid!
-	gummi->filename = argv[1];
-	printf("%s\n", gummi->filename);
-	iofunctions_load_file(gummi->iofunc, gummi->filename);
+	    gummi->filename = argv[1];
+	    printf("%s\n", gummi->filename);
+	    iofunctions_load_file(gummi->iofunc, gummi->filename);
     }
 	
 	
-	create_environment();
+	create_environment(gummi->filename);
 	// make environment
 	// start motion
 	
     //g_timeout_add_seconds(1, update_preview, NULL);
 
-    gtk_builder_connect_signals (builder, NULL);       
+   // gtk_builder_connect_signals (builder, NULL);       
     g_object_unref (G_OBJECT (builder));
     
     gtk_widget_show_all (mainwindow);
