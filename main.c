@@ -38,6 +38,7 @@ int main (int argc, char *argv[]) {
     GtkBuilder* builder;
     editor_t* ec;
     iofunctions_t* iofunc;
+    gui_t* gui;
 
     GError* error = NULL;
     GOptionContext* context = g_option_context_new("files");
@@ -53,9 +54,6 @@ int main (int argc, char *argv[]) {
     gtk_builder_add_from_file (builder, "gummi.glade", NULL);
 
 
-    // setup gummi gui elements:
-    create_gui(builder);
-
     // setup sourceview editor pane:
     ec = editor_init(builder);
 
@@ -64,6 +62,10 @@ int main (int argc, char *argv[]) {
 
     // setup poppler preview pane:
     create_preview(builder);
+    
+    // setup gui:
+    gui = gui_init(iofunc);
+    create_gui(builder);
     
     // either load a file or load the default text based on cli arguments:
     // ... 

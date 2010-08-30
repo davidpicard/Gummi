@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+
 #include "gui.h"
 #include "editor.h"
 #include "iofunctions.h"
@@ -6,6 +8,11 @@
 GtkWidget   *mainwindow;
 gchar       *filename=NULL;
 
+gui_t* gui_init(iofunctions_t* iofunc) {
+    gui_t* gui = (gui_t*)malloc(sizeof(gui_t));
+    gui->iof = iofunc;
+    return gui;
+}
 
 void create_gui(GtkBuilder * builder) {
     GtkWidget    *hpaned;
@@ -23,10 +30,10 @@ void on_menu_new_activate(GtkWidget *widget, void * user) {
     printf("new\n");
 }
 
-void on_menu_open_activate(GtkWidget *widget, void * user) {
+void on_menu_open_activate(gui_t* gui, GtkWidget *widget, void * user) {
     printf("open\n");
     filename = get_open_filename();
-    if (filename != NULL) load_file (filename); 
+    if (filename != NULL) load_file (gui->iof,filename); 
 }
 
 void on_menu_save_activate(GtkWidget *widget, void * user) {
