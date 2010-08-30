@@ -35,8 +35,6 @@ void setup_environment() {
 
 int main (int argc, char *argv[]) {
     GtkBuilder* builder;
-    GtkWidget* window;
-    gint width, height;
     editor_t* ec;
 
     GError* error = NULL;

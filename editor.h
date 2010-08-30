@@ -46,7 +46,7 @@ void editor_apply_errortags(editor_t* ec, gint line);
 void editor_apply_searchtags(editor_t* ec, result_t result);
 void editor_jumpto_search_result(editor_t* ec, gint direction);
 void editor_start_search(editor_t* ec, const gchar* term, gboolean backwards,
-        gboolean wholeword, gboolean matchcase = FALSE);
+        gboolean wholeword, gboolean matchcase);
 gboolean editor_check_buffer_changed(editor_t* ec);
 void editor_set_buffer_changed(editor_t* ec);
 
