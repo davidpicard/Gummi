@@ -70,16 +70,15 @@ int main (int argc, char *argv[]) {
     
     
     if ( argc != 2 ) { // no arguments
-	    gummi->filename = NULL;
-	    slog(L_DEBUG, "loading default text\n");
+	gummi->filename = NULL;
+	slog(L_DEBUG, "loading default text\n");
         gtk_text_buffer_set_text(GTK_TEXT_BUFFER(gummi->editor->sourcebuffer),
             config_get_value("welcome"), -1);
-	}
-    else { // TODO check if file path is valid!
-	    gummi->filename = argv[1];
-	    printf("%s\n", gummi->filename);
-	    iofunctions_load_file(gummi->iofunc, gummi->filename);
-	}
+    } else { // TODO check if file path is valid!
+	gummi->filename = argv[1];
+	printf("%s\n", gummi->filename);
+	iofunctions_load_file(gummi->iofunc, gummi->filename);
+    }
 	
 	//create_environment();
 	// make environment

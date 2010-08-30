@@ -54,7 +54,6 @@ void iofunctions_load_file(iofunctions_t* iofunc, gchar *filename) {
     g_free (text); 
     
     /* now we can set the current filename since loading was a success */
-    if (filename != NULL) g_free (filename);
     //editor->filename = filename;
     
     /* clear loading status and restore default  */
