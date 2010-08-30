@@ -25,12 +25,12 @@
 #include "editor.h"
 #include "utils.h"
 
-editor_context_t* editor_init(GtkBuilder* builder) {
+editor_t* editor_init(GtkBuilder* builder) {
     GtkWidget *scroll;
     GtkSourceLanguageManager* manager = gtk_source_language_manager_new();
     GtkSourceLanguage* lang = gtk_source_language_manager_get_language
                                                         (manager, "latex");
-    editor_context_t* ec = (editor_context_t*)malloc(sizeof(editor_context_t));
+    editor_t* ec = (editor_t*)malloc(sizeof(editor_t));
     ec->sourcebuffer = gtk_source_buffer_new_with_language(lang);
     ec->sourceview = gtk_source_view_new_with_buffer(ec->sourcebuffer);
     time(&ec->textchange);
@@ -49,7 +49,7 @@ editor_context_t* editor_init(GtkBuilder* builder) {
     return ec;
 }
 
-void editor_sourceview_config(editor_context_t* ec) {
+void editor_sourceview_config(editor_t* ec) {
     GtkWrapMode wrapmode = 0;
     slog(L_DEBUG, "loading default text\n");
     gtk_text_buffer_set_text(GTK_TEXT_BUFFER(ec->sourcebuffer),
@@ -75,7 +75,7 @@ void editor_sourceview_config(editor_context_t* ec) {
     gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(ec->sourceview), wrapmode);
 }
 
-void editor_insert_package(editor_context_t* ec, const gchar* package) {
+void editor_insert_package(editor_t* ec, const gchar* package) {
     GtkTextIter start, mstart, mend, sstart, send;
     gchar pkgstr[BUFSIZ / 64];
     gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(ec->sourcebuffer), &start);
@@ -91,7 +91,7 @@ void editor_insert_package(editor_context_t* ec, const gchar* package) {
     }
 }
 
-void editor_insert_bib(editor_context_t* ec, const gchar* package) {
+void editor_insert_bib(editor_t* ec, const gchar* package) {
     GtkTextIter start, end, mstart, mend, sstart, send;
     gchar pkgstr[BUFSIZ / 64];
     gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(ec->sourcebuffer), &start);
@@ -109,14 +109,14 @@ void editor_insert_bib(editor_context_t* ec, const gchar* package) {
     }
 }
 
-void editor_set_buffer_changed(editor_context_t* ec) {
+void editor_set_buffer_changed(editor_t* ec) {
     time(&ec->textchange);
     //if (config_get_value("compile_status") &&
     //    0 == strcmp(config_get_value("compile_scheme"), "on_idle"))
     //    motion_start_timer();
 }
 
-gboolean editor_check_buffer_changed(editor_context_t* ec) {
+gboolean editor_check_buffer_changed(editor_t* ec) {
     if (ec->prevchange != ec->textchange) {
         ec->prevchange = ec->textchange;
         return TRUE;
@@ -124,21 +124,21 @@ gboolean editor_check_buffer_changed(editor_context_t* ec) {
         return FALSE;
 }
 
-void undo_change(editor_context_t* ec) {
+void undo_change(editor_t* ec) {
     if (gtk_source_buffer_can_undo(ec->sourcebuffer)) {
         gtk_source_buffer_redo(ec->sourcebuffer);
         editor_set_buffer_changed(ec);
     }
 }
 
-void redo_change(editor_context_t* ec) {
+void redo_change(editor_t* ec) {
     if (gtk_source_buffer_can_redo(ec->sourcebuffer)) {
         gtk_source_buffer_redo(ec->sourcebuffer);
         editor_set_buffer_changed(ec);
     }
 }
 
-char editor_get_buffer(editor_context_t* ec) {
+char editor_get_buffer(editor_t* ec) {
     GtkTextIter start, end;
     gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(ec->sourcebuffer), &start, &end);
     char *text = gtk_text_iter_get_text (&start, &end);
