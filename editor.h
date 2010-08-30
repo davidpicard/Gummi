@@ -26,6 +26,7 @@ typedef struct _editor_context {
     GtkTextTag* errortag;
     GtkTextTag* searchtag;
     GtkTextTagTable* editortags;
+    gboolean replace_activated;
     gchar* term;
     gboolean backwards;
     gboolean wholeword;
@@ -42,9 +43,15 @@ void editor_insert_bib(editor_t* ec, const gchar* package);
 void editor_set_selection_textstyle(editor_t* ec);
 void editor_apply_errortags(editor_t* ec, gint line);
 void editor_jumpto_search_result(editor_t* ec, gint direction);
-void editor_start_search(editor_t* ec, const gchar* term, gboolean backwards,
-        gboolean wholeword, gboolean matchcase);
-void editor_search_place_cursor_to_next_result(editor_t* ec, const gchar* term,
-       gboolean backwards, gboolean wholeword, gboolean matchcase);
+/* inverse: inverse the cursor position, in front of the word or behind */
+gboolean editor_start_search(editor_t* ec, const gchar* term,
+        gboolean backwards, gboolean wholeword, gboolean matchcase,
+        gboolean inverse);
+void editor_search_place_cursor_at_next_result(editor_t* ec,
+        const gchar* term, gboolean backwards, gboolean wholeword,
+        gboolean matchcase, gboolean inverse);
+void editor_start_replace_all(editor_t* ec, const gchar* term,
+        const gchar* rterm, gboolean backwards, gboolean wholeword,
+        gboolean matchcase);
 
 #endif
