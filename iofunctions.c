@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include "environment.h"
 #include "gui.h"
+#include "utils.h"
 
 /* reference to global environment instance */
 extern gummi_t* gummi;
@@ -38,7 +39,7 @@ void iofunctions_load_file(iofunctions_t* iofunc, gchar *filename) {
     if (result == FALSE)
     {
         /* error loading file, show message to user */
-       // iofunctions_error_message(err->message);
+        slog(L_G_ERROR, "%s\n", err->message);
         g_error_free (err);
         g_free (filename);
     }

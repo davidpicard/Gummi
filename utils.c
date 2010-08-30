@@ -5,51 +5,72 @@
  *
  * Copyright (C) 2010 -  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
  * All Rights reserved.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <string.h>
+
+#include <glib.h>
+#include <gtk/gtk.h>
 
 #include "environment.h"
 #include "utils.h"
 
-static int slog_debug = 0;
+static gint slog_debug = 0;
 
-void slog_init(int debug) {
+void slog_init(gint debug) {
     slog_debug = debug;
 }
 
-void slog(int level, const char *fmt, ...) {
+void slog(gint level, const gchar *fmt, ...) {
+    gchar message[BUFSIZ];
     va_list vap;
 
     if (L_IS_TYPE(level, L_DEBUG) && !slog_debug) return;
 
-    if (L_IS_TYPE(level, L_DEBUG)) {
+    if (L_IS_TYPE(level, L_DEBUG))
         fprintf(stderr, "[Debug] ");
-    } else if (L_IS_TYPE(level, L_FATAL)) {
+    else if (L_IS_TYPE(level, L_FATAL) || L_IS_TYPE(level, L_G_FATAL))
         fprintf(stderr, "[Fatal] ");
-    } else {
+    else if (L_IS_TYPE(level, L_G_ERROR))
+        fprintf(stderr, "[Error] ");
+    else
         fprintf(stderr, "[Info] ");
-    }
+    
     va_start(vap, fmt);
-    vfprintf(stderr, fmt, vap);
+    vsnprintf(message, BUFSIZ, fmt, vap);
     va_end(vap);
+    fprintf(stderr, "%s", message);
 
-    if (!L_IS_TYPE(level, L_INFO) && !L_IS_TYPE(level, L_DEBUG))
+    if (L_IS_GUI(level)) {
+        GtkWidget* dialog;
+        // TODO: display the tmp file name
+        if (L_IS_TYPE(level, L_G_FATAL))
+            strncat(message, "\nGummi has encountered a serious error and "
+                    "require restart, your can find your file in the /tmp "
+                    "directory\n", BUFSIZ);
+        dialog = gtk_message_dialog_new (NULL, 
+                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                L_IS_TYPE(level,L_G_INFO)? GTK_MESSAGE_INFO: GTK_MESSAGE_ERROR,
+                GTK_BUTTONS_OK,
+                "%s", message);
+
+        if (L_IS_TYPE(level, L_G_ERROR))
+            gtk_window_set_title(GTK_WINDOW(dialog), "Error!");
+        else if (L_IS_TYPE(level, L_G_FATAL))
+            gtk_window_set_title(GTK_WINDOW(dialog), "Fatal Error!");
+        else if (L_IS_TYPE(level, L_G_INFO))
+            gtk_window_set_title(GTK_WINDOW(dialog), "InfoFatal Error!");
+
+        gtk_dialog_run(GTK_DIALOG(dialog));      
+        gtk_widget_destroy(dialog);
+    }
+
+    if (!L_IS_TYPE(level, L_INFO) &&
+        !L_IS_TYPE(level, L_DEBUG) && 
+        !L_IS_TYPE(level, L_G_INFO) &&
+        !L_IS_TYPE(level, L_G_ERROR))
         exit(1);
 }
