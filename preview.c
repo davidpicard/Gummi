@@ -21,6 +21,7 @@
 PopplerDocument* doc;
 PopplerPage* page;
 GtkWidget *drawarea;
+int pagetotal;
 
 preview_t* preview_init(GtkBuilder * builder) {
     preview_t* p = (preview_t*)malloc(sizeof(preview_t));
@@ -40,21 +41,25 @@ preview_t* preview_init(GtkBuilder * builder) {
 
 
 void set_pdffile(gchar *pdffile) {
+    
+    /* TEMPORARLY!! */
     GError *err = NULL;
     gchar *curdir = g_get_current_dir();
-    char str1[100];
-    char str2[100];
-    char str3[100];
+    char str1[200];
+    char str2[200];
+    char str3[200];
     strcpy (str1,"file://");
     strcpy (str2,curdir);
     strncat (str1, str2, (sizeof str1 + sizeof str2));
-      
-    puts(str1);
     strcpy(str3,str1);
     strncat(str3, "/tmpfile.pdf", (sizeof str3 + 12));
     printf("\n%s\n", str3);
+    /* TEMPORARLY!! */
+    
     doc = poppler_document_new_from_file(str3, NULL, &err);
+    pagetotal = poppler_document_get_n_pages(doc); 
     page = poppler_document_get_page(doc, 0);
+    
 }
 
 
@@ -62,6 +67,15 @@ void set_pdffile(gchar *pdffile) {
 gboolean on_expose(GtkWidget* w, GdkEventExpose* e, gpointer data) {
     cairo_t* cr;
     cr = gdk_cairo_create(w->window);
+    
+    // import python lines for calculating scale here
+    cairo_scale(cr, 0.7, 0.7);
+    
+    
+    cairo_set_source_rgb(cr, 1, 1, 1);
+    cairo_rectangle(cr, 0, 0, 500, 10);
+    cairo_fill(cr);
+    
     poppler_page_render(page, cr);
     cairo_destroy(cr);
     return FALSE;
