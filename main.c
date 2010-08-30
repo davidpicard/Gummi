@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "configfile.h"
 #include "editor.h"
 #include "preview.h"
 #include "gui.h"
@@ -36,7 +37,7 @@ int main (int argc, char *argv[]) {
     GtkBuilder* builder;
     GtkWidget* window;
     gint width, height;
-    editor_context_t* ec;
+    editor_t* ec;
 
     GError* error = NULL;
     GOptionContext* context = g_option_context_new("files");

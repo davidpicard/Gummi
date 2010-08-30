@@ -29,14 +29,16 @@ typedef struct _editor_context {
     GtkTextTag* errortag;
     GtkTextTag* searchtag;
     GtkTextTagTable* editortags;
-    search_result_t search_result;
+    result_t search_result;
     time_t textchange;
     time_t prevchange;
 } editor_t;
 
 editor_t* editor_init(GtkBuilder *builder);
 void editor_sourceview_config(editor_t* ec);
+#ifdef USE_GTKSPELL
 void editor_activate_spellchecking(editor_t* ec, gboolean status);
+#endif
 void editor_fill_buffer(editor_t* ec, const gchar* text);
 gchar* editor_grab_buffer(editor_t* ec);
 void editor_insert_package(editor_t* ec, const gchar* package);
