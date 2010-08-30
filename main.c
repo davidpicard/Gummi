@@ -68,12 +68,23 @@ int main (int argc, char *argv[]) {
     // either load a file or load the default text based on cli arguments:
     // ... 
     
+    
+    if ( argc != 2 ) { // no arguments
+	    gummi->filename = NULL;
+	}
+    else { // TODO check if file path is valid!
+	    gummi->filename = argv[1];
+	    printf("%s\n", gummi->filename);
+	}
+	
+	
+    
     // setup work files and such:
    
     // start motion:
     //g_timeout_add_seconds(1, update_preview, NULL);
 
-    gtk_builder_connect_signals (builder, NULL);       
+    //gtk_builder_connect_signals (builder, NULL);       
     g_object_unref (G_OBJECT (builder));
     
     gtk_widget_show_all (mainwindow);

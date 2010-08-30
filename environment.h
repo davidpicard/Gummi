@@ -23,9 +23,9 @@
 #include "preview.h"
 
 typedef struct _gummi {
+	gchar* filename;
     gchar* pdffile;
-    gchar* tempfile;
-    gchar* wrokfile;
+    gchar* workfile;
     editor_t* editor;
     iofunctions_t* iofunc;
     motion_t* motion;
