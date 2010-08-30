@@ -36,20 +36,21 @@ void on_menu_open_activate(GtkWidget *widget, void * user) {
     on_menu_save_activate (NULL, NULL);  
     }
     filename = get_open_filename();
-    if (filename != NULL) iofunctions_load_file(gummi->iofunc, filename); 
+    if (filename != NULL) 
+	    iofunctions_load_file(gummi->iofunc, filename); 
 }
 
 void on_menu_save_activate(GtkWidget *widget, void * user) {
     gchar           *filename;
       
     filename = get_save_filename();
-    if (filename != NULL) write_file (gummi->iofunc, filename); 
+    if (filename != NULL) 
+	    iofunctions_write_file(gummi->iofunc, filename); 
 }
 
 void on_menu_saveas_activate(GtkWidget *widget, void * user) {
     printf("saveas\n");
 }
-
 
 gboolean check_for_save () {
     gboolean      ret = FALSE;

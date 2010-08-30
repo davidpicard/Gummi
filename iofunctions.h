@@ -19,6 +19,7 @@ typedef struct _iofunctions {
 iofunctions_t* iofunctions_init(void);
 void iofunctions_error_message (const gchar *message);
 void iofunctions_load_file(iofunctions_t*, gchar*);
+void iofunctions_write_file(iofunctions_t*, gchar*);
 
 #endif /* GUMMI_IOFUNCTIONS_H */
 

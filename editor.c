@@ -58,9 +58,6 @@ editor_t* editor_init(GtkBuilder* builder) {
 
 void editor_sourceview_config(editor_t* ec) {
     GtkWrapMode wrapmode = 0;
-    slog(L_DEBUG, "loading default text\n");
-    gtk_text_buffer_set_text(ec_sourcebuffer,
-            config_get_value("welcome"), -1);
 
     gtk_source_buffer_set_highlight_matching_brackets(ec->sourcebuffer, TRUE);
 

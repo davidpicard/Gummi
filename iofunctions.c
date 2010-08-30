@@ -38,7 +38,7 @@ void iofunctions_load_file(iofunctions_t* iofunc, gchar *filename) {
     if (result == FALSE)
     {
         /* error loading file, show message to user */
-        //iofunctions_error_message(err->message);
+       // iofunctions_error_message(err->message);
         g_error_free (err);
         g_free (filename);
     }
@@ -63,7 +63,7 @@ void iofunctions_load_file(iofunctions_t* iofunc, gchar *filename) {
     //reset_default_status (editor);
 }
 
-void write_file(iofunctions_t* iofunc, gchar *filename) {
+void iofunctions_write_file(iofunctions_t* iofunc, gchar *filename) {
     GError          *err=NULL;
     gchar           *status;
     gchar           *text;
@@ -84,7 +84,7 @@ void write_file(iofunctions_t* iofunc, gchar *filename) {
     
     /* disable text view and get contents of buffer */ 
     gtk_widget_set_sensitive (gummi->editor->sourceview, FALSE);
-    buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (gummi->editor->sourcebuffer));
+    buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (gummi->editor->sourceview));
     gtk_text_buffer_get_start_iter (buffer, &start);
     gtk_text_buffer_get_end_iter (buffer, &end);
     text = gtk_text_buffer_get_text (buffer, &start, &end, FALSE);       
