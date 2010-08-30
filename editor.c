@@ -266,12 +266,12 @@ gboolean editor_start_replace_next(editor_t* ec, const gchar* term,
         const gchar* rterm, gboolean backwards, gboolean wholeword,
         gboolean matchcase) {
     GtkTextIter current, mstart, mend;
-    gboolean ret;
+    gboolean ret = FALSE;
 
     if (!ec->replace_activated) {
         editor_start_search(ec, term, backwards, wholeword, matchcase, TRUE);
         ec->replace_activated = TRUE;
-        return ret;
+        return TRUE;
     }
 
     GtkTextMark* mark = gtk_text_buffer_get_insert(ec_sourcebuffer);
