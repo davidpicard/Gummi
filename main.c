@@ -31,12 +31,6 @@ void on_window_destroy (GtkObject *object, gpointer user_data) {
     gtk_main_quit();
 }
 
-void setup_environment() {
-    char tname[1024] = "/tmp/gummi_XXXXXXX"; 
-    int fh = mkstemp(tname); 
-    slog(L_INFO, "Filename %s\n", tname); 
-}
-
 int main (int argc, char *argv[]) {
     GtkBuilder* builder;
     editor_t* ec;
@@ -73,8 +67,7 @@ int main (int argc, char *argv[]) {
     // ... 
     
     // setup work files and such:
-    setup_environment();
-
+   
     // start motion:
     //g_timeout_add_seconds(1, update_preview, NULL);
 
