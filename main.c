@@ -10,7 +10,7 @@
 
 #include "configfile.h"
 #include "editor.h"
-#include "iofuncitons.h"
+#include "iofunctions.h"
 #include "preview.h"
 #include "gui.h"
 #include "gummi.h"
@@ -37,7 +37,7 @@ void setup_environment() {
 int main (int argc, char *argv[]) {
     GtkBuilder* builder;
     editor_t* ec;
-    iofunctions_t* infunc;
+    iofunctions_t* iofunc;
 
     GError* error = NULL;
     GOptionContext* context = g_option_context_new("files");
