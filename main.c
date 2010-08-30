@@ -47,10 +47,8 @@ int main (int argc, char *argv[]) {
     builder = gtk_builder_new ();
     gtk_builder_add_from_file (builder, "gummi.glade", NULL);
 
-
     // setup sourceview editor pane:
     editor = editor_init(builder);
-    //editor_start_search(editor, "svn", FALSE, TRUE, FALSE);
 
     // setup iofunctions
     iofunc = iofunctions_init();

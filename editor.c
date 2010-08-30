@@ -110,8 +110,7 @@ void editor_fill_buffer(editor_t* ec, const gchar* text) {
     gtk_source_buffer_begin_not_undoable_action(ec->sourcebuffer);
     gtk_text_buffer_get_start_iter(ec_sourcebuffer, &start);
     gtk_widget_set_sensitive(GTK_WIDGET(ec->sourceview), FALSE);
-    gtk_text_buffer_insert(ec_sourcebuffer, &start,
-            text, strlen(text));
+    gtk_text_buffer_insert(ec_sourcebuffer, &start, text, strlen(text));
     gtk_text_buffer_set_modified(ec_sourcebuffer, FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(ec->sourceview), TRUE);
     gtk_source_buffer_end_not_undoable_action(ec->sourcebuffer);
@@ -230,6 +229,7 @@ void editor_search_buffer_forward(editor_t* ec, const gchar* term,
             if (!wholeword || (wholeword && gtk_text_iter_starts_word(&mstart)
                         && gtk_text_iter_ends_word(&mend)))
                 search_result_append(ec->sresult, &mstart, &mend);
+            current = mend;
         } else break;
     }
 }
@@ -249,6 +249,7 @@ void editor_search_buffer_backward(editor_t* ec, const gchar* term,
             if (!wholeword || (wholeword && gtk_text_iter_starts_word(&mstart)
                         && gtk_text_iter_ends_word(&mend)))
                 search_result_append(ec->sresult, &mstart, &mend);
+            current = mstart;
         } else break;
     }
 }
