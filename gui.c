@@ -31,7 +31,6 @@ void gui_init(GtkBuilder* builder) {
 
 void on_menu_new_activate(GtkWidget *widget, void * user) {
     printf("new\n");
-    editor_start_search(gummi->editor, "svn", FALSE, TRUE, FALSE);
 }
 
 void on_menu_open_activate(GtkWidget *widget, void * user) {
