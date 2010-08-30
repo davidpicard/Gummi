@@ -50,7 +50,7 @@ int main (int argc, char *argv[]) {
 
     // setup sourceview editor pane:
     editor = editor_init(builder);
-    editor_start_search(editor, "svn", FALSE, TRUE, FALSE);
+    //editor_start_search(editor, "svn", FALSE, TRUE, FALSE);
 
     // setup iofunctions
     iofunc = iofunctions_init();
@@ -65,7 +65,7 @@ int main (int argc, char *argv[]) {
     gummi = gummi_init(editor, iofunc, motion, preview);
 
     // setup gui
-    gui_init();
+    gui_init(builder);
     
     // either load a file or load the default text based on cli arguments:
     // ... 

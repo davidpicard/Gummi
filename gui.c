@@ -9,7 +9,7 @@ extern gummi_t* gummi;
 GtkWidget   *mainwindow;
 gchar       *filename=NULL;
 
-void gui_init(iofunctions_t* iofunc, GtkBuilder* builder) {
+void gui_init(GtkBuilder* builder) {
     GtkWidget    *hpaned;
     gint         width, height;
     

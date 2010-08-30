@@ -7,6 +7,7 @@
  * All Rights reserved.
  */
 
+#include <stdlib.h>
 #include "environment.h"
 
 gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
