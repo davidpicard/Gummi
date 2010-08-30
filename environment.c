@@ -9,11 +9,12 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "environment.h"
 
 /* reference to global environment instance */
 extern gummi_t* gummi;
-int workfd;
+int workfd = -1;
 
 gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
         preview_t* prev) {
@@ -26,17 +27,17 @@ gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
 }
 
 void create_environment(gchar *filename) {
+    if (workfd != -1) {
+        close(workfd);
+    } // close previous work file using its file descriptor
 	
     char tname[1024] = "/tmp/gummi_XXXXXXX"; 
-    int fh = mkstemp(tname); 
+    workfd = mkstemp(tname); 
     gummi->workfile = tname;
     gummi->filename = filename;
-    workfd = fh;
-    
-    char *tmp;
-    
-    strcpy(tmp, tname);
-    
+
+    char *tmp;    
+    strcpy(tmp, tname);    
     size_t tmpsize = strlen(tmp);
     strncat(tmp, ".pdf", tmpsize);
     gummi->pdffile = tmp;
