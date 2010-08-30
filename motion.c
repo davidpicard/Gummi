@@ -1,4 +1,7 @@
+#include <gtk/gtk.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "environment.h"
 #include "motion.h"
@@ -12,40 +15,55 @@ motion_t* motion_init(gint dum) {
     return m;
 }
 
-void update_preview() {
+void initial_preview() {
     update_workfile();
+    update_pdffile();
+    set_pdffile("/tmpfile.pdf");
 }
 
 
 void update_workfile() {
-       printf("o hai\n"); 
+    GtkTextIter start;
+    GtkTextIter end;
+    gchar *text;
+    FILE *fp;
+
+    // TODO: the following line caused hangups in python, attention!
+    gtk_widget_set_sensitive(gummi->editor->sourceview, FALSE);
+    gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(gummi->editor->sourcebuffer), &start, &end);
+    text = gtk_text_iter_get_text (&start, &end);
+    gtk_widget_set_sensitive(gummi->editor->sourceview, TRUE);
+    
+    // TODO: gummi->workfile doesn't work properly here.. 
+    fp = fopen("tmpfile", "w");
+    
+    if(fp == NULL) {
+        perror("failed to open sample.txt");
+        // TODO: do your debug thingie!
+    }
+    fwrite(text, strlen(text), 1, fp);
+    g_free(text);
+    fclose(fp);
+    // TODO: Maybe add editorviewer grab focus line here if necessary
+    
 }
 
+void update_pdffile() {
+    FILE *fp;
+    int status;
+    char path[PATH_MAX];
+    
+    fp = popen("pdflatex tmpfile", "r");
+    if (fp == NULL) {
+        // handle error
+    }
+    while (fgets(path, PATH_MAX, fp) != NULL)
+        printf("%s", path);
+        
+    status = pclose(fp);
+    if (status == -1) {
+         // handle error
+    }
+}
 
-/*
-
-    def update_workfile(self):
-        try:
-            # these two lines make the program hang in certain situations
-            #self.editorpane.editorview.set_sensitive(False)
-            buff = self.editorpane.editorviewer.get_buffer()
-            start_iter, end_iter = buff.get_start_iter(), buff.get_end_iter()
-            content = buff.get_text(start_iter, end_iter)
-            #self.editorpane.editorview.set_sensitive(True)
-            tmpmake = open(self.workfile, "w")
-            tmpmake.write(content)
-            tmpmake.close()
-            self.editorviewer.grab_focus() #editorpane regrabs focus
-        except:
-            print traceback.print_exc()
-*/
-
-
-//          if self.previewpane and self.editorpane.check_buffer_changed():
-//              self.editorpane.check_buffer_changed()
-    //          self.update_workfile()
-            //  retcode = self.update_pdffile()
-        //      self.update_errortags(retcode)
-        //      self.cleanup_fd(15)
-            //  self.previewpane.refresh_preview()
 

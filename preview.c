@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
@@ -19,21 +20,41 @@
 
 PopplerDocument* doc;
 PopplerPage* page;
+GtkWidget *drawarea;
 
 preview_t* preview_init(GtkBuilder * builder) {
     preview_t* p = (preview_t*)malloc(sizeof(preview_t));
     GtkWidget *drawarea;
-    GError *err = NULL;
+    
     GdkColor white = {0,0xffff,0xffff,0xffff};
     
     drawarea = GTK_WIDGET(gtk_builder_get_object(builder, "preview_draw"));
     gtk_widget_modify_bg (drawarea, GTK_STATE_NORMAL, &white); 
 
-        doc = poppler_document_new_from_file("file:///home/alexander/Desktop/test.pdf", NULL, &err);
-    page = poppler_document_get_page(doc, 0); 
     g_signal_connect(GTK_OBJECT (drawarea), "expose-event",
-            G_CALLBACK(on_expose), NULL);
+            G_CALLBACK(on_expose), NULL); 
+     
+
     return p;
+}
+
+
+void set_pdffile(gchar *pdffile) {
+    GError *err = NULL;
+    gchar *curdir = g_get_current_dir();
+    char str1[100];
+    char str2[100];
+    char str3[100];
+    strcpy (str1,"file://");
+    strcpy (str2,curdir);
+    strncat (str1, str2, (sizeof str1 + sizeof str2));
+      
+    puts(str1);
+    strcpy(str3,str1);
+    strncat(str3, "/tmpfile.pdf", (sizeof str3 + 12));
+    printf("\n%s\n", str3);
+    doc = poppler_document_new_from_file(str3, NULL, &err);
+    page = poppler_document_get_page(doc, 0);
 }
 
 

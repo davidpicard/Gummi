@@ -49,26 +49,17 @@ int main (int argc, char *argv[]) {
 
     // setup sourceview editor pane:
     editor = editor_init(builder);
-
     // setup iofunctions
     iofunc = iofunctions_init();
-
     // setup preview pane:
     preview = preview_init(builder);
-
     // setup motion
-    motion = motion_init(0);
-
+    motion = motion_init(0); 
     // setup global environment
     gummi = gummi_init(editor, iofunc, motion, preview);
-
     // setup gui
     gui_init(builder);
-    
-    // either load a file or load the default text based on cli arguments:
-    // ... 
-    
-    
+
     if ( argc != 2 ) { // no arguments
 	gummi->filename = NULL;
 	slog(L_DEBUG, "loading default text\n");
@@ -80,14 +71,10 @@ int main (int argc, char *argv[]) {
 	    iofunctions_load_file(gummi->iofunc, gummi->filename);
     }
 	
-	
 	create_environment(gummi->filename);
-	// make environment
-	// start motion
-	
-    //g_timeout_add_seconds(1, update_preview, NULL);
+    initial_preview();
 
-   // gtk_builder_connect_signals (builder, NULL);       
+    //gtk_builder_connect_signals (builder, NULL);       
     g_object_unref (G_OBJECT (builder));
     
     gtk_widget_show_all (mainwindow);

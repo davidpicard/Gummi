@@ -42,9 +42,8 @@ void create_environment(gchar *filename) {
     gummi->filename = filename;
 
     char *tmp;    
-    strcpy(tmp, tname);    
-    size_t tmpsize = strlen(tmp);
-    strncat(tmp, ".pdf", tmpsize);
+    strcpy(tmp, tname);
+    strncat(tmp, ".pdf", sizeof (tmp + 4));
     gummi->pdffile = tmp;
     
     printf("Environment created for:\nTEX: %s\nTMP: %s\nPDF: %s\n", \
