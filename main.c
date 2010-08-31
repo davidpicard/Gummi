@@ -4,6 +4,7 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,7 +21,7 @@ gummi_t* gummi = 0;
 static GOptionEntry entries[] = {
     { (const gchar*)"debug", (gchar)'d', 0, G_OPTION_ARG_NONE, &debug, 
         (gchar*)"show debug info", NULL},
-    { NULL, NULL, 0, G_OPTION_ARG_NONE, NULL, NULL, NULL }
+    { NULL, 0, 0, G_OPTION_ARG_NONE, NULL, NULL, NULL }
 };
 
 void on_window_destroy (GtkObject *object, gpointer user_data) {
@@ -33,6 +34,11 @@ int main (int argc, char *argv[]) {
     iofunctions_t* iofunc;
     motion_t* motion;
     preview_t* preview;
+
+    /* set up i18n */
+    bindtextdomain(PACKAGE, "/usr/share/locale");
+    setlocale(LC_ALL, "");
+    textdomain(PACKAGE);
 
     GError* error = NULL;
     GOptionContext* context = g_option_context_new("files");

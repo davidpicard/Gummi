@@ -5,6 +5,7 @@
 
 #include "iofunctions.h"
 
+#define g_e_buffer GTK_TEXT_BUFFER(gummi->editor->sourcebuffer)
 #define g_builder gummi->builder
 
 void gui_init(void);

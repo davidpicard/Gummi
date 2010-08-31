@@ -1,5 +1,6 @@
 
 #include <stdlib.h>
+
 #include <glib.h>
 
 #include "configfile.h"
@@ -36,18 +37,15 @@ void gui_main() {
 }
 
 void on_menu_new_activate(GtkWidget *widget, void * user) {
-    GtkTextBuffer       *buffer;
     const char *text;
     
     if (check_for_save () == TRUE) {
           on_menu_save_activate(NULL, NULL);  
     }
     /* clear editor for a new file */
-    buffer = gtk_text_view_get_buffer
-                 (GTK_TEXT_VIEW (gummi->editor->sourceview));
     text = config_get_value("welcome");
-    gtk_text_buffer_set_text (GTK_TEXT_BUFFER(buffer), text, -1);
-    gtk_text_buffer_set_modified (buffer, FALSE);
+    gtk_text_buffer_set_text (GTK_TEXT_BUFFER(g_e_buffer), text, -1);
+    gtk_text_buffer_set_modified (g_e_buffer, FALSE);
     gummi_create_environment(gummi, NULL);
 }
 
@@ -90,41 +88,31 @@ void on_menu_find_activate(GtkWidget *widget, void * user) {
 }
 
 void on_menu_cut_activate(GtkWidget *widget, void * user) {
-    GtkTextBuffer    *buffer;
     GtkClipboard     *clipboard;
     
     clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(gummi->editor->sourceview));
-    gtk_text_buffer_cut_clipboard(buffer, clipboard, TRUE);
-    // TODO set-buffer-changed call - build in? 
+    gtk_text_buffer_cut_clipboard(g_e_buffer, clipboard, TRUE);
+    gtk_text_buffer_set_modified(g_e_buffer, TRUE);
 }
 
 void on_menu_copy_activate(GtkWidget *widget, void * user) {
-    GtkTextBuffer    *buffer;
     GtkClipboard     *clipboard;
     
     clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(gummi->editor->sourceview));
-    gtk_text_buffer_copy_clipboard(buffer, clipboard);
+    gtk_text_buffer_copy_clipboard(g_e_buffer, clipboard);
 }
 void on_menu_paste_activate(GtkWidget *widget, void * user) {
-    GtkTextBuffer    *buffer;
     GtkClipboard     *clipboard;
     
     clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(gummi->editor->sourceview));
-    gtk_text_buffer_paste_clipboard(buffer, clipboard, NULL, TRUE);
-    // TODO set-buffer-changed call - build in? 
+    gtk_text_buffer_paste_clipboard(g_e_buffer, clipboard, NULL, TRUE);
+    gtk_text_buffer_set_modified(g_e_buffer, TRUE);
 }
 
 gboolean check_for_save() {
     gboolean      ret = FALSE;
-    GtkTextBuffer     *buffer;
     
-    buffer = gtk_text_view_get_buffer 
-          (GTK_TEXT_VIEW (gummi->editor->sourceview));
-    
-    if (gtk_text_buffer_get_modified (buffer) == TRUE) {
+    if (gtk_text_buffer_get_modified (g_e_buffer) == TRUE) {
     /* we need to prompt for save */    
     GtkWidget       *dialog;
     
@@ -196,7 +184,3 @@ gboolean statusbar_del_message() {
     gtk_statusbar_pop(GTK_STATUSBAR(statusbar),statusid);
     return FALSE;
 }
-
-
-
-

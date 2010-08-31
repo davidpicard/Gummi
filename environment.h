@@ -17,10 +17,14 @@
 #   define VERSION "svn"
 #endif
 
+#include <libintl.h>
+
 #include "editor.h"
 #include "iofunctions.h"
 #include "motion.h"
 #include "preview.h"
+
+#define _(T) gettext(T)
 
 typedef struct _gummi {
     gchar* filename;
