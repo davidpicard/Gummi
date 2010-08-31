@@ -151,9 +151,9 @@ finfo config_load(void) {
     int i = 0, count = 0;
     FILE* fh = 0;
 
-    char** pbuf = (char**) g_malloc(CONFIG_MAX * sizeof(char*));
+    char** pbuf = (char**)g_malloc(CONFIG_MAX * sizeof(char*));
     for (i = 0; i < CONFIG_MAX; ++i)
-        pbuf[i] = (char*) g_malloc(BUF_MAX * sizeof(char));
+        pbuf[i] = (char*)g_malloc(BUF_MAX * sizeof(char));
 
     if (!(fh = fopen(config_filename, "r"))) {
         slog(L_INFO, "can't find configuration file, reseting to default\n");

@@ -45,10 +45,15 @@ void gummi_create_environment(const gchar* filename) {
         close(workfd);
     } // close previous work file using its file descriptor
     
-    /* XXX: gummi->filename can only be assigned here */
-    if (gummi->filename) g_free(gummi->filename);
-    gummi->filename = (gchar*)g_malloc(strlen(filename) + 1);
-    strcpy(gummi->filename, filename);
+    /* gummi->filename can only be assigned here */
+    if (gummi->filename)
+        g_free(gummi->filename);
+    if (filename) {
+        gummi->filename = (gchar*)g_malloc(strlen(filename) + 1);
+        strcpy(gummi->filename, filename);
+    } else {
+        gummi->filename = NULL;
+    }
     
     workfd = g_mkstemp(tname); 
     if (gummi->workfile) g_free(gummi->workfile);
