@@ -11,7 +11,7 @@ extern gummi_t* gummi;
 GtkWidget   *mainwindow;
 GtkWidget   *statusbar;
 guint        statusid;
-gchar       *filename=NULL;
+GtkBuilder  *builder;
 
 /* Many of the functions in this file are based on the excellent GTK+
  * tutorials written by Micah Carrick that can be found on: 
@@ -65,6 +65,7 @@ void on_menu_save_activate(GtkWidget *widget, void * user) {
 }
 
 void on_menu_saveas_activate(GtkWidget *widget, void * user) {
+    gchar * filename;
     filename = get_save_filename();
     if (filename != NULL) 
         iofunctions_write_file(gummi->iofunc, filename); 
@@ -72,8 +73,7 @@ void on_menu_saveas_activate(GtkWidget *widget, void * user) {
 
 void on_menu_find_activate(GtkWidget *widget, void * user) {
     GtkWidget *searchwin;
-    
-    //searchwin = GTK_WIDGET(gtk_builder_get_object (builder, "searchwindow"));
+    searchwin = GTK_WIDGET(gtk_builder_get_object (builder, "searchwindow"));
     //gtk_widget_show(searchwin);
     //gtk_widget_grab_focus(searchwin);
 }
@@ -138,6 +138,7 @@ gboolean check_for_save() {
 
 gchar* get_open_filename() {
     GtkWidget   *chooser;
+    gchar       *filename;
        
     chooser = gtk_file_chooser_dialog_new ("Open File...",
            GTK_WINDOW (mainwindow),
