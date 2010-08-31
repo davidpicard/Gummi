@@ -37,8 +37,8 @@ void on_menu_new_activate(GtkWidget *widget, void * user) {
     }
     /* clear editor for a new file */
     buffer = gtk_text_view_get_buffer
-                 (GTK_TEXT_VIEW (gummi->editor->sourcebuffer));
-    gtk_text_buffer_set_text (buffer, "", -1);
+                 (GTK_TEXT_VIEW (gummi->editor->sourceview));
+    gtk_text_buffer_set_text (buffer, config_get_value("welcome"), -1);
     gtk_text_buffer_set_modified (buffer, FALSE);
     gummi_create_environment(NULL);
 }
