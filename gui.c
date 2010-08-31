@@ -30,9 +30,17 @@ void gui_init(GtkBuilder* builder) {
 }
 
 void on_menu_new_activate(GtkWidget *widget, void * user) {
-    printf("new\n");
-    //editor_start_search(gummi->editor, "svn", FALSE, TRUE, FALSE);
-    editor_start_replace_all(gummi->editor, "svn", "wtf", FALSE, TRUE, FALSE);
+    GtkTextBuffer       *buffer;
+    
+    if (check_for_save () == TRUE) {
+          on_menu_save_activate(NULL, NULL);  
+    }
+    /* clear editor for a new file */
+    buffer = gtk_text_view_get_buffer
+                 (GTK_TEXT_VIEW (gummi->editor->sourcebuffer));
+    gtk_text_buffer_set_text (buffer, "", -1);
+    gtk_text_buffer_set_modified (buffer, FALSE);
+    create_environment(NULL);
 }
 
 void on_menu_open_activate(GtkWidget *widget, void * user) {
