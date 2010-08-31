@@ -6,9 +6,9 @@ typedef struct _motion {
 } motion_t;
 
 motion_t* motion_init(gint dum);
-void initial_preview();
-void update_workfile();
-void update_pdffile();
+void motion_initial_preview(editor_t* ec);
+void motion_update_workfile(editor_t* ec);
+void motion_update_pdffile(editor_t* ec);
 
 
 #endif /* GUMMI_MOTION_H */

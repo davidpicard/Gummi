@@ -14,10 +14,8 @@
 #include "iofunctions.h"
 #include "utils.h"
 
-/* global environment instance */
-gummi_t* gummi = 0;
-
 static int debug = 0;
+gummi_t* gummi = 0;
 
 static GOptionEntry entries[] = {
     { (const gchar*)"debug", (gchar)'d', 0, G_OPTION_ARG_NONE, &debug, 
@@ -59,14 +57,14 @@ int main (int argc, char *argv[]) {
     gui_init(builder);
 
     if ( argc != 2 ) {
-        iofunctions_load_default_text(gummi->iofunc);
-        gummi_create_environment(NULL);
+        iofunctions_load_default_text(gummi->iofunc, editor);
+        gummi_create_environment(gummi, NULL);
     } else {
-        iofunctions_load_file(gummi->iofunc, argv[1]);
-        gummi_create_environment(argv[1]);
+        iofunctions_load_file(gummi->iofunc, editor, argv[1]);
+        gummi_create_environment(gummi, argv[1]);
     }
 	
-    initial_preview();
+    motion_initial_preview(editor);
 
     gtk_builder_connect_signals (builder, NULL);       
     g_object_unref (G_OBJECT (builder));

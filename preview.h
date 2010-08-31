@@ -16,6 +16,7 @@ typedef struct _preview {
 } preview_t;
 
 preview_t* preview_init(GtkBuilder * builder);
+void preview_set_pdffile(gchar *pdffile);
 gboolean on_expose(GtkWidget*, GdkEventExpose*, gpointer);
 
 #endif /* GUMMI_PREVIEW_H */

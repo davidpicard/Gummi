@@ -17,10 +17,11 @@ GtkBuilder  *builder;
  * tutorials written by Micah Carrick that can be found on: 
  * http://www.micahcarrick.com/gtk-glade-tutorial-part-3.html */
 
-void gui_init(GtkBuilder* builder) {
+void gui_init(GtkBuilder* br) {
     GtkWidget    *hpaned;
     gint          width, height;
     
+    builder = br;
     mainwindow = GTK_WIDGET(gtk_builder_get_object (builder, "mainwindow"));
     statusbar = GTK_WIDGET(gtk_builder_get_object (builder, "statusbar"));
     statusid = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "Gummi");
@@ -43,7 +44,7 @@ void on_menu_new_activate(GtkWidget *widget, void * user) {
     text = config_get_value("welcome");
     gtk_text_buffer_set_text (GTK_TEXT_BUFFER(buffer), text, -1);
     gtk_text_buffer_set_modified (buffer, FALSE);
-    gummi_create_environment(NULL);
+    gummi_create_environment(gummi, NULL);
 }
 
 void on_menu_open_activate(GtkWidget *widget, void * user) {
@@ -54,21 +55,27 @@ void on_menu_open_activate(GtkWidget *widget, void * user) {
     }
     filename = get_open_filename();
     if (filename != NULL) 
-        iofunctions_load_file(gummi->iofunc, filename); 
+        iofunctions_load_file(gummi->iofunc, gummi->editor, filename); 
 }
 
 void on_menu_save_activate(GtkWidget *widget, void * user) {
     gchar* filename = NULL;
     if (!gummi->filename)
         filename = get_save_filename();
-    iofunctions_write_file(gummi->iofunc, filename); 
+    if (filename) {
+        gummi_set_filename(gummi, filename);
+        iofunctions_write_file(gummi->iofunc, gummi->editor, filename); 
+    }
 }
 
 void on_menu_saveas_activate(GtkWidget *widget, void * user) {
-    gchar * filename;
-    filename = get_save_filename();
-    if (filename != NULL) 
-        iofunctions_write_file(gummi->iofunc, filename); 
+    gchar* filename = NULL;
+    if (!gummi->filename)
+        filename = get_save_filename();
+    if (filename) {
+        iofunctions_write_file(gummi->iofunc, gummi->editor, filename); 
+        gummi_create_environment(gummi, filename);
+    }
 }
 
 void on_menu_find_activate(GtkWidget *widget, void * user) {

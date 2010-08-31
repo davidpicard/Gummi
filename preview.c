@@ -40,7 +40,7 @@ preview_t* preview_init(GtkBuilder * builder) {
 }
 
 
-void set_pdffile(gchar *pdffile) {
+void preview_set_pdffile(gchar *pdffile) {
     
     /* TEMPORARLY!! */
     GError *err = NULL;
@@ -80,5 +80,3 @@ gboolean on_expose(GtkWidget* w, GdkEventExpose* e, gpointer data) {
     cairo_destroy(cr);
     return FALSE;
 } 
-
-

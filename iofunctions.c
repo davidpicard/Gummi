@@ -13,9 +13,6 @@
 #include "gui.h"
 #include "utils.h"
 
-/* reference to global environment instance */
-extern gummi_t* gummi;
-
 // maybe create an environment struct with filename, statusbar, etc?
 
 iofunctions_t* iofunctions_init(void) {
@@ -23,13 +20,14 @@ iofunctions_t* iofunctions_init(void) {
     return iofunc;
 }
 
-void iofunctions_load_default_text(iofunctions_t* iofunc) {
+void iofunctions_load_default_text(iofunctions_t* iofunc, editor_t* ec) {
     slog(L_DEBUG, "loading default text\n");
-    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(gummi->editor->sourcebuffer),
+    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(ec->sourcebuffer),
         config_get_value("welcome"), -1);
 }
 
-void iofunctions_load_file(iofunctions_t* iofunc, gchar *filename) {
+void iofunctions_load_file(iofunctions_t* iofunc, editor_t* ec, gchar *filename)
+{
     GError          *err=NULL;
     gchar           *status;
     gchar           *text;
@@ -47,48 +45,43 @@ void iofunctions_load_file(iofunctions_t* iofunc, gchar *filename) {
     if (FALSE == (result = g_file_get_contents(filename, &text, NULL, &err))) {
         slog(L_G_ERROR, "%s\n", err->message);
         g_error_free(err);
-        iofunctions_load_default_text(iofunc);
+        iofunctions_load_default_text(iofunc, ec);
         return;
     }
     
     /* disable the text view while loading the buffer with the text */    
-    gtk_widget_set_sensitive(gummi->editor->sourceview, FALSE);
+    gtk_widget_set_sensitive(ec->sourceview, FALSE);
     //buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (editor->text_view));
-    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(gummi->editor->sourcebuffer),
+    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(ec->sourcebuffer),
         text, -1);
     gtk_text_buffer_set_modified(GTK_TEXT_BUFFER
-        (gummi->editor->sourcebuffer), FALSE);
-    gtk_widget_set_sensitive(gummi->editor->sourceview, TRUE);
+        (ec->sourcebuffer), FALSE);
+    gtk_widget_set_sensitive(ec->sourceview, TRUE);
     g_free(text); 
 }
 
-void iofunctions_write_file(iofunctions_t* iofunc, gchar *filename) {
+void iofunctions_write_file(iofunctions_t* iofunc, editor_t* ec,
+        gchar *filename) {
     GError          *err=NULL;
     gchar           *status;
     gchar           *text;
-    gboolean         saveas = FALSE;
     gboolean         result;
     GtkTextBuffer   *buffer;
     GtkTextIter      start, end;
 
-    if (!filename && gummi->filename)
-        filename = gummi->filename;
-    else
-        saveas = TRUE;
-    
     status = g_strdup_printf ("Saving %s...", filename);
     statusbar_set_message(status);    
     g_free (status);
     while (gtk_events_pending()) gtk_main_iteration();
     
     /* disable text view and get contents of buffer */ 
-    gtk_widget_set_sensitive (gummi->editor->sourceview, FALSE);
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(gummi->editor->sourceview));
+    gtk_widget_set_sensitive (ec->sourceview, FALSE);
+    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ec->sourceview));
     gtk_text_buffer_get_start_iter (buffer, &start);
     gtk_text_buffer_get_end_iter (buffer, &end);
     text = gtk_text_buffer_get_text (buffer, &start, &end, FALSE);       
     gtk_text_buffer_set_modified (buffer, FALSE);
-    gtk_widget_set_sensitive (gummi->editor->sourceview, TRUE);
+    gtk_widget_set_sensitive (ec->sourceview, TRUE);
     
     /* set the contents of the file to the text from the buffer */
     if (filename != NULL)    
@@ -99,7 +92,4 @@ void iofunctions_write_file(iofunctions_t* iofunc, gchar *filename) {
         g_error_free(err);
     }    
     g_free(text); 
-    
-    if (saveas)
-        gummi_create_environment(filename);
 }

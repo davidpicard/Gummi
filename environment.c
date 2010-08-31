@@ -14,10 +14,7 @@
 #include "environment.h"
 #include "utils.h"
 
-/* reference to global environment instance */
-extern gummi_t* gummi;
 int workfd = -1;
-
 
 gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
         preview_t* prev) {
@@ -33,8 +30,7 @@ gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
     return g;
 }
 
-
-void gummi_create_environment(const gchar* filename) {
+void gummi_create_environment(gummi_t* gummi, const gchar* filename) {
     gchar tname[BUFSIZ];
     snprintf(tname, BUFSIZ, "%s/gummi_XXXXXXX", gummi->tmpdir);
     gint tname_len = strlen(tname) + 1;
@@ -42,16 +38,8 @@ void gummi_create_environment(const gchar* filename) {
     if (workfd != -1) {
         close(workfd);
     } // close previous work file using its file descriptor
-    
-    /* gummi->filename can only be assigned here */
-    if (gummi->filename)
-        g_free(gummi->filename);
-    if (filename) {
-        gummi->filename = (gchar*)g_malloc(strlen(filename) + 1);
-        strcpy(gummi->filename, filename);
-    } else {
-        gummi->filename = NULL;
-    }
+
+    gummi_set_filename(gummi, filename);
     
     workfd = g_mkstemp(tname); 
     if (gummi->workfile) g_free(gummi->workfile);
@@ -67,4 +55,15 @@ void gummi_create_environment(const gchar* filename) {
     slog(L_INFO, "TEX: %s\n", gummi->filename);
     slog(L_INFO, "TMP: %s\n", gummi->workfile);
     slog(L_INFO, "PDF: %s\n\n", gummi->pdffile); 
+}
+
+void gummi_set_filename(gummi_t* gummi, const gchar* name) {
+    if (gummi->filename)
+        g_free(gummi->filename);
+    if (name) {
+        gummi->filename = (gchar*)g_malloc(strlen(name) + 1);
+        strcpy(gummi->filename, name);
+    } else {
+        gummi->filename = NULL;
+    }
 }

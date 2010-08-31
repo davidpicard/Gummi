@@ -7,34 +7,31 @@
 #include "motion.h"
 #include "utils.h"
 
-/* reference to global environment instance */
-extern gummi_t* gummi;
-
 motion_t* motion_init(gint dum) {
     motion_t* m = (motion_t*)g_malloc(sizeof(motion_t));
     m->dummy = dum;
     return m;
 }
 
-void initial_preview() {
-    update_workfile();
-    update_pdffile();
-    set_pdffile("/tmpfile.pdf");
+void motion_initial_preview(editor_t* ec) {
+    motion_update_workfile(ec);
+    motion_update_pdffile(ec);
+    preview_set_pdffile("/tmpfile.pdf");
 }
 
 
-void update_workfile() {
+void motion_update_workfile(editor_t* ec) {
     GtkTextIter start;
     GtkTextIter end;
     gchar *text;
     FILE *fp;
 
     // TODO: the following line caused hangups in python, attention!
-    gtk_widget_set_sensitive(gummi->editor->sourceview, FALSE);
-    gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(gummi->editor->sourcebuffer),
+    gtk_widget_set_sensitive(ec->sourceview, FALSE);
+    gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(ec->sourcebuffer),
             &start, &end);
     text = gtk_text_iter_get_text (&start, &end);
-    gtk_widget_set_sensitive(gummi->editor->sourceview, TRUE);
+    gtk_widget_set_sensitive(ec->sourceview, TRUE);
     
     // TODO: gummi->workfile doesn't work properly here.. 
     fp = fopen("tmpfile", "w");
@@ -50,7 +47,7 @@ void update_workfile() {
     
 }
 
-void update_pdffile() {
+void motion_update_pdffile(editor_t* ec) {
     FILE *fp;
     int status;
     char path[PATH_MAX];
@@ -67,5 +64,3 @@ void update_pdffile() {
          // handle error
     }
 }
-
-
