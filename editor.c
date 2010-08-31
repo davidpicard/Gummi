@@ -63,7 +63,8 @@ void editor_sourceview_config(editor_t* ec) {
 
     gtk_source_buffer_set_highlight_matching_brackets(ec->sourcebuffer, TRUE);
 
-    const char* font = config_get_value("font"); slog(L_DEBUG, "setting font to %s\n", font);
+    const char* font = config_get_value("font");
+    slog(L_DEBUG, "setting font to %s\n", font);
     PangoFontDescription* font_desc = pango_font_description_from_string(font);
     gtk_widget_modify_font(ec->sourceview, font_desc);
     pango_font_description_free(font_desc);
@@ -131,8 +132,8 @@ void editor_insert_package(editor_t* ec, const gchar* package) {
     gtk_text_iter_forward_search(&start, (gchar*)"\\begin{document}", 0,
             &mstart, &mend, NULL);
     snprintf(pkgstr, BUFSIZ / 64, "\\usepackage{%s}\n", package);
-    if (!gtk_text_iter_backward_search(&mstart, pkgstr, 0,
-                &sstart, &send, NULL)) {
+    if (!gtk_text_iter_backward_search(&mstart, pkgstr, 0, &sstart, &send,
+                NULL)) {
         gtk_source_buffer_begin_not_undoable_action(ec->sourcebuffer);
         gtk_text_buffer_insert(ec_sourcebuffer, &mstart,
                 pkgstr, strlen(pkgstr));

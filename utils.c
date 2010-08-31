@@ -1,5 +1,5 @@
 /**
- * @file     utils.c
+ * @file   utils.c
  * @brief  utility for gummi
  * @author Wei-Ning Huang (AZ) <aitjcize@gmail.com>
  *

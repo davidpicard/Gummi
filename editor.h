@@ -54,4 +54,4 @@ void editor_start_replace_all(editor_t* ec, const gchar* term,
         const gchar* rterm, gboolean backwards, gboolean wholeword,
         gboolean matchcase);
 
-#endif
+#endif /* GUMMI_EDITOR_H */
