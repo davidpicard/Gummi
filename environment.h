@@ -27,14 +27,15 @@ typedef struct _gummi {
     gchar* pdffile;
     gchar* workfile;
     const gchar* tmpdir;
+    GtkBuilder* builder;
     editor_t* editor;
     iofunctions_t* iofunc;
     motion_t* motion;
     preview_t* preview;
 } gummi_t;
 
-gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
-        preview_t* prev);
+gummi_t* gummi_init(GtkBuilder* bd, editor_t* ed, iofunctions_t* iof,
+        motion_t* mo, preview_t* prev);
         
 void gummi_create_environment(gummi_t* gummi, const gchar* filename);
 void gummi_set_filename(gummi_t* gummi, const gchar* name);

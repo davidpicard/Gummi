@@ -3,14 +3,12 @@
 
 #include <gtk/gtk.h>
 
-
 #include "iofunctions.h"
 
+#define g_builder gummi->builder
 
-extern GtkWidget *mainwindow;
-
-void gui_init(GtkBuilder* builder);
-
+void gui_init(void);
+void gui_main(void);
 void on_menu_new_activate(GtkWidget *widget, void * user);
 void on_menu_open_activate(GtkWidget *widget, void * user);
 void on_menu_save_activate(GtkWidget *widget, void * user);

@@ -52,9 +52,9 @@ int main (int argc, char *argv[]) {
     iofunc = iofunctions_init();
     preview = preview_init(builder);
     motion = motion_init(0); 
-    gummi = gummi_init(editor, iofunc, motion, preview);
+    gummi = gummi_init(builder, editor, iofunc, motion, preview);
 
-    gui_init(builder);
+    gui_init();
 
     if ( argc != 2 ) {
         iofunctions_load_default_text(gummi->iofunc, editor);
@@ -65,13 +65,6 @@ int main (int argc, char *argv[]) {
     }
 	
     motion_initial_preview(editor);
-
-    gtk_builder_connect_signals (builder, NULL);       
-    g_object_unref (G_OBJECT (builder));
-    
-    gtk_widget_show_all (mainwindow);
-       
-    gtk_main ();
-    
+    gui_main();
     return 0;
 }

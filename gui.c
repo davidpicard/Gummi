@@ -11,24 +11,28 @@ extern gummi_t* gummi;
 GtkWidget   *mainwindow;
 GtkWidget   *statusbar;
 guint        statusid;
-GtkBuilder  *builder;
 
 /* Many of the functions in this file are based on the excellent GTK+
  * tutorials written by Micah Carrick that can be found on: 
  * http://www.micahcarrick.com/gtk-glade-tutorial-part-3.html */
 
-void gui_init(GtkBuilder* br) {
+void gui_init() {
     GtkWidget    *hpaned;
     gint          width, height;
     
-    builder = br;
-    mainwindow = GTK_WIDGET(gtk_builder_get_object (builder, "mainwindow"));
-    statusbar = GTK_WIDGET(gtk_builder_get_object (builder, "statusbar"));
+    mainwindow = GTK_WIDGET(gtk_builder_get_object (g_builder, "mainwindow"));
+    statusbar = GTK_WIDGET(gtk_builder_get_object (g_builder, "statusbar"));
     statusid = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "Gummi");
     gtk_window_get_size (GTK_WINDOW (mainwindow), &width, &height);
     
-    hpaned= GTK_WIDGET (gtk_builder_get_object(builder, "hpaned" ));
+    hpaned= GTK_WIDGET (gtk_builder_get_object(g_builder, "hpaned" ));
     gtk_paned_set_position (GTK_PANED (hpaned), (width/2)); 
+}
+
+void gui_main() {
+    gtk_builder_connect_signals (g_builder, NULL);       
+    gtk_widget_show_all (mainwindow);
+    gtk_main ();
 }
 
 void on_menu_new_activate(GtkWidget *widget, void * user) {
@@ -80,9 +84,9 @@ void on_menu_saveas_activate(GtkWidget *widget, void * user) {
 
 void on_menu_find_activate(GtkWidget *widget, void * user) {
     GtkWidget *searchwin;
-    searchwin = GTK_WIDGET(gtk_builder_get_object (builder, "searchwindow"));
-    //gtk_widget_show(searchwin);
-    //gtk_widget_grab_focus(searchwin);
+    searchwin = GTK_WIDGET(gtk_builder_get_object (g_builder, "searchwindow"));
+    gtk_widget_show(searchwin);
+    gtk_widget_grab_focus(searchwin);
 }
 
 void on_menu_cut_activate(GtkWidget *widget, void * user) {
