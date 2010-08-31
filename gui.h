@@ -15,6 +15,10 @@ void on_menu_new_activate(GtkWidget *widget, void * user);
 void on_menu_open_activate(GtkWidget *widget, void * user);
 void on_menu_save_activate(GtkWidget *widget, void * user);
 void on_menu_saveas_activate(GtkWidget *widget, void * user);
+void on_menu_find_activate(GtkWidget *widget, void * user);
+void on_menu_cut_activate(GtkWidget *widget, void * user);
+void on_menu_copy_activate(GtkWidget *widget, void * user);
+void on_menu_paste_activate(GtkWidget *widget, void * user);
 
 gchar * get_open_filename();
 gchar * get_save_filename();

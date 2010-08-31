@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <glib.h>
 
+#include "configfile.h"
 #include "environment.h"
 #include "gui.h"
 
@@ -31,6 +32,7 @@ void gui_init(GtkBuilder* builder) {
 
 void on_menu_new_activate(GtkWidget *widget, void * user) {
     GtkTextBuffer       *buffer;
+    const char *text;
     
     if (check_for_save () == TRUE) {
           on_menu_save_activate(NULL, NULL);  
@@ -38,7 +40,8 @@ void on_menu_new_activate(GtkWidget *widget, void * user) {
     /* clear editor for a new file */
     buffer = gtk_text_view_get_buffer
                  (GTK_TEXT_VIEW (gummi->editor->sourceview));
-    gtk_text_buffer_set_text (buffer, config_get_value("welcome"), -1);
+    text = config_get_value("welcome");
+    gtk_text_buffer_set_text (GTK_TEXT_BUFFER(buffer), text, -1);
     gtk_text_buffer_set_modified (buffer, FALSE);
     gummi_create_environment(NULL);
 }
@@ -75,9 +78,35 @@ void on_menu_find_activate(GtkWidget *widget, void * user) {
     //gtk_widget_grab_focus(searchwin);
 }
 
+void on_menu_cut_activate(GtkWidget *widget, void * user) {
+    GtkTextBuffer    *buffer;
+    GtkClipboard     *clipboard;
+    
+    clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(gummi->editor->sourceview));
+    gtk_text_buffer_cut_clipboard(buffer, clipboard, TRUE);
+    // TODO set-buffer-changed call - build in? 
+}
 
+void on_menu_copy_activate(GtkWidget *widget, void * user) {
+    GtkTextBuffer    *buffer;
+    GtkClipboard     *clipboard;
+    
+    clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(gummi->editor->sourceview));
+    gtk_text_buffer_copy_clipboard(buffer, clipboard);
+}
+void on_menu_paste_activate(GtkWidget *widget, void * user) {
+    GtkTextBuffer    *buffer;
+    GtkClipboard     *clipboard;
+    
+    clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(gummi->editor->sourceview));
+    gtk_text_buffer_paste_clipboard(buffer, clipboard, NULL, TRUE);
+    // TODO set-buffer-changed call - build in? 
+}
 
-gboolean check_for_save () {
+gboolean check_for_save() {
     gboolean      ret = FALSE;
     GtkTextBuffer     *buffer;
     
