@@ -10,7 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
 #include "environment.h"
+#include "utils.h"
 
 /* reference to global environment instance */
 extern gummi_t* gummi;
@@ -46,10 +48,10 @@ void create_environment(gchar *filename) {
     strncat(tmp, ".pdf", sizeof (tmp + 4));
     gummi->pdffile = tmp;
     
-    printf("Environment created for:\nTEX: %s\nTMP: %s\nPDF: %s\n", \
-              gummi->filename,
-              gummi->workfile,
-              gummi->pdffile); 
+    slog(L_INFO, "Environment created for:\n");
+    slog(L_INFO, "TEX: %s\n", gummi->filename);
+    slog(L_INFO, "TMP: %s\n", gummi->workfile);
+    slog(L_INFO, "PDF: %s\n", gummi->pdffile); 
 }
 
 

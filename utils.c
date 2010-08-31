@@ -34,7 +34,7 @@ void slog(gint level, const gchar *fmt, ...) {
         fprintf(stderr, "[Debug] ");
     else if (L_IS_TYPE(level, L_FATAL) || L_IS_TYPE(level, L_G_FATAL))
         fprintf(stderr, "[Fatal] ");
-    else if (L_IS_TYPE(level, L_G_ERROR))
+    else if (L_IS_TYPE(level, L_ERROR) || L_IS_TYPE(level, L_G_ERROR))
         fprintf(stderr, "[Error] ");
     else
         fprintf(stderr, "[Info] ");

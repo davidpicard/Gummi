@@ -14,7 +14,8 @@
 #define L_IS_GUI(level) (level & 0xf0)
 #define L_INFO     0x01    /* for informative messages */
 #define L_DEBUG    0x02    /* debug messages, only print if -d flags is used */
-#define L_FATAL    0x04    /* for fatal errors, program will exit */
+#define L_ERROR    0x04    /* reconverable error */
+#define L_FATAL    0x08    /* inrecoverable error */
 #define L_G_INFO   0x10    /* GUI info */
 #define L_G_ERROR  0x20    /* recoverable error */
 #define L_G_FATAL  0x40    /* inrecoverable error */
