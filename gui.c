@@ -18,10 +18,10 @@ gchar       *filename=NULL;
 
 void gui_init(GtkBuilder* builder) {
     GtkWidget    *hpaned;
-    gint     width, height;
+    gint          width, height;
     
-    mainwindow = GTK_WIDGET (gtk_builder_get_object (builder, "mainwindow"));
-    statusbar = GTK_WIDGET (gtk_builder_get_object (builder, "statusbar"));
+    mainwindow = GTK_WIDGET(gtk_builder_get_object (builder, "mainwindow"));
+    statusbar = GTK_WIDGET(gtk_builder_get_object (builder, "statusbar"));
     statusid = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "Gummi");
     gtk_window_get_size (GTK_WINDOW (mainwindow), &width, &height);
     
@@ -66,6 +66,16 @@ void on_menu_saveas_activate(GtkWidget *widget, void * user) {
     editor_jumpto_search_result(gummi->editor, -1);
     printf("saveas\n");
 }
+
+void on_menu_find_activate(GtkWidget *widget, void * user) {
+    GtkWidget *searchwin;
+    
+    //searchwin = GTK_WIDGET(gtk_builder_get_object (builder, "searchwindow"));
+    //gtk_widget_show(searchwin);
+    //gtk_widget_grab_focus(searchwin);
+}
+
+
 
 gboolean check_for_save () {
     gboolean      ret = FALSE;

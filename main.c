@@ -75,7 +75,7 @@ int main (int argc, char *argv[]) {
 	create_environment(gummi->filename);
     initial_preview();
 
-    //gtk_builder_connect_signals (builder, NULL);       
+    gtk_builder_connect_signals (builder, NULL);       
     g_object_unref (G_OBJECT (builder));
     
     gtk_widget_show_all (mainwindow);
