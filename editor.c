@@ -411,7 +411,12 @@ void editor_do_formatting(editor_t* ec, GtkWidget* widget) {
                 style[selected][1], selected_text, style[selected][2]);
     }
 
+    gtk_text_buffer_begin_user_action(ec_sourcebuffer);
     gtk_text_buffer_delete(ec_sourcebuffer, &start, &end);
     gtk_text_buffer_insert(ec_sourcebuffer, &start, outtext, strlen(outtext));
+    end = start;
+    gtk_text_iter_backward_chars(&start, strlen(outtext));
+    gtk_text_buffer_select_range(ec_sourcebuffer, &start, &end);
+    gtk_text_buffer_end_user_action(ec_sourcebuffer);
     free(outtext);
 }
