@@ -37,7 +37,7 @@ typedef struct _gummi {
 gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
         preview_t* prev);
         
-void create_environment();
+void gummi_create_environment();
     
 
 #endif /* GUMMI_ENVIRONMENT_H */

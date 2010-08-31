@@ -35,7 +35,7 @@ gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
 }
 
 
-void create_environment() {
+void gummi_create_environment() {
     if (workfd != -1) {
         close(workfd);
     } // close previous work file using its file descriptor

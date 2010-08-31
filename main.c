@@ -61,18 +61,14 @@ int main (int argc, char *argv[]) {
     // setup gui
     gui_init(builder);
 
-    if ( argc != 2 ) { // no arguments
-	gummi->filename = NULL;
-	slog(L_DEBUG, "loading default text\n");
-        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(gummi->editor->sourcebuffer),
-            config_get_value("welcome"), -1);
-    } else { // TODO check if file path is valid!
-        gummi->filename = argv[1];
-        printf("%s\n", gummi->filename);
-        iofunctions_load_file(gummi->iofunc, gummi->filename);
+    if ( argc != 2 ) {
+        iofunctions_load_default_text(gummi->iofunc);
+        gummi_create_environment(NULL);
+    } else {
+        iofunctions_load_file(gummi->iofunc, argv[1]);
+        gummi_create_environment(argv[1]);
     }
 	
-    create_environment();
     initial_preview();
 
     gtk_builder_connect_signals (builder, NULL);       

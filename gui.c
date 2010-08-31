@@ -40,7 +40,7 @@ void on_menu_new_activate(GtkWidget *widget, void * user) {
                  (GTK_TEXT_VIEW (gummi->editor->sourcebuffer));
     gtk_text_buffer_set_text (buffer, "", -1);
     gtk_text_buffer_set_modified (buffer, FALSE);
-    create_environment(NULL);
+    gummi_create_environment(NULL);
 }
 
 void on_menu_open_activate(GtkWidget *widget, void * user) {

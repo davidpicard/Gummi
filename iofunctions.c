@@ -8,6 +8,7 @@
  */
 
 #include <stdlib.h>
+#include "configfile.h"
 #include "environment.h"
 #include "gui.h"
 #include "utils.h"
@@ -22,11 +23,19 @@ iofunctions_t* iofunctions_init(void) {
     return iofunc;
 }
 
+void iofunctions_load_default_text(iofunctions_t* iofunc) {
+    slog(L_DEBUG, "loading default text\n");
+    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(gummi->editor->sourcebuffer),
+        config_get_value("welcome"), -1);
+}
+
 void iofunctions_load_file(iofunctions_t* iofunc, gchar *filename) {
     GError          *err=NULL;
     gchar           *status;
     gchar           *text;
     gboolean        result;
+
+    slog(L_DEBUG, "loading %s from command line argument\n", filename);
 
     /* add Loading message to status bar and  ensure GUI is current */
     status = g_strdup_printf ("Loading %s...", filename);
@@ -35,13 +44,11 @@ void iofunctions_load_file(iofunctions_t* iofunc, gchar *filename) {
     while (gtk_events_pending()) gtk_main_iteration();
     
     /* get the file contents */
-    result = g_file_get_contents (filename, &text, NULL, &err);
-    if (result == FALSE)
-    {
-        /* error loading file, show message to user */
+    if (FALSE == (result = g_file_get_contents(filename, &text, NULL, &err))) {
         slog(L_G_ERROR, "%s\n", err->message);
         g_error_free (err);
-        g_free (filename);
+        iofunctions_load_default_text(iofunc);
+        return;
     }
     
     /* disable the text view while loading the buffer with the text */    
