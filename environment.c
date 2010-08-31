@@ -22,8 +22,6 @@ int workfd = -1;
 gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
         preview_t* prev) {
     gummi_t* g = (gummi_t*)g_malloc(sizeof(gummi_t));
-    
-    tmpdir = g_get_tmp_dir();
     g->editor = ed;
     g->iofunc = iof;
     g->motion = mo;
@@ -38,7 +36,7 @@ gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
 
 void gummi_create_environment(const gchar* filename) {
     gchar tname[BUFSIZ];
-    snprintf(tname, BUFSIZ, "%s/gummi_XXXXXXX");
+    snprintf(tname, BUFSIZ, "%s/gummi_XXXXXXX", gummi->tmpdir);
     gint tname_len = strlen(tname) + 1;
 
     if (workfd != -1) {

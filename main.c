@@ -11,6 +11,7 @@
 #include "configfile.h"
 #include "environment.h"
 #include "gui.h"
+#include "iofunctions.h"
 #include "utils.h"
 
 /* global environment instance */

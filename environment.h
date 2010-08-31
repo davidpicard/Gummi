@@ -26,7 +26,7 @@ typedef struct _gummi {
     gchar* filename;
     gchar* pdffile;
     gchar* workfile;
-    gchar* tmpdir;
+    const gchar* tmpdir;
     editor_t* editor;
     iofunctions_t* iofunc;
     motion_t* motion;
