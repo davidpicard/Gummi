@@ -72,7 +72,7 @@ int main (int argc, char *argv[]) {
         iofunctions_load_file(gummi->iofunc, gummi->filename);
     }
 	
-	create_environment(gummi->filename);
+    create_environment();
     initial_preview();
 
     gtk_builder_connect_signals (builder, NULL);       

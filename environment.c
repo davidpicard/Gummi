@@ -28,22 +28,26 @@ gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
     g->iofunc = iof;
     g->motion = mo;
     g->preview = prev;
+    g->filename = NULL;
+    g->pdffile = NULL;
+    g->workfile = NULL;
     return g;
 }
 
 
-void create_environment(gchar *filename) {
+void create_environment() {
     if (workfd != -1) {
         close(workfd);
     } // close previous work file using its file descriptor
     
     // TODO: use const char TMPDIR (see environment.h)
-    char tname[1024] = "/tmp/gummi_XXXXXXX"; 
+    char tname[] = "/tmp/gummi_XXXXXXX"; 
     workfd = mkstemp(tname); 
-    gummi->workfile = tname;
-    gummi->filename = filename;
+    if (gummi->workfile) free(gummi->workfile);
+    gummi->workfile = (gchar*)malloc(strlen(tname) + 1);
+    strcpy(gummi->workfile, tname);
 
-    char *tmp;    
+    char *tmp = (gchar*)malloc(strlen(tname) + 5);    
     strcpy(tmp, tname);
     strncat(tmp, ".pdf", sizeof (tmp + 4));
     gummi->pdffile = tmp;

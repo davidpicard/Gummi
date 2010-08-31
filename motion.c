@@ -5,6 +5,7 @@
 
 #include "environment.h"
 #include "motion.h"
+#include "utils.h"
 
 /* reference to global environment instance */
 extern gummi_t* gummi;
@@ -30,7 +31,8 @@ void update_workfile() {
 
     // TODO: the following line caused hangups in python, attention!
     gtk_widget_set_sensitive(gummi->editor->sourceview, FALSE);
-    gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(gummi->editor->sourcebuffer), &start, &end);
+    gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(gummi->editor->sourcebuffer),
+            &start, &end);
     text = gtk_text_iter_get_text (&start, &end);
     gtk_widget_set_sensitive(gummi->editor->sourceview, TRUE);
     

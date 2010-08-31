@@ -25,7 +25,7 @@
 const gchar *tmpdir;
 
 typedef struct _gummi {
-	gchar* filename;
+    gchar* filename;
     gchar* pdffile;
     gchar* workfile;
     editor_t* editor;
@@ -37,7 +37,7 @@ typedef struct _gummi {
 gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
         preview_t* prev);
         
-void create_environment(gchar *filename);
+void create_environment();
     
 
 #endif /* GUMMI_ENVIRONMENT_H */
