@@ -74,3 +74,20 @@ void slog(gint level, const gchar *fmt, ...) {
         !L_IS_TYPE(level, L_G_ERROR))
         exit(1);
 }
+
+gboolean gummi_yes_no_dialog(const gchar* message) {
+    GtkWidget* dialog;
+    gint ret = 0;
+    dialog = gtk_message_dialog_new (NULL, 
+            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_QUESTION,
+            GTK_BUTTONS_YES_NO,
+            "%s", message);
+
+    ret = gtk_dialog_run(GTK_DIALOG(dialog));      
+    gtk_widget_destroy(dialog);
+    if (ret == GTK_RESPONSE_YES)
+        return TRUE;
+    else
+        return FALSE;
+}

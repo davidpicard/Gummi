@@ -20,7 +20,8 @@ static int debug = 0;
 
 static GOptionEntry entries[] = {
     { (const gchar*)"debug", (gchar)'d', 0, G_OPTION_ARG_NONE, &debug, 
-        (gchar*)"show debug info", NULL}
+        (gchar*)"show debug info", NULL},
+    { NULL, NULL, 0, G_OPTION_ARG_NONE, NULL, NULL, NULL }
 };
 
 void on_window_destroy (GtkObject *object, gpointer user_data) {
@@ -66,9 +67,9 @@ int main (int argc, char *argv[]) {
         gtk_text_buffer_set_text(GTK_TEXT_BUFFER(gummi->editor->sourcebuffer),
             config_get_value("welcome"), -1);
     } else { // TODO check if file path is valid!
-	    gummi->filename = argv[1];
-	    printf("%s\n", gummi->filename);
-	    iofunctions_load_file(gummi->iofunc, gummi->filename);
+        gummi->filename = argv[1];
+        printf("%s\n", gummi->filename);
+        iofunctions_load_file(gummi->iofunc, gummi->filename);
     }
 	
 	create_environment(gummi->filename);

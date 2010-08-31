@@ -47,4 +47,6 @@ void slog_init(int debug);
  */
 void slog(int level, const char *fmt, ...);
 
+gboolean gummi_yes_no_dialog(const gchar* message);
+
 #endif /* GUMMI_UTILS */

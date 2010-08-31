@@ -43,6 +43,8 @@ editor_t* editor_init(GtkBuilder* builder) {
     ec->searchtag = gtk_text_tag_new("search");
     ec->editortags = gtk_text_buffer_get_tag_table(ec_sourcebuffer);
     ec->replace_activated = FALSE;
+    ec->term = NULL;
+    ec->cur_swap = FALSE;
     
     scroll = GTK_WIDGET (gtk_builder_get_object (builder, "editor_scroll"));
     gtk_container_add (GTK_CONTAINER (scroll), ec->sourceview);
@@ -178,128 +180,154 @@ void editor_apply_errortags(editor_t* ec, gint line) {
 void editor_jumpto_search_result(editor_t* ec, gint direction) {
     if (!ec->term) return;
     if (direction == 1) {
-        editor_start_search(ec, ec->term, ec->backwards, ec->wholeword,
-                ec->matchcase, FALSE);
+        editor_search_next(ec, FALSE);
     } else {
-        editor_start_search(ec, ec->term, !ec->backwards, ec->wholeword,
-                ec->matchcase, FALSE);
+        editor_search_next(ec, TRUE);
     }
 }
 
-gboolean editor_start_search(editor_t* ec, const gchar* term,
-        gboolean backwards, gboolean wholeword, gboolean matchcase,
-        gboolean inverse) {
-    GtkTextIter current, mstart, mend;
-    GtkTextMark* mark;
-    gboolean ret;
-
+void editor_start_search(editor_t* ec, const gchar* term,
+        gboolean backwards, gboolean wholeword, gboolean matchcase) {
     /* save options */
     if (ec->term != term) {
         if (ec->term) g_free(ec->term);
         ec->term = (gchar*)malloc(strlen(term) + 1);
         strcpy(ec->term, term);
     }
+
     ec->backwards = backwards;
     ec->wholeword = wholeword;
     ec->matchcase = matchcase;
 
-    if (gtk_text_tag_table_lookup(ec->editortags, "search")) {
+    editor_apply_searchtag(ec);
+    editor_search_next(ec, FALSE);
+}
+
+void editor_apply_searchtag(editor_t* ec) {
+    GtkTextIter start, mstart, mend;
+    gboolean ret = FALSE;
+
+    gtk_text_buffer_get_start_iter(ec_sourcebuffer, &start);
+
+    if (gtk_text_tag_table_lookup(ec->editortags, "search"))
         gtk_text_tag_table_remove(ec->editortags, ec->searchtag);
-    }
     gtk_text_tag_table_add(ec->editortags, ec->searchtag);
 
+    while (TRUE) {
+        ret = gtk_source_iter_forward_search(&start, ec->term,
+                (ec->matchcase? 0: GTK_SOURCE_SEARCH_CASE_INSENSITIVE),
+                &mstart, &mend, NULL);
+
+        if (ret && (!ec->wholeword || (ec->wholeword
+                        && gtk_text_iter_starts_word(&mstart)
+                        && gtk_text_iter_ends_word(&mend)))) {
+            gtk_text_buffer_apply_tag(ec_sourcebuffer, ec->searchtag,
+                    &mstart, &mend);
+            start =  mend;
+        } else break;
+    }
+}
+
+void editor_search_next(editor_t* ec, gboolean inverse) {
+    GtkTextIter current, start, end, mstart, mend;
+    GtkTextMark* mark;
+    gboolean ret = FALSE, response = FALSE;
+
+    /* place cursor to the next result */
     mark = gtk_text_buffer_get_insert(ec_sourcebuffer);
     gtk_text_buffer_get_iter_at_mark(ec_sourcebuffer, &current, mark);
 
-    while (TRUE) {
-        if (backwards)
-           ret = gtk_source_iter_backward_search(&current, term,
-                    (matchcase?GTK_SOURCE_SEARCH_CASE_INSENSITIVE:0),
-                    &mstart, &mend, NULL);
-        else
-           ret = gtk_source_iter_forward_search(&current, term,
-                    (matchcase?GTK_SOURCE_SEARCH_CASE_INSENSITIVE:0),
-                    &mstart, &mend, NULL);
-
-        if (ret) {
-            if (!wholeword || (wholeword && gtk_text_iter_starts_word(&mstart)
-                        && gtk_text_iter_ends_word(&mend)))
-                gtk_text_buffer_apply_tag(ec_sourcebuffer, ec->searchtag,
-                        &mstart, &mend);
-            current = mend;
-        } else break;
-    }
-    editor_search_place_cursor_at_next_result(ec, term, backwards, wholeword,
-            matchcase, inverse);
-    return ret;
-}
-
-void editor_search_place_cursor_at_next_result(editor_t* ec, const gchar* term,
-       gboolean backwards, gboolean wholeword, gboolean matchcase,
-       gboolean inverse) {
-    GtkTextIter current, mstart, mend;
-    gboolean ret;
-
-    GtkTextMark* mark = gtk_text_buffer_get_insert(ec_sourcebuffer);
-    gtk_text_buffer_get_iter_at_mark(ec_sourcebuffer, &current, mark);
-
-    if (backwards)
-       ret = gtk_source_iter_backward_search(&current, term,
-                (matchcase?GTK_SOURCE_SEARCH_CASE_INSENSITIVE:0),
+    if (ec->backwards ^ inverse)
+       ret = gtk_source_iter_backward_search(&current, ec->term,
+                (ec->matchcase? 0: GTK_SOURCE_SEARCH_CASE_INSENSITIVE),
                 &mstart, &mend, NULL);
     else
-       ret = gtk_source_iter_forward_search(&current, term,
-                (matchcase?GTK_SOURCE_SEARCH_CASE_INSENSITIVE:0),
+       ret = gtk_source_iter_forward_search(&current, ec->term,
+                (ec->matchcase? 0: GTK_SOURCE_SEARCH_CASE_INSENSITIVE),
                 &mstart, &mend, NULL);
 
-    if (inverse) backwards = (backwards + 1) % 2;
+    if (ret && (!ec->wholeword || (ec->wholeword
+            && gtk_text_iter_starts_word(&mstart)
+            && gtk_text_iter_ends_word(&mend))))
+        gtk_text_buffer_place_cursor(ec_sourcebuffer,
+                (ec->cur_swap ^ ec->backwards ^ inverse)? &mstart: &mend);
 
-    if (ret) {
-        if (!wholeword || (wholeword && gtk_text_iter_starts_word(&mstart)
-                    && gtk_text_iter_ends_word(&mend)))
-            gtk_text_buffer_place_cursor(ec_sourcebuffer,
-                    (backwards)?&mstart:&mend);
+    /* check if the top/bottom is reached */
+    gtk_text_buffer_get_start_iter(ec_sourcebuffer, &start);
+    gtk_text_buffer_get_end_iter(ec_sourcebuffer, &end);
+
+    if (!ret) {
+        if (ec->backwards ^ inverse) {
+            response = gummi_yes_no_dialog("Top reached, search from bottom?");
+            if (response)
+                gtk_text_buffer_place_cursor(ec_sourcebuffer, &end);
+        } else {
+            response = gummi_yes_no_dialog("Bottom reached, search from top?");
+            if (response)
+                gtk_text_buffer_place_cursor(ec_sourcebuffer, &start);
+        }
     }
 }
 
-gboolean editor_start_replace_next(editor_t* ec, const gchar* term,
+void editor_start_replace_next(editor_t* ec, const gchar* term,
         const gchar* rterm, gboolean backwards, gboolean wholeword,
         gboolean matchcase) {
     GtkTextIter current, mstart, mend;
+    GtkTextMark* mark;
     gboolean ret = FALSE;
 
     if (!ec->replace_activated) {
-        editor_start_search(ec, term, backwards, wholeword, matchcase, TRUE);
+        ec->cur_swap = TRUE;
         ec->replace_activated = TRUE;
-        return TRUE;
+        editor_start_search(ec, term, backwards, wholeword, matchcase);
+        return;
     }
 
-    GtkTextMark* mark = gtk_text_buffer_get_insert(ec_sourcebuffer);
+    /* place cursor to the next result */
+    mark = gtk_text_buffer_get_insert(ec_sourcebuffer);
     gtk_text_buffer_get_iter_at_mark(ec_sourcebuffer, &current, mark);
 
     if (backwards)
        ret = gtk_source_iter_backward_search(&current, term,
-                (matchcase?GTK_SOURCE_SEARCH_CASE_INSENSITIVE:0),
+                (matchcase? 0: GTK_SOURCE_SEARCH_CASE_INSENSITIVE),
                 &mstart, &mend, NULL);
     else
        ret = gtk_source_iter_forward_search(&current, term,
-                (matchcase?GTK_SOURCE_SEARCH_CASE_INSENSITIVE:0),
+                (matchcase? 0: GTK_SOURCE_SEARCH_CASE_INSENSITIVE),
                 &mstart, &mend, NULL);
-    if (ret && (!wholeword || (wholeword && gtk_text_iter_starts_word(&mstart)
-                    && gtk_text_iter_ends_word(&mend)))) {
+
+    if (ret && (!wholeword || (wholeword
+            && gtk_text_iter_starts_word(&mstart)
+            && gtk_text_iter_ends_word(&mend)))) {
         gtk_text_buffer_delete(ec_sourcebuffer, &mstart, &mend);
         gtk_text_buffer_insert(ec_sourcebuffer, &mstart, rterm, strlen(rterm));
-        editor_search_place_cursor_at_next_result(ec, term, backwards,
-                wholeword, matchcase, TRUE);
+        editor_search_next(ec, FALSE);
     }
-    return ret;
+    return;
 }
 
 void editor_start_replace_all(editor_t* ec, const gchar* term,
         const gchar* rterm, gboolean backwards, gboolean wholeword,
         gboolean matchcase) {
-    while (editor_start_replace_next(ec, term, rterm, backwards, wholeword,
-                matchcase));
+    GtkTextIter start, mstart, mend;
+    gboolean ret = FALSE;
+
+    gtk_text_buffer_get_start_iter(ec_sourcebuffer, &start);
+
+    while (TRUE) {
+        ret = gtk_source_iter_forward_search(&start, term,
+                (matchcase? 0: GTK_SOURCE_SEARCH_CASE_INSENSITIVE),
+                &mstart, &mend, NULL);
+
+        if (ret && (!wholeword || (wholeword
+                && gtk_text_iter_starts_word(&mstart)
+                && gtk_text_iter_ends_word(&mend)))) {
+            gtk_text_buffer_delete(ec_sourcebuffer, &mstart, &mend);
+            gtk_text_buffer_insert(ec_sourcebuffer, &mstart, rterm,
+                    strlen(rterm));
+            start =  mstart;
+        } else break;
+    }
 }
 
 void undo_change(editor_t* ec) {
