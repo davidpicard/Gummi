@@ -24,7 +24,7 @@ GtkWidget *drawarea;
 int pagetotal;
 
 preview_t* preview_init(GtkBuilder * builder) {
-    preview_t* p = (preview_t*)malloc(sizeof(preview_t));
+    preview_t* p = (preview_t*)g_malloc(sizeof(preview_t));
     GtkWidget *drawarea;
     
     GdkColor white = {0,0xffff,0xffff,0xffff};

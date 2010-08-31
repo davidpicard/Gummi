@@ -51,20 +51,20 @@ void on_menu_open_activate(GtkWidget *widget, void * user) {
     }
     filename = get_open_filename();
     if (filename != NULL) 
-	    iofunctions_load_file(gummi->iofunc, filename); 
+        iofunctions_load_file(gummi->iofunc, filename); 
 }
 
 void on_menu_save_activate(GtkWidget *widget, void * user) {
-    gchar           *filename;
-      
-    filename = get_save_filename();
-    if (filename != NULL) 
-	    iofunctions_write_file(gummi->iofunc, filename); 
+    gchar* filename = NULL;
+    if (!gummi->filename)
+        filename = get_save_filename();
+    iofunctions_write_file(gummi->iofunc, filename); 
 }
 
 void on_menu_saveas_activate(GtkWidget *widget, void * user) {
-    editor_jumpto_search_result(gummi->editor, -1);
-    printf("saveas\n");
+    filename = get_save_filename();
+    if (filename != NULL) 
+        iofunctions_write_file(gummi->iofunc, filename); 
 }
 
 void on_menu_find_activate(GtkWidget *widget, void * user) {

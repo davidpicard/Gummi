@@ -48,17 +48,13 @@ int main (int argc, char *argv[]) {
     builder = gtk_builder_new ();
     gtk_builder_add_from_file (builder, "gui/gummi.glade", NULL);
 
-    // setup sourceview editor pane:
+    /* initialize classes */
     editor = editor_init(builder);
-    // setup iofunctions
     iofunc = iofunctions_init();
-    // setup preview pane:
     preview = preview_init(builder);
-    // setup motion
     motion = motion_init(0); 
-    // setup global environment
     gummi = gummi_init(editor, iofunc, motion, preview);
-    // setup gui
+
     gui_init(builder);
 
     if ( argc != 2 ) {

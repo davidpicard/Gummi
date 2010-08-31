@@ -22,12 +22,11 @@
 #include "motion.h"
 #include "preview.h"
 
-const gchar *tmpdir;
-
 typedef struct _gummi {
     gchar* filename;
     gchar* pdffile;
     gchar* workfile;
+    gchar* tmpdir;
     editor_t* editor;
     iofunctions_t* iofunc;
     motion_t* motion;
@@ -37,7 +36,7 @@ typedef struct _gummi {
 gummi_t* gummi_init(editor_t* ed, iofunctions_t* iof, motion_t* mo,
         preview_t* prev);
         
-void gummi_create_environment();
+void gummi_create_environment(const gchar* filename);
     
 
 #endif /* GUMMI_ENVIRONMENT_H */

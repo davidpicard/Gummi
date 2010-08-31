@@ -11,7 +11,7 @@
 extern gummi_t* gummi;
 
 motion_t* motion_init(gint dum) {
-    motion_t* m = (motion_t*)malloc(sizeof(motion_t));
+    motion_t* m = (motion_t*)g_malloc(sizeof(motion_t));
     m->dummy = dum;
     return m;
 }

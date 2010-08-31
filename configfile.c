@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <glib.h>
+
 #include "environment.h"
 #include "configfile.h"
 #include "utils.h"
@@ -132,8 +134,8 @@ void config_set_value(const char* term, const char* value) {
     config_save(fin.pbuf, fin.len);
 
     for (i = 0; i < CONFIG_MAX; ++i)
-        free(fin.pbuf[i]);
-    free(fin.pbuf);
+        g_free(fin.pbuf[i]);
+    g_free(fin.pbuf);
 }
 
 void config_set_default(void) {
@@ -149,9 +151,9 @@ finfo config_load(void) {
     int i = 0, count = 0;
     FILE* fh = 0;
 
-    char** pbuf = (char**) malloc(CONFIG_MAX * sizeof(char*));
+    char** pbuf = (char**) g_malloc(CONFIG_MAX * sizeof(char*));
     for (i = 0; i < CONFIG_MAX; ++i)
-        pbuf[i] = (char*) malloc(BUF_MAX * sizeof(char));
+        pbuf[i] = (char*) g_malloc(BUF_MAX * sizeof(char));
 
     if (!(fh = fopen(config_filename, "r"))) {
         slog(L_INFO, "can't find configuration file, reseting to default\n");

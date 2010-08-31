@@ -45,7 +45,7 @@ editor_t* editor_init(GtkBuilder* builder) {
     GtkSourceLanguageManager* manager = gtk_source_language_manager_new();
     GtkSourceLanguage* lang = gtk_source_language_manager_get_language
                                                         (manager, "latex");
-    editor_t* ec = (editor_t*)malloc(sizeof(editor_t));
+    editor_t* ec = (editor_t*)g_malloc(sizeof(editor_t));
     ec->sourcebuffer = gtk_source_buffer_new_with_language(lang);
     ec->sourceview = gtk_source_view_new_with_buffer(ec->sourcebuffer);
     ec->errortag = gtk_text_tag_new("error");
@@ -201,7 +201,7 @@ void editor_start_search(editor_t* ec, const gchar* term,
     /* save options */
     if (ec->term != term) {
         if (ec->term) g_free(ec->term);
-        ec->term = (gchar*)malloc(strlen(term) + 1);
+        ec->term = (gchar*)g_malloc(strlen(term) + 1);
         strcpy(ec->term, term);
     }
 
@@ -371,7 +371,7 @@ void editor_do_formatting(editor_t* ec, GtkWidget* widget) {
     gtk_text_buffer_get_selection_bounds(ec_sourcebuffer, &start, &end);
     selected_text = gtk_text_iter_get_text(&start, &end);
     outsize = strlen(selected_text) + 32;
-    outtext = (gchar*)malloc(outsize);
+    outtext = (gchar*)g_malloc(outsize);
 
     /* select style */
     for (i = 0; i < style_size; ++i)
@@ -418,5 +418,5 @@ void editor_do_formatting(editor_t* ec, GtkWidget* widget) {
     gtk_text_iter_backward_chars(&start, strlen(outtext));
     gtk_text_buffer_select_range(ec_sourcebuffer, &start, &end);
     gtk_text_buffer_end_user_action(ec_sourcebuffer);
-    free(outtext);
+    g_free(outtext);
 }
