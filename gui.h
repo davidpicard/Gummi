@@ -28,6 +28,7 @@ void on_menu_find_activate(GtkWidget *widget, void* user);
 void on_menu_cut_activate(GtkWidget *widget, void* user);
 void on_menu_copy_activate(GtkWidget *widget, void* user);
 void on_menu_paste_activate(GtkWidget *widget, void* user);
+void on_tool_textstyle_activate(GtkWidget* widget, void* user);
 gboolean on_button_searchwindow_close_clicked(GtkWidget *widget, void* user);
 void on_button_searchwindow_find_clicked(GtkWidget *widget, void* user);
 void on_button_searchwindow_replace_next_clicked(GtkWidget *widget, void* user);

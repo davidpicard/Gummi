@@ -29,12 +29,12 @@
 #include "utils.h"
 
 const gchar style[][3][20] = {
-    { "tool_bold", "\\\\textbf{", "}" },
-    { "tool_italic", "\\\\textit{", "}" },
-    { "tool_unline", "\\\\underline{", "}" },
-    { "tool_left", "\\\\begin{flushleft}", "\\\\end{flushleft}"},
-    { "tool_center", "\\\\begin{flushcenter}", "\\\\end{flushcenter}"},
-    { "tool_right", "\\\\begin{flushright}", "\\\\end{flushright}"}
+    { "tool_bold", "\\textbf{", "}" },
+    { "tool_italic", "\\textit{", "}" },
+    { "tool_unline", "\\underline{", "}" },
+    { "tool_left", "\\begin{flushleft}", "\\end{flushleft}"},
+    { "tool_center", "\\begin{flushcenter}", "\\end{flushcenter}"},
+    { "tool_right", "\\begin{flushright}", "\\end{flushright}"}
 };
 
 /* reference to global environment instance */
@@ -381,7 +381,7 @@ void editor_do_formatting(editor_t* ec, GtkWidget* widget) {
         }
 
     /* generate regex expression */
-    strncat(regexbuf, "(.*)", BUFSIZ);
+    strncpy(regexbuf, "(.*)", BUFSIZ);
     if (style[selected][1][0] == '\\')
         strncat(regexbuf, "\\", BUFSIZ);
     strncat(regexbuf, style[selected][1], BUFSIZ);

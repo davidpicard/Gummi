@@ -108,6 +108,28 @@ void on_menu_paste_activate(GtkWidget *widget, void* user) {
     gtk_text_buffer_set_modified(g_e_buffer, TRUE);
 }
 
+void on_tool_textstyle_activate(GtkWidget* widget, void* user) {
+    editor_set_selection_textstyle(gummi->editor, widget);
+}
+
+gboolean on_button_searchwindow_close_clicked(GtkWidget *widget, void* user) {
+    searchgui_close();
+    return TRUE;
+}
+
+void on_button_searchwindow_find_clicked(GtkWidget *widget, void* user) {
+    searchgui_start_search();
+}
+
+void on_button_searchwindow_replace_next_clicked(GtkWidget *widget, void* user)
+{
+    searchgui_start_replace_next();
+}
+
+void on_button_searchwindow_replace_all_clicked(GtkWidget *widget, void* user) {
+    searchgui_start_replace_all();
+}
+
 gboolean check_for_save() {
     gboolean      ret = FALSE;
     
@@ -182,24 +204,6 @@ void statusbar_set_message(gchar *message) {
 gboolean statusbar_del_message() {
     gtk_statusbar_pop(GTK_STATUSBAR(statusbar),statusid);
     return FALSE;
-}
-
-gboolean on_button_searchwindow_close_clicked(GtkWidget *widget, void* user) {
-    searchgui_close();
-    return TRUE;
-}
-
-void on_button_searchwindow_find_clicked(GtkWidget *widget, void* user) {
-    searchgui_start_search();
-}
-
-void on_button_searchwindow_replace_next_clicked(GtkWidget *widget, void* user)
-{
-    searchgui_start_replace_next();
-}
-
-void on_button_searchwindow_replace_all_clicked(GtkWidget *widget, void* user) {
-    searchgui_start_replace_all();
 }
 
 searchgui_t* searchgui_init(void) {
