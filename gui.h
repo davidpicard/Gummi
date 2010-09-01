@@ -12,9 +12,9 @@ typedef struct _searchgui  {
     GtkWidget* searchwindow;
     GtkEntry* searchentry;
     GtkEntry* replaceentry;
-    GtkCheckButton* backwards;
-    GtkCheckButton* matchcase;
-    GtkCheckButton* wholeword;
+    gboolean backwards;
+    gboolean matchcase;
+    gboolean wholeword;
 } searchgui_t;
 
 /* Main GUI */
@@ -50,11 +50,9 @@ gboolean statusbar_del_message(void);
 
 /* Search Window */
 searchgui_t* searchgui_init(void);
-void searchgui_show(void);
-void searchgui_close(void);
-void searchgui_start_search(void);
-void searchgui_start_replace_next(void);
-void searchgui_start_replace_all(void);
+void on_toggle_matchcase_toggled(GtkWidget *widget, void* user);
+void on_toggle_wholeword_toggled(GtkWidget *widget, void* user);
+void on_toggle_backwards_toggled(GtkWidget *widget, void* user);
 void on_searchgui_text_changed(GtkEditable *editable, void* user);
 
 

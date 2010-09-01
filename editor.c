@@ -259,7 +259,8 @@ void editor_jumpto_search_result(editor_t* ec, gint direction) {
 }
 
 void editor_start_search(editor_t* ec, const gchar* term,
-        gboolean backwards, gboolean wholeword, gboolean matchcase) {
+        gboolean backwards, gboolean wholeword, gboolean matchcase,
+        gboolean cs) {
     /* save options */
     if (ec->term != term) {
         if (ec->term) g_free(ec->term);
@@ -270,6 +271,7 @@ void editor_start_search(editor_t* ec, const gchar* term,
     ec->backwards = backwards;
     ec->wholeword = wholeword;
     ec->matchcase = matchcase;
+    ec->cur_swap = cs;
 
     editor_apply_searchtag(ec);
     editor_search_next(ec, FALSE);
@@ -349,9 +351,8 @@ void editor_start_replace_next(editor_t* ec, const gchar* term,
     gboolean ret = FALSE;
 
     if (!ec->replace_activated) {
-        ec->cur_swap = TRUE;
         ec->replace_activated = TRUE;
-        editor_start_search(ec, term, backwards, wholeword, matchcase);
+        editor_start_search(ec, term, backwards, wholeword, matchcase, TRUE);
         return;
     }
 

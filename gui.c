@@ -7,6 +7,7 @@
 #include "editor.h"
 #include "environment.h"
 #include "gui.h"
+#include "utils.h"
 
 extern gummi_t*     gummi;
 static searchgui_t*     searchgui;
@@ -84,8 +85,10 @@ void on_menu_saveas_activate(GtkWidget *widget, void* user) {
 }
 
 void on_menu_find_activate(GtkWidget *widget, void* user) {
-    gtk_widget_show(searchgui->searchwindow);
-    gtk_widget_grab_focus(searchgui->searchwindow);
+    gtk_entry_set_text(searchgui->searchentry, "");
+    gtk_entry_set_text(searchgui->replaceentry, "");
+    gtk_widget_grab_focus(GTK_WIDGET(searchgui->searchentry));
+    gtk_widget_show_all(GTK_WIDGET(searchgui->searchwindow));
 }
 
 void on_menu_cut_activate(GtkWidget *widget, void* user) {
@@ -143,21 +146,39 @@ void on_tool_textstyle_right_activate(GtkWidget* widget, void* user) {
 }
 
 gboolean on_button_searchwindow_close_clicked(GtkWidget *widget, void* user) {
-    searchgui_close();
+    gtk_widget_hide(GTK_WIDGET(searchgui->searchwindow));
     return TRUE;
 }
 
 void on_button_searchwindow_find_clicked(GtkWidget *widget, void* user) {
-    searchgui_start_search();
+    editor_start_search(gummi->editor,
+        gtk_entry_get_text(searchgui->searchentry),
+        searchgui->backwards,
+        searchgui->wholeword,
+        searchgui->matchcase,
+        0
+    );
 }
 
 void on_button_searchwindow_replace_next_clicked(GtkWidget *widget, void* user)
 {
-    searchgui_start_replace_next();
+    editor_start_replace_next(gummi->editor,
+        gtk_entry_get_text(searchgui->searchentry),
+        gtk_entry_get_text(searchgui->replaceentry),
+        searchgui->backwards,
+        searchgui->wholeword,
+        searchgui->matchcase
+    );
 }
 
 void on_button_searchwindow_replace_all_clicked(GtkWidget *widget, void* user) {
-    searchgui_start_replace_all();
+    editor_start_replace_all(gummi->editor,
+        gtk_entry_get_text(searchgui->searchentry),
+        gtk_entry_get_text(searchgui->replaceentry),
+        searchgui->backwards,
+        searchgui->wholeword,
+        searchgui->matchcase
+    );
 }
 
 gboolean check_for_save() {
@@ -245,51 +266,25 @@ searchgui_t* searchgui_init(void) {
         GTK_ENTRY(gtk_builder_get_object(g_builder, "searchentry"));
     searchgui->replaceentry =
         GTK_ENTRY(gtk_builder_get_object(g_builder, "replaceentry"));
-    searchgui->backwards =
-        GTK_CHECK_BUTTON(gtk_builder_get_object(g_builder, "backwards"));
-    searchgui->matchcase =
-        GTK_CHECK_BUTTON(gtk_builder_get_object(g_builder, "matchcase"));
-    searchgui->wholeword =
-        GTK_CHECK_BUTTON(gtk_builder_get_object(g_builder, "wholeword"));
+    searchgui->matchcase = TRUE;
+    g_signal_connect(searchgui->searchentry, "changed",
+            G_CALLBACK(on_searchgui_text_changed), NULL);
     return searchgui;
 }
 
-void searchgui_show(void) {
-    gtk_widget_grab_focus(GTK_WIDGET(searchgui->searchentry));
-    gtk_widget_show_all(GTK_WIDGET(searchgui->searchwindow));
+void on_toggle_matchcase_toggled(GtkWidget *widget, void* user) {
+    searchgui->matchcase =
+        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 }
 
-void searchgui_close(void) {
-    gtk_widget_hide(GTK_WIDGET(searchgui->searchwindow));
+void on_toggle_wholeword_toggled(GtkWidget *widget, void* user) {
+    searchgui->wholeword =
+        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 }
 
-void searchgui_start_search(void) {
-    editor_start_search(gummi->editor,
-        gtk_entry_get_text(searchgui->searchentry),
-        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(searchgui->backwards)),
-        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(searchgui->matchcase)),
-        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(searchgui->wholeword))
-    );
-}
-
-void searchgui_start_replace_next(void) {
-    editor_start_replace_next(gummi->editor,
-        gtk_entry_get_text(searchgui->searchentry),
-        gtk_entry_get_text(searchgui->replaceentry),
-        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(searchgui->backwards)),
-        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(searchgui->matchcase)),
-        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(searchgui->wholeword))
-    );
-}
-
-void searchgui_start_replace_all(void) {
-    editor_start_replace_all(gummi->editor,
-        gtk_entry_get_text(searchgui->searchentry),
-        gtk_entry_get_text(searchgui->replaceentry),
-        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(searchgui->backwards)),
-        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(searchgui->matchcase)),
-        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(searchgui->wholeword))
-    );
+void on_toggle_backwards_toggled(GtkWidget *widget, void* user) {
+    searchgui->backwards =
+        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 }
 
 void on_searchgui_text_changed(GtkEditable *editable, void* user) {
