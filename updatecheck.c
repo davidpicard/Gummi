@@ -21,7 +21,7 @@
 #include "utils.h"
 
 void updatecheck(void) {
-    GtkDialog* dialog = 0;
+    GtkWidget* dialog;
     struct sockaddr_in servaddr;
     struct hostent *hp;
     gint sock_fd = 0, i = 0;
@@ -53,7 +53,9 @@ void updatecheck(void) {
         goto error;
     }
 
+    write(sock_fd, request, strlen(request));
     read(sock_fd, data, BUFSIZ);
+
     /* get version string */
     for (i = strlen(data) -2; i >= 0 && data[i] != '\n'; --i);
     avail_version = data + i + 1;
