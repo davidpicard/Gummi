@@ -96,13 +96,6 @@ void on_menu_saveas_activate(GtkWidget *widget, void* user) {
     }
 }
 
-void on_menu_find_activate(GtkWidget *widget, void* user) {
-    gtk_entry_set_text(searchgui->searchentry, "");
-    gtk_entry_set_text(searchgui->replaceentry, "");
-    gtk_widget_grab_focus(GTK_WIDGET(searchgui->searchentry));
-    gtk_widget_show_all(GTK_WIDGET(searchgui->searchwindow));
-}
-
 void on_menu_cut_activate(GtkWidget *widget, void* user) {
     GtkClipboard     *clipboard;
     
@@ -157,11 +150,11 @@ void on_menu_fullscreen_toggled(GtkWidget *widget, void * user) {
     // insert contents
 }
 
-void on_menu_find_activate(GtkWidget *widget, void * user) {
-    GtkWidget *searchwin;
-    searchwin = GTK_WIDGET(gtk_builder_get_object (g_builder, "searchwindow"));
-    gtk_widget_show(searchwin);
-    gtk_widget_grab_focus(searchwin);
+void on_menu_find_activate(GtkWidget *widget, void* user) {
+    gtk_entry_set_text(searchgui->searchentry, "");
+    gtk_entry_set_text(searchgui->replaceentry, "");
+    gtk_widget_grab_focus(GTK_WIDGET(searchgui->searchentry));
+    gtk_widget_show_all(GTK_WIDGET(searchgui->searchwindow));
 }
 
 void on_menu_findnext_activate(GtkWidget *widget, void * user) {
