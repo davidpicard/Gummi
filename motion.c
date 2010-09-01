@@ -58,7 +58,7 @@ void motion_update_pdffile(editor_t* ec) {
                                     "-file-line-error "
                                     "-halt-on-error "
                                     "-output-directory='%s' '%s'", \
-                                    "/tmp", gummi->workfile);
+                                    gummi->tmpdir, gummi->workfile);
     fp = popen(command, "r");
     if (fp == NULL) {
         // handle error
