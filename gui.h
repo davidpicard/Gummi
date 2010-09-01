@@ -57,7 +57,7 @@ gchar* get_save_filename(const gchar* name, const gchar* filter);
 gboolean check_for_save(void);
 
 void statusbar_set_message(gchar* message);
-gboolean statusbar_del_message(void);
+gboolean statusbar_del_message(void* user);
 
 /* Search Window */
 searchgui_t* searchgui_init(void);

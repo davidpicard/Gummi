@@ -11,16 +11,22 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <sys/socket.h>
-#include <sys/time.h>
-#include <netdb.h>
-#include <unistd.h>
+
+#ifndef WIN32
+#   include <sys/socket.h>
+#   include <sys/time.h>
+#   include <netdb.h>
+#   include <unistd.h>
+#endif
 
 #include <glib.h>
 
 #include "environment.h"
 #include "utils.h"
 
+#ifdef WIN32
+/* TODO: use Winsock for WIN32 */
+#else
 gboolean updatecheck(void) {
     GtkWidget* dialog;
     struct sockaddr_in servaddr;
@@ -91,3 +97,4 @@ gboolean updatecheck(void) {
 
     return TRUE;
 }
+#endif

@@ -28,6 +28,7 @@
 #define _(T) gettext(T)
 
 typedef struct _gummi {
+    gint workfd;
     gchar* filename;
     gchar* pdffile;
     gchar* workfile;

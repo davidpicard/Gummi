@@ -15,11 +15,10 @@
 
 #include "utils.h"
 
-int workfd = -1;
-
 gummi_t* gummi_init(GtkBuilder* bd, editor_t* ed, importer_t* im,
         iofunctions_t* iof, motion_t* mo, preview_t* prev) {
     gummi_t* g = (gummi_t*)g_malloc(sizeof(gummi_t));
+    g->workfd = -1;
     g->builder = bd;
     g->editor = ed;
     g->importer = im;
@@ -38,13 +37,13 @@ void gummi_create_environment(gummi_t* gummi, const gchar* filename) {
     snprintf(tname, BUFSIZ, "%s/gummi_XXXXXXX", gummi->tmpdir);
     gint tname_len = strlen(tname) + 1;
 
-    if (workfd != -1) {
-        close(workfd);
+    if (gummi->workfd != -1) {
+        close(gummi->workfd);
     } // close previous work file using its file descriptor
 
     gummi_set_filename(gummi, filename);
     
-    workfd = g_mkstemp(tname); 
+    gummi->workfd = g_mkstemp(tname); 
     if (gummi->workfile) g_free(gummi->workfile);
     gummi->workfile = (gchar*)g_malloc(tname_len);
     strcpy(gummi->workfile, tname);

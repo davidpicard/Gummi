@@ -395,10 +395,10 @@ gchar* get_save_filename(const gchar* name, const gchar* filter) {
 
 void statusbar_set_message(gchar *message) {
     gtk_statusbar_push (GTK_STATUSBAR(statusbar), statusid, message);
-    g_timeout_add_seconds(4,statusbar_del_message, NULL);
+    g_timeout_add_seconds(4, statusbar_del_message, NULL);
 }
 
-gboolean statusbar_del_message() {
+gboolean statusbar_del_message(void* user) {
     gtk_statusbar_pop(GTK_STATUSBAR(statusbar),statusid);
     return FALSE;
 }
