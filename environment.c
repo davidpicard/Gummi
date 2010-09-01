@@ -16,11 +16,12 @@
 
 int workfd = -1;
 
-gummi_t* gummi_init(GtkBuilder* bd, editor_t* ed, iofunctions_t* iof,
-        motion_t* mo, preview_t* prev) {
+gummi_t* gummi_init(GtkBuilder* bd, editor_t* ed, importer_t* im,
+        iofunctions_t* iof, motion_t* mo, preview_t* prev) {
     gummi_t* g = (gummi_t*)g_malloc(sizeof(gummi_t));
     g->builder = bd;
     g->editor = ed;
+    g->importer = im;
     g->iofunc = iof;
     g->motion = mo;
     g->preview = prev;

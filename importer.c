@@ -7,8 +7,9 @@
  * All Rights reserved.
  */
 
-#include <stdlib.h>
 #include <string.h>
+
+#include <glib.h>
 
 #include "editor.h"
 #include "importer.h"
@@ -18,7 +19,7 @@ const gchar bracket_type[][16] = { "matrix", "pmatrix", "bmatrix",
                                   "Bmatrix", "vmatrix", "Vmatrix" };
 
 importer_t* importer_init(GtkBuilder* builder) {
-    importer_t* i = (importer_t*)malloc(sizeof(importer_t));
+    importer_t* i = (importer_t*)g_malloc(sizeof(importer_t));
 
     i->import_tab =
         GTK_NOTEBOOK(gtk_builder_get_object(builder, "import_tab"));
@@ -46,9 +47,9 @@ importer_t* importer_init(GtkBuilder* builder) {
         GTK_ADJUSTMENT(gtk_builder_get_object(builder, "table_cols"));
 
     i->matrix_rows =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "table_rows"));
+        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "matrix_rows"));
     i->matrix_cols =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "table_cols"));
+        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "matrix_cols"));
     i->matrix_combobracket =
         GTK_COMBO_BOX(gtk_builder_get_object(builder,"table_combobracket"));
 
@@ -116,6 +117,9 @@ const gchar* importer_generate_table(importer_t* ic) {
     gint borders = gtk_combo_box_get_active(ic->table_comboborder);
     gint alignment = gtk_combo_box_get_active(ic->table_comboalign);
 
+    /* clear previous data */
+    result[0] = 0;
+
     if (borders)
         strncat(begin_tabular, "|", BUFSIZ);
     for (i = 0; i < cols; ++i) {
@@ -153,6 +157,9 @@ const gchar* importer_generate_matrix(importer_t* ic) {
     gint rows = gtk_adjustment_get_value(ic->matrix_rows);
     gint cols = gtk_adjustment_get_value(ic->matrix_cols);
 
+    /* clear previous data */
+    result[0] = 0;
+
     strncat(result, "$\\begin{", BUFSIZ * 2);
     strncat(result, bracket_type[bracket], BUFSIZ * 2);
     strncat(result, "}", BUFSIZ * 2);
@@ -177,8 +184,11 @@ const gchar* importer_generate_image(importer_t* ic) {
     const gchar* caption = gtk_entry_get_text(ic->image_caption);
     const gchar* label = gtk_entry_get_text(ic->image_label);
     gint scale = gtk_adjustment_get_value(ic->scaler);
-
     static gchar result[BUFSIZ] = { 0 };
+
+    /* clear previous data */
+    result[0] = 0;
+
     snprintf(result, BUFSIZ, "\\begin{figure}[htp]\n\\centering\n"
         "\\includegraphics[scale=%d]{%s}\n\\caption{%s}\\label{%s}\n",
         scale, image_file, caption, label);

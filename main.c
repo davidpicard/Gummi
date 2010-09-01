@@ -12,6 +12,7 @@
 #include "configfile.h"
 #include "environment.h"
 #include "gui.h"
+#include "importer.h"
 #include "iofunctions.h"
 #include "utils.h"
 
@@ -31,6 +32,7 @@ void on_window_destroy (GtkObject *object, gpointer user_data) {
 int main (int argc, char *argv[]) {
     GtkBuilder* builder;
     editor_t* editor;
+    importer_t* importer;
     iofunctions_t* iofunc;
     motion_t* motion;
     preview_t* preview;
@@ -55,10 +57,11 @@ int main (int argc, char *argv[]) {
 
     /* initialize classes */
     editor = editor_init(builder);
+    importer = importer_init(builder);
     iofunc = iofunctions_init();
     preview = preview_init(builder);
     motion = motion_init(0); 
-    gummi = gummi_init(builder, editor, iofunc, motion, preview);
+    gummi = gummi_init(builder, editor, importer, iofunc, motion, preview);
 
     gui_init();
 

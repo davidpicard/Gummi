@@ -1435,8 +1435,8 @@ active document</property>
                 <property name="has_focus">True</property>
                 <property name="invisible_char">&#x2022;</property>
                 <property name="primary_icon_stock">gtk-find</property>
-                <accelerator key="Escape" signal="activate" modifiers="GDK_SHIFT_MASK"/>
                 <accelerator key="Return" signal="activate"/>
+                <accelerator key="Escape" signal="activate" modifiers="GDK_SHIFT_MASK"/>
                 <signal name="activate" handler="on_button_searchwindow_find_clicked"/>
               </object>
               <packing>
@@ -1736,7 +1736,7 @@ cells have line borders. </property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="use_stock">True</property>
-            <signal name="clicked" handler="on_button_import_apply_clicked"/>
+            <signal name="clicked" handler="on_button_import_table_apply_clicked"/>
           </object>
           <packing>
             <property name="left_attach">3</property>
@@ -1890,7 +1890,7 @@ cells have line borders. </property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_button_import_apply_clicked"/>
+                <signal name="clicked" handler="on_button_import_image_apply_clicked"/>
               </object>
               <packing>
                 <property name="top_attach">2</property>
@@ -2007,7 +2007,7 @@ cells have line borders. </property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="use_stock">True</property>
-            <signal name="clicked" handler="on_button_import_apply_clicked"/>
+            <signal name="clicked" handler="on_button_import_matrix_apply_clicked"/>
           </object>
           <packing>
             <property name="left_attach">3</property>

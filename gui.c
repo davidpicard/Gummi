@@ -1,4 +1,3 @@
- 
 #include <stdlib.h>
 
 #include <glib.h>
@@ -7,10 +6,12 @@
 #include "editor.h"
 #include "environment.h"
 #include "gui.h"
+#include "importer.h"
 #include "utils.h"
 
 extern gummi_t*     gummi;
 static searchgui_t*     searchgui;
+static importgui_t*     importgui;
 
 static GtkWidget   *mainwindow;
 static GtkWidget   *statusbar;
@@ -32,6 +33,7 @@ void gui_init() {
     hpaned= GTK_WIDGET(gtk_builder_get_object(g_builder, "hpaned"));
     gtk_paned_set_position(GTK_PANED(hpaned), (width/2)); 
     searchgui = searchgui_init();
+    importgui = importgui_init();
 }
 
 void gui_main() {
@@ -71,7 +73,7 @@ void on_menu_open_activate(GtkWidget *widget, void* user) {
     if (check_for_save() == TRUE) {
         on_menu_save_activate(NULL, NULL);  
     }
-    filename = get_open_filename();
+    filename = get_open_filename("Tex files", "txt/*");
     if (filename != NULL) 
         iofunctions_load_file(gummi->iofunc, gummi->editor, filename); 
 }
@@ -79,7 +81,7 @@ void on_menu_open_activate(GtkWidget *widget, void* user) {
 void on_menu_save_activate(GtkWidget *widget, void* user) {
     gchar* filename = NULL;
     if (!gummi->filename)
-        filename = get_save_filename();
+        filename = get_save_filename("Tex files", "txt/*");
     if (filename) {
         gummi_set_filename(gummi, filename);
         iofunctions_write_file(gummi->iofunc, gummi->editor, filename); 
@@ -89,7 +91,7 @@ void on_menu_save_activate(GtkWidget *widget, void* user) {
 void on_menu_saveas_activate(GtkWidget *widget, void* user) {
     gchar* filename = NULL;
     if (!gummi->filename)
-        filename = get_save_filename();
+        filename = get_save_filename("Tex files", "txt/*");
     if (filename) {
         iofunctions_write_file(gummi->iofunc, gummi->editor, filename); 
         gummi_create_environment(gummi, filename);
@@ -250,6 +252,79 @@ void on_button_searchwindow_replace_all_clicked(GtkWidget *widget, void* user) {
     );
 }
 
+importgui_t* importgui_init(void) {
+    importgui_t* i = (importgui_t*)g_malloc(sizeof(importgui_t));
+    i->box_image =
+        GTK_HBOX(gtk_builder_get_object(g_builder, "box_image"));
+    i->box_table =
+        GTK_HBOX(gtk_builder_get_object(g_builder, "box_table"));
+    i->box_matrix =
+        GTK_HBOX(gtk_builder_get_object(g_builder, "box_matrix"));
+    i->image_pane =
+        GTK_VIEWPORT(gtk_builder_get_object(g_builder, "image_pane"));
+    i->table_pane =
+        GTK_VIEWPORT(gtk_builder_get_object(g_builder, "table_pane"));
+    i->matrix_pane =
+        GTK_VIEWPORT(gtk_builder_get_object(g_builder, "matrix_pane"));
+    return i;
+}
+
+void on_button_import_table_apply_clicked(GtkWidget* widget, void* user) {
+    importer_insert_table(gummi->importer, gummi->editor);
+}
+
+void on_button_import_image_apply_clicked(GtkWidget* widget, void* user) {
+    importer_insert_image(gummi->importer, gummi->editor);
+}
+
+void on_button_import_matrix_apply_clicked(GtkWidget* widget, void* user) {
+    importer_insert_matrix(gummi->importer, gummi->editor);
+}
+
+void on_image_file_activate(void) {
+    const gchar* filename = get_open_filename("Image files", "image/*");
+    importer_imagegui_set_sensitive(gummi->importer, filename, TRUE);
+}
+
+void on_import_tabs_switch_page(GtkNotebook* notebook, GtkNotebookPage* page,
+        guint page_num, void* user) {
+    gint i = 0;
+    GList* list = NULL;
+    list = gtk_container_get_children(GTK_CONTAINER(importgui->box_image));
+    while (list) {
+        gtk_container_remove(GTK_CONTAINER(importgui->box_image),
+                GTK_WIDGET(list->data));
+        list = list->next;
+    }
+    list = gtk_container_get_children(GTK_CONTAINER(importgui->box_table));
+    while (list) {
+        gtk_container_remove(GTK_CONTAINER(importgui->box_table),
+                GTK_WIDGET(list->data));
+        list = list->next;
+    }
+    list = gtk_container_get_children(GTK_CONTAINER(importgui->box_matrix));
+    while (list) {
+        gtk_container_remove(GTK_CONTAINER(importgui->box_matrix),
+                GTK_WIDGET(list->data));
+        list = list->next;
+    }
+
+    switch (page_num) {
+        case 1:
+            gtk_container_add(GTK_CONTAINER(importgui->box_image),
+                    GTK_WIDGET(importgui->image_pane));
+            break;
+        case 2:
+            gtk_container_add(GTK_CONTAINER(importgui->box_table),
+                    GTK_WIDGET(importgui->table_pane));
+            break;
+        case 3:
+            gtk_container_add(GTK_CONTAINER(importgui->box_matrix),
+                    GTK_WIDGET(importgui->matrix_pane));
+            break;
+    }
+}
+
 gboolean check_for_save() {
     gboolean      ret = FALSE;
     
@@ -276,7 +351,7 @@ gboolean check_for_save() {
     return ret;
 }
 
-gchar* get_open_filename() {
+gchar* get_open_filename(const gchar* name, const gchar* filter) {
     GtkWidget   *chooser;
     gchar       *filename;
        
@@ -287,16 +362,15 @@ gchar* get_open_filename() {
            GTK_STOCK_OPEN, GTK_RESPONSE_OK,
            NULL);
            
-    if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_OK)
-    {
-    filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
+    if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_OK) {
+        filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
     }
     
     gtk_widget_destroy (chooser);
     return filename;
 }
 
-gchar* get_save_filename() {
+gchar* get_save_filename(const gchar* name, const gchar* filter) {
     GtkWidget       *chooser;
     gchar           *filename=NULL;
         
