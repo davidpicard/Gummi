@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include "configfile.h"
+#include "editor.h"
 #include "environment.h"
 #include "gui.h"
 #include "utils.h"
@@ -22,8 +23,7 @@ iofunctions_t* iofunctions_init(void) {
 
 void iofunctions_load_default_text(iofunctions_t* iofunc, editor_t* ec) {
     slog(L_DEBUG, "loading default text\n");
-    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(ec->sourcebuffer),
-        config_get_value("welcome"), -1);
+    editor_fill_buffer(ec, config_get_value("welcome"));
 }
 
 void iofunctions_load_file(iofunctions_t* iofunc, editor_t* ec, gchar *filename)
