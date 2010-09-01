@@ -166,7 +166,8 @@ void on_menu_selectall_activate(GtkWidget *widget, void * user) {
 }
 
 void on_menu_preferences_activate(GtkWidget *widget, void * user) {
-    // insert contents
+    prefsgui_init();
+    prefsgui_main();
 }
 
 void on_menu_statusbar_toggled(GtkWidget *widget, void * user) {
@@ -461,8 +462,8 @@ PrefsGui* prefsgui_init(void) {
         GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "autosave_timer"));
     prefsgui->default_text =
         GTK_TEXT_VIEW(gtk_builder_get_object(builder, "default_text"));
-    //prefsgui->default_buffer =
-    //    gtk_text_view_get_buffer(p->default_text);
+    prefsgui->default_buffer = 
+        gtk_text_view_get_buffer(prefsgui->default_text);
     prefsgui->typesetter =
         GTK_COMBO_BOX(gtk_builder_get_object(builder, "combo_typesetter"));
     prefsgui->editor_font =
@@ -479,14 +480,27 @@ PrefsGui* prefsgui_init(void) {
     prefsgui->compile_box =
         GTK_VBOX(gtk_builder_get_object(builder, "compile_box"));
 
-    //gtk_window_set_transient_for(GTK_WINDOW(prefsgui->prefwindow), mainwindow);
+    gtk_window_set_transient_for(GTK_WINDOW(prefsgui->prefwindow), 
+                                 GTK_WINDOW(mainwindow));
 
     const gchar* font = config_get_value("font");
     slog(L_DEBUG, "setting font to %s\n", font);
     PangoFontDescription* font_desc = pango_font_description_from_string(font);
-    //gtk_widget_modify_font(prefsgui->default_text, font_desc);
+    gtk_widget_modify_font(GTK_WIDGET(prefsgui->default_text), font_desc);
     pango_font_description_free(font_desc);
-/*
+    /* TODO: spell language */
+    gtk_builder_connect_signals(builder, NULL);
+    prefsgui_set_current_settings();
+    return prefsgui;
+}
+
+void prefsgui_main(void) {
+    gtk_widget_show_all(GTK_WIDGET(prefsgui->prefwindow));
+}
+
+void prefsgui_set_current_settings(void) {
+   // gtk_text_buffer_set_text(prefsgui->default_buffer, config_get_value("welcome"), 0);
+    /*
     gtk_spin_button_set_value(autosave_timer,
             atoi(config_get_value("autosave_timer")/60));
     gtk_spin_button_set_value(compile_timer,
@@ -500,13 +514,7 @@ PrefsGui* prefsgui_init(void) {
     if (0 == strcmp(config_get_value("compile_scheme"), "real_time"))
         gtk_combo_box_set_active(1);
 */
-    /* TODO: spell language */
 
-    gtk_builder_connect_signals(builder, NULL);
-}
-
-void prefsgui_main(void) {
-    gtk_widget_show_all(GTK_WIDGET(prefsgui->prefwindow));
 }
 
 GuSearchGui* searchgui_init(void) {

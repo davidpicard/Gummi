@@ -107,6 +107,8 @@ gboolean statusbar_del_message(void* user);
 
 /* Preference GUI */
 PrefsGui* prefsgui_init(void);
+void prefsgui_main(void);
+void prefsgui_set_current_settings(void);
 
 /* Search Window */
 GuSearchGui* searchgui_init(void);
