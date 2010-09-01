@@ -93,10 +93,10 @@ void importer_insert_image(importer_t* ic, editor_t* ec) {
     //    return;
     editor_insert_package(ec, "graphicx");
     editor_get_current_iter(ec, &current);
-    gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     gtk_text_buffer_begin_user_action(ec_sourcebuffer);
     gtk_text_buffer_insert(ec_sourcebuffer, &current, text, strlen(text));
     gtk_text_buffer_end_user_action(ec_sourcebuffer);
+    gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     importer_imagegui_set_sensitive(ic, "", FALSE);
     gtk_notebook_set_current_page(ic->import_tabs, 0);
 }
