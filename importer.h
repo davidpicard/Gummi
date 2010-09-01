@@ -11,7 +11,7 @@
 #define GUMMI_IMPORTER_H
 
 typedef struct _importer {
-    GtkNotebook* import_tab;
+    GtkNotebook* import_tabs;
 
     GtkViewport* image_pane;
     GtkEntry* image_file;

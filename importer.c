@@ -21,8 +21,8 @@ const gchar bracket_type[][16] = { "matrix", "pmatrix", "bmatrix",
 importer_t* importer_init(GtkBuilder* builder) {
     importer_t* i = (importer_t*)g_malloc(sizeof(importer_t));
 
-    i->import_tab =
-        GTK_NOTEBOOK(gtk_builder_get_object(builder, "import_tab"));
+    i->import_tabs =
+        GTK_NOTEBOOK(gtk_builder_get_object(builder, "import_tabs"));
 
     i->image_pane =
         GTK_VIEWPORT(gtk_builder_get_object(builder, "image_pane"));
@@ -32,6 +32,8 @@ importer_t* importer_init(GtkBuilder* builder) {
         GTK_ENTRY(gtk_builder_get_object(builder, "image_caption"));
     i->image_label =
         GTK_ENTRY(gtk_builder_get_object(builder, "image_label"));
+    i->image_scale =
+        GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "image_scale"));
     i->scaler =
         GTK_ADJUSTMENT(gtk_builder_get_object(builder, "image_scaler"));
 
@@ -66,7 +68,7 @@ void importer_insert_table(importer_t* ic, editor_t* ec) {
     editor_get_current_iter(ec, &current);
     gtk_text_buffer_insert(ec_sourcebuffer, &current, text, strlen(text));
     gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
-    gtk_notebook_set_current_page(ic->import_tab, 0);
+    gtk_notebook_set_current_page(ic->import_tabs, 0);
 }
 
 void importer_insert_matrix(importer_t* ic, editor_t* ec) {
@@ -76,7 +78,7 @@ void importer_insert_matrix(importer_t* ic, editor_t* ec) {
     editor_get_current_iter(ec, &current);
     gtk_text_buffer_insert(ec_sourcebuffer, &current, text, strlen(text));
     gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
-    gtk_notebook_set_current_page(ic->import_tab, 0);
+    gtk_notebook_set_current_page(ic->import_tabs, 0);
 }
 
 void importer_insert_image(importer_t* ic, editor_t* ec) {
@@ -90,14 +92,14 @@ void importer_insert_image(importer_t* ic, editor_t* ec) {
     gtk_text_buffer_insert(ec_sourcebuffer, &current, text, strlen(text));
     gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     importer_imagegui_set_sensitive(ic, "", FALSE);
-    gtk_notebook_set_current_page(ic->import_tab, 0);
+    gtk_notebook_set_current_page(ic->import_tabs, 0);
 }
 
 void importer_imagegui_set_sensitive(importer_t* ic, const gchar* name,
        gboolean mode) {
-    gtk_widget_set_sensitive(GTK_WIDGET(ic->image_label), FALSE);
-    gtk_widget_set_sensitive(GTK_WIDGET(ic->image_caption), FALSE);
-    gtk_widget_set_sensitive(GTK_WIDGET(ic->scaler), FALSE);
+    gtk_widget_set_sensitive(GTK_WIDGET(ic->image_label), mode);
+    gtk_widget_set_sensitive(GTK_WIDGET(ic->image_caption), mode);
+    gtk_widget_set_sensitive(GTK_WIDGET(ic->image_scale), mode);
     gtk_entry_set_text(ic->image_file, name);
     gtk_entry_set_text(ic->image_label, "");
     gtk_entry_set_text(ic->image_caption, "");
@@ -190,7 +192,7 @@ const gchar* importer_generate_image(importer_t* ic) {
     result[0] = 0;
 
     snprintf(result, BUFSIZ, "\\begin{figure}[htp]\n\\centering\n"
-        "\\includegraphics[scale=%d]{%s}\n\\caption{%s}\\label{%s}\n",
+        "\\includegraphics[scale=%d]{%s}\n\\caption{%s}\n\\label{%s}\n",
         scale, image_file, caption, label);
     return result;
 }
