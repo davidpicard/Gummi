@@ -34,6 +34,24 @@
 #define g_e_buffer GTK_TEXT_BUFFER(gummi->editor->sourcebuffer)
 #define g_builder gummi->builder
 
+typedef struct _PrefsGui {
+    GtkWidget* prefwindow;
+    GtkNotebook* notebook;
+    GtkCheckButton* textwrap_button;
+    GtkCheckButton* wordwrap_button;
+    GtkSpinButton* autosave_timer;
+    GtkTextView* default_text;
+    GtkTextBuffer* default_buffer;
+    GtkComboBox* typesetter;
+    GtkFontButton* editor_font;
+    GtkComboBox* compile_scheme;
+    GtkSpinButton* compile_timer;
+
+    GtkVBox* view_box;
+    GtkVBox* editor_box;
+    GtkVBox* compile_box;
+} PrefsGui;
+
 typedef struct _GuSearchGui  {
     GtkWidget* searchwindow;
     GtkEntry* searchentry;
@@ -86,6 +104,9 @@ gboolean check_for_save(void);
 
 void statusbar_set_message(gchar* message);
 gboolean statusbar_del_message(void* user);
+
+/* Preference GUI */
+PrefsGui* prefsgui_init(void);
 
 /* Search Window */
 GuSearchGui* searchgui_init(void);

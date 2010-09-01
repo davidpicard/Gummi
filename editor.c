@@ -90,7 +90,7 @@ void editor_sourceview_config(GuEditor* ec) {
 
     gtk_source_buffer_set_highlight_matching_brackets(ec->sourcebuffer, TRUE);
 
-    const char* font = config_get_value("font");
+    const gchar* font = config_get_value("font");
     slog(L_DEBUG, "setting font to %s\n", font);
     PangoFontDescription* font_desc = pango_font_description_from_string(font);
     gtk_widget_modify_font(ec->sourceview, font_desc);

@@ -80,8 +80,9 @@ int main (int argc, char *argv[]) {
     gtk_init (&argc, &argv);
     
     slog(L_DEBUG, PACKAGE" version: "VERSION"\n");
-    builder = gtk_builder_new ();
-    gtk_builder_add_from_file (builder, "gui/gummi.glade", NULL);
+    builder = gtk_builder_new();
+    gtk_builder_add_from_file(builder, "gui/gummi.glade", NULL);
+    gtk_builder_set_translation_domain(builder, PACKAGE);
 
     /* initialize classes */
     editor = editor_init(builder);
