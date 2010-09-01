@@ -75,7 +75,7 @@ void slog(gint level, const gchar *fmt, ...) {
         exit(1);
 }
 
-gboolean gummi_yes_no_dialog(const gchar* message) {
+gboolean utils_yes_no_dialog(const gchar* message) {
     GtkWidget* dialog;
     gint ret = 0;
     dialog = gtk_message_dialog_new (NULL, 
@@ -90,4 +90,12 @@ gboolean gummi_yes_no_dialog(const gchar* message) {
         return TRUE;
     else
         return FALSE;
+}
+
+gboolean utils_validate_path(const gchar* path) {
+    gboolean result = FALSE;
+    GFile* file = g_file_new_for_path(path);
+    result = g_file_query_exists(file, NULL);
+    g_object_unref(file);
+    return result;
 }

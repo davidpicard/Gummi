@@ -7,12 +7,14 @@
  * All Rights reserved.
  */
 
+#include "importer.h"
+
 #include <string.h>
 
 #include <glib.h>
 
 #include "editor.h"
-#include "importer.h"
+#include "utils.h"
 
 const gchar align_type[][4] = { "l", "c", "r" };
 const gchar bracket_type[][16] = { "matrix", "pmatrix", "bmatrix",
@@ -88,9 +90,11 @@ void importer_insert_matrix(importer_t* ic, editor_t* ec) {
 void importer_insert_image(importer_t* ic, editor_t* ec) {
     GtkTextIter current;
     const gchar* text = importer_generate_image(ic);
-    //const gchar* imagefile = gtk_entry_get_text(ic->image_file);
-    //if (!utils_validate_path(imagefile))
-    //    return;
+    const gchar* imagefile = gtk_entry_get_text(ic->image_file);
+    if (!utils_validate_path(imagefile)) {
+        slog(L_G_ERROR, "%s: No such file or directory\n", imagefile);
+        return;
+    }
     editor_insert_package(ec, "graphicx");
     editor_get_current_iter(ec, &current);
     gtk_text_buffer_begin_user_action(ec_sourcebuffer);

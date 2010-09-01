@@ -1,3 +1,5 @@
+#include "gui.h"
+
 #include <stdlib.h>
 
 #include <glib.h>
@@ -5,7 +7,6 @@
 #include "configfile.h"
 #include "editor.h"
 #include "environment.h"
-#include "gui.h"
 #include "importer.h"
 #include "utils.h"
 
@@ -288,7 +289,6 @@ void on_image_file_activate(void) {
 
 void on_import_tabs_switch_page(GtkNotebook* notebook, GtkNotebookPage* page,
         guint page_num, void* user) {
-    gint i = 0;
     GList* list = NULL;
     list = gtk_container_get_children(GTK_CONTAINER(importgui->box_image));
     while (list) {

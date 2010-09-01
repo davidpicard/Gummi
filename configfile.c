@@ -7,6 +7,8 @@
  * All Rights reserved.
  */
 
+#include "configfile.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,7 +16,6 @@
 #include <glib.h>
 
 #include "environment.h"
-#include "configfile.h"
 #include "utils.h"
 
 static const char* config_filename = 0;
@@ -60,6 +61,8 @@ const char config_str[] =
 
 void config_init(const char* filename) {
     config_filename = filename;
+    if (!utils_validate_path(filename))
+        config_set_default();
 }
 
 const char* config_get_value(const char* term) {

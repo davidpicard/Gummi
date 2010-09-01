@@ -8,6 +8,8 @@
  *
  */
 
+#include "editor.h"
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -334,11 +336,11 @@ void editor_search_next(editor_t* ec, gboolean inverse) {
 
     if (!ret) {
         if (ec->backwards ^ inverse) {
-            response = gummi_yes_no_dialog("Top reached, search from bottom?");
+            response = utils_yes_no_dialog("Top reached, search from bottom?");
             if (response)
                 gtk_text_buffer_place_cursor(ec_sourcebuffer, &end);
         } else {
-            response = gummi_yes_no_dialog("Bottom reached, search from top?");
+            response = utils_yes_no_dialog("Bottom reached, search from top?");
             if (response)
                 gtk_text_buffer_place_cursor(ec_sourcebuffer, &start);
         }

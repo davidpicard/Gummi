@@ -1,10 +1,11 @@
+#include "motion.h"
+
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "environment.h"
-#include "motion.h"
 #include "utils.h"
 
 extern gummi_t* gummi;

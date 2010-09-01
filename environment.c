@@ -7,11 +7,12 @@
  * All Rights reserved.
  */
 
+#include "environment.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
-#include "environment.h"
 #include "utils.h"
 
 int workfd = -1;

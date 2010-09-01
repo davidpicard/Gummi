@@ -7,7 +7,10 @@
  * All Rights reserved.
  */
 
+#include "iofunctions.h"
+
 #include <stdlib.h>
+
 #include "configfile.h"
 #include "editor.h"
 #include "environment.h"

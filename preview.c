@@ -7,6 +7,8 @@
  * All Rights reserved.
  */
 
+#include "preview.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,8 +17,6 @@
 #include <gdk/gdk.h>
 #include <cairo.h>
 #include <poppler.h> 
-
-#include "preview.h"
 
 PopplerDocument* doc;
 PopplerPage* page;
