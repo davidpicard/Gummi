@@ -34,7 +34,9 @@ void gui_init() {
 }
 
 void gui_main() {
+    gtk_builder_connect_signals(g_builder, NULL);       
     gtk_widget_show_all(mainwindow);
+    gtk_main();
 }
 
 void on_menu_new_activate(GtkWidget *widget, void* user) {
@@ -116,8 +118,28 @@ void on_menu_redo_activate(GtkWidget *widget, void* user) {
     editor_redo_change(gummi->editor);
 }
 
-void on_tool_textstyle_activate(GtkWidget* widget, void* user) {
-    editor_set_selection_textstyle(gummi->editor, widget);
+void on_tool_textstyle_bold_activate(GtkWidget* widget, void* user) {
+    editor_set_selection_textstyle(gummi->editor, "tool_bold");
+}
+
+void on_tool_textstyle_italic_activate(GtkWidget* widget, void* user) {
+    editor_set_selection_textstyle(gummi->editor, "tool_italic");
+}
+
+void on_tool_textstyle_underline_activate(GtkWidget* widget, void* user) {
+    editor_set_selection_textstyle(gummi->editor, "tool_unline");
+}
+
+void on_tool_textstyle_left_activate(GtkWidget* widget, void* user) {
+    editor_set_selection_textstyle(gummi->editor, "tool_left");
+}
+
+void on_tool_textstyle_center_activate(GtkWidget* widget, void* user) {
+    editor_set_selection_textstyle(gummi->editor, "tool_center");
+}
+
+void on_tool_textstyle_right_activate(GtkWidget* widget, void* user) {
+    editor_set_selection_textstyle(gummi->editor, "tool_right");
 }
 
 gboolean on_button_searchwindow_close_clicked(GtkWidget *widget, void* user) {

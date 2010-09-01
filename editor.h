@@ -41,7 +41,7 @@ void editor_fill_buffer(editor_t* ec, const gchar* text);
 gchar* editor_grab_buffer(editor_t* ec);
 void editor_insert_package(editor_t* ec, const gchar* package);
 void editor_insert_bib(editor_t* ec, const gchar* package);
-void editor_set_selection_textstyle(editor_t* ec, GtkWidget* widget);
+void editor_set_selection_textstyle(editor_t* ec, const gchar* type);
 void editor_apply_errortags(editor_t* ec, gint line);
 void editor_jumpto_search_result(editor_t* ec, gint direction);
 void editor_start_search(editor_t* ec, const gchar* term,
@@ -56,6 +56,5 @@ void editor_start_replace_all(editor_t* ec, const gchar* term,
         gboolean matchcase);
 void editor_undo_change(editor_t* ec);
 void editor_redo_change(editor_t* ec);
-void editor_do_formatting(editor_t* ec, GtkWidget* widget);
 
 #endif /* GUMMI_EDITOR_H */

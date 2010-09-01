@@ -168,8 +168,70 @@ void editor_insert_bib(editor_t* ec, const gchar* package) {
     }
 }
 
-void editor_set_selection_textstyle(editor_t* ec, GtkWidget* widget) {
-    editor_do_formatting(ec, widget);
+void editor_set_selection_textstyle(editor_t* ec, const gchar* type) {
+    GtkTextIter start, end;
+    gint i = 0, selected = 0, outsize = 0;
+    const gchar* selected_text = 0;
+    gint style_size = sizeof(style) / sizeof(style[0]);
+    gchar** result = 0;
+    GError* error = NULL;
+    GRegex* match_str = 0;
+    GMatchInfo* match_info;
+    gchar* outtext = 0;
+    gchar regexbuf[BUFSIZ];
+
+    /* grab selected text */
+    gtk_text_buffer_get_selection_bounds(ec_sourcebuffer, &start, &end);
+    selected_text = gtk_text_iter_get_text(&start, &end);
+    outsize = strlen(selected_text) + 64;
+    outtext = (gchar*)g_malloc(outsize);
+
+    /* select style */
+    for (i = 0; i < style_size; ++i)
+        if (0 == strcmp(style[i][0], type)) {
+            selected = i;
+            break;
+        }
+
+    /* generate regex expression */
+    strncpy(regexbuf, "(.*)", BUFSIZ);
+    if (style[selected][1][0] == '\\')
+        strncat(regexbuf, "\\", BUFSIZ);
+    strncat(regexbuf, style[selected][1], BUFSIZ);
+    strncat(regexbuf, "(.*)", BUFSIZ);
+    if (style[selected][2][0] == '\\')
+        strncat(regexbuf, "\\", BUFSIZ);
+    strncat(regexbuf, style[selected][2], BUFSIZ);
+    strncat(regexbuf, "(.*)", BUFSIZ);
+
+    match_str = g_regex_new(regexbuf, G_REGEX_DOTALL, 0, &error);
+
+    if (g_regex_match(match_str, selected_text, 0, &match_info)) {
+        result = g_match_info_fetch_all(match_info);
+        if (strlen(result[1]) == 0 && strlen(result[3]) == 0) {
+            /* already applied, so we remove it */
+            strncpy(outtext, result[2], outsize);
+            outtext[strlen(result[2])] = 0;
+        } else if (strlen(result[1]) != 0 || strlen(result[3]) != 0) {
+            /* the text contains a partially styled text, remove it and apply
+             * style to the whole text */
+            snprintf(outtext, outsize, "%s%s%s%s%s",
+                    style[selected][1], result[1], result[2], result[3],
+                    style[selected][2]);
+        }
+    } else { /* no previous style applied */
+        snprintf(outtext, outsize, "%s%s%s",
+                style[selected][1], selected_text, style[selected][2]);
+    }
+
+    gtk_text_buffer_begin_user_action(ec_sourcebuffer);
+    gtk_text_buffer_delete(ec_sourcebuffer, &start, &end);
+    gtk_text_buffer_insert(ec_sourcebuffer, &start, outtext, strlen(outtext));
+    end = start;
+    gtk_text_iter_backward_chars(&start, strlen(outtext));
+    gtk_text_buffer_select_range(ec_sourcebuffer, &start, &end);
+    gtk_text_buffer_end_user_action(ec_sourcebuffer);
+    g_free(outtext);
     gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
 }
 
@@ -352,71 +414,4 @@ void editor_redo_change(editor_t* ec) {
         gtk_source_buffer_redo(ec->sourcebuffer);
         gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     }
-}
-
-void editor_do_formatting(editor_t* ec, GtkWidget* widget) {
-    GtkTextIter start, end;
-    gint i = 0, selected = 0, outsize = 0;
-    const gchar* selected_text = 0;
-    const gchar* name = gtk_widget_get_name(widget);
-    gint style_size = sizeof(style) / sizeof(style[0]);
-    gchar** result = 0;
-    GError* error = NULL;
-    GRegex* match_str = 0;
-    GMatchInfo* match_info;
-    gchar* outtext = 0;
-    gchar regexbuf[BUFSIZ];
-
-    /* grab selected text */
-    gtk_text_buffer_get_selection_bounds(ec_sourcebuffer, &start, &end);
-    selected_text = gtk_text_iter_get_text(&start, &end);
-    outsize = strlen(selected_text) + 32;
-    outtext = (gchar*)g_malloc(outsize);
-
-    /* select style */
-    for (i = 0; i < style_size; ++i)
-        if (0 == strcmp(style[i][0], name)) {
-            selected = i;
-            break;
-        }
-
-    /* generate regex expression */
-    strncpy(regexbuf, "(.*)", BUFSIZ);
-    if (style[selected][1][0] == '\\')
-        strncat(regexbuf, "\\", BUFSIZ);
-    strncat(regexbuf, style[selected][1], BUFSIZ);
-    strncat(regexbuf, "(.*)", BUFSIZ);
-    if (style[selected][2][0] == '\\')
-        strncat(regexbuf, "\\", BUFSIZ);
-    strncat(regexbuf, style[selected][2], BUFSIZ);
-    strncat(regexbuf, "(.*)", BUFSIZ);
-
-    match_str = g_regex_new(regexbuf, G_REGEX_DOTALL, 0, &error);
-
-    if (g_regex_match(match_str, selected_text, 0, &match_info)) {
-        result = g_match_info_fetch_all(match_info);
-        if (strlen(result[1]) == 0 && strlen(result[3]) == 0) {
-            /* already applied, so we remove it */
-            strncpy(outtext, result[2], outsize);
-            outtext[strlen(result[2])] = 0;
-        } else if (strlen(result[1]) != 0 || strlen(result[3]) != 0) {
-            /* the text contains a partially styled text, remove it and apply
-             * style to the whole text */
-            snprintf(outtext, outsize, "%s%s%s%s%s",
-                    style[selected][1], result[1], result[2], result[3],
-                    style[selected][2]);
-        }
-    } else { /* no previous style applied */
-        snprintf(outtext, outsize, "%s%s%s",
-                style[selected][1], selected_text, style[selected][2]);
-    }
-
-    gtk_text_buffer_begin_user_action(ec_sourcebuffer);
-    gtk_text_buffer_delete(ec_sourcebuffer, &start, &end);
-    gtk_text_buffer_insert(ec_sourcebuffer, &start, outtext, strlen(outtext));
-    end = start;
-    gtk_text_iter_backward_chars(&start, strlen(outtext));
-    gtk_text_buffer_select_range(ec_sourcebuffer, &start, &end);
-    gtk_text_buffer_end_user_action(ec_sourcebuffer);
-    g_free(outtext);
 }
