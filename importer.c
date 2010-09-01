@@ -66,7 +66,9 @@ void importer_insert_table(importer_t* ic, editor_t* ec) {
     GtkTextIter current;
     const gchar* text = importer_generate_table(ic);
     editor_get_current_iter(ec, &current);
+    gtk_text_buffer_begin_user_action(ec_sourcebuffer);
     gtk_text_buffer_insert(ec_sourcebuffer, &current, text, strlen(text));
+    gtk_text_buffer_end_user_action(ec_sourcebuffer);
     gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     gtk_notebook_set_current_page(ic->import_tabs, 0);
 }
@@ -76,7 +78,9 @@ void importer_insert_matrix(importer_t* ic, editor_t* ec) {
     const gchar* text = importer_generate_matrix(ic);
     editor_insert_package(ec, "amsmath");
     editor_get_current_iter(ec, &current);
+    gtk_text_buffer_begin_user_action(ec_sourcebuffer);
     gtk_text_buffer_insert(ec_sourcebuffer, &current, text, strlen(text));
+    gtk_text_buffer_end_user_action(ec_sourcebuffer);
     gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     gtk_notebook_set_current_page(ic->import_tabs, 0);
 }
@@ -89,8 +93,10 @@ void importer_insert_image(importer_t* ic, editor_t* ec) {
     //    return;
     editor_insert_package(ec, "graphicx");
     editor_get_current_iter(ec, &current);
-    gtk_text_buffer_insert(ec_sourcebuffer, &current, text, strlen(text));
     gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
+    gtk_text_buffer_begin_user_action(ec_sourcebuffer);
+    gtk_text_buffer_insert(ec_sourcebuffer, &current, text, strlen(text));
+    gtk_text_buffer_end_user_action(ec_sourcebuffer);
     importer_imagegui_set_sensitive(ic, "", FALSE);
     gtk_notebook_set_current_page(ic->import_tabs, 0);
 }

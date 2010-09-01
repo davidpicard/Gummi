@@ -144,8 +144,10 @@ void editor_insert_package(editor_t* ec, const gchar* package) {
     if (!gtk_text_iter_backward_search(&mstart, pkgstr, 0, &sstart, &send,
                 NULL)) {
         gtk_source_buffer_begin_not_undoable_action(ec->sourcebuffer);
+        gtk_text_buffer_begin_user_action(ec_sourcebuffer);
         gtk_text_buffer_insert(ec_sourcebuffer, &mstart,
                 pkgstr, strlen(pkgstr));
+        gtk_text_buffer_end_user_action(ec_sourcebuffer);
         gtk_source_buffer_end_not_undoable_action(ec->sourcebuffer);
     }
 }
@@ -162,8 +164,10 @@ void editor_insert_bib(editor_t* ec, const gchar* package) {
     if (!gtk_text_iter_forward_search(&start, "\\bibliography{", 0,
                 &sstart, &send, NULL)) {
         gtk_source_buffer_begin_not_undoable_action(ec->sourcebuffer);
+        gtk_text_buffer_begin_user_action(ec_sourcebuffer);
         gtk_text_buffer_insert(ec_sourcebuffer, &mstart,
                 pkgstr, strlen(pkgstr));
+        gtk_text_buffer_end_user_action(ec_sourcebuffer);
         gtk_source_buffer_end_not_undoable_action(ec->sourcebuffer);
     }
 }
@@ -368,8 +372,10 @@ void editor_start_replace_next(editor_t* ec, const gchar* term,
     if (ret && (!wholeword || (wholeword
             && gtk_text_iter_starts_word(&mstart)
             && gtk_text_iter_ends_word(&mend)))) {
+        gtk_text_buffer_begin_user_action(ec_sourcebuffer);
         gtk_text_buffer_delete(ec_sourcebuffer, &mstart, &mend);
         gtk_text_buffer_insert(ec_sourcebuffer, &mstart, rterm, strlen(rterm));
+        gtk_text_buffer_end_user_action(ec_sourcebuffer);
         editor_search_next(ec, FALSE);
     }
     return;
@@ -391,9 +397,11 @@ void editor_start_replace_all(editor_t* ec, const gchar* term,
         if (ret && (!wholeword || (wholeword
                 && gtk_text_iter_starts_word(&mstart)
                 && gtk_text_iter_ends_word(&mend)))) {
+            gtk_text_buffer_begin_user_action(ec_sourcebuffer);
             gtk_text_buffer_delete(ec_sourcebuffer, &mstart, &mend);
             gtk_text_buffer_insert(ec_sourcebuffer, &mstart, rterm,
                     strlen(rterm));
+            gtk_text_buffer_end_user_action(ec_sourcebuffer);
             start =  mstart;
         } else break;
     }
