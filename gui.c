@@ -53,6 +53,18 @@ void on_menu_new_activate(GtkWidget *widget, void* user) {
     gummi_create_environment(gummi, NULL);
 }
 
+void on_menu_template_activate(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
+void on_menu_exportpdf_activate(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
+void on_menu_recent_activate(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
 void on_menu_open_activate(GtkWidget *widget, void* user) {
     gchar       *filename;
     
@@ -120,6 +132,70 @@ void on_menu_undo_activate(GtkWidget *widget, void* user) {
 void on_menu_redo_activate(GtkWidget *widget, void* user) {
     editor_redo_change(gummi->editor);
 }
+
+void on_menu_delete_activate(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
+void on_menu_selectall_activate(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
+void on_menu_preferences_activate(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
+void on_menu_statusbar_toggled(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
+void on_menu_toolbar_toggled(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
+void on_menu_fullscreen_toggled(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
+void on_menu_find_activate(GtkWidget *widget, void * user) {
+    GtkWidget *searchwin;
+    searchwin = GTK_WIDGET(gtk_builder_get_object (g_builder, "searchwindow"));
+    gtk_widget_show(searchwin);
+    gtk_widget_grab_focus(searchwin);
+}
+
+void on_menu_findnext_activate(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
+void on_menu_findprev_activate(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
+void on_menu_bibload_activate(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
+void on_menu_bibupdate_activate(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
+void on_menu_docstat_activate(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
+void on_menu_spelling_toggled(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
+void on_menu_update_activate(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
+void on_menu_about_activate(GtkWidget *widget, void * user) {
+    // insert contents
+}
+
 
 void on_tool_textstyle_bold_activate(GtkWidget* widget, void* user) {
     editor_set_selection_textstyle(gummi->editor, "tool_bold");
