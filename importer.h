@@ -31,4 +31,14 @@ typedef struct _importer {
     GtkComboBox* matrix_combobracket;
 } importer_t;
 
+importer_t* importer_init(GtkBuilder* builder);
+void importer_insert_table(importer_t* ic, editor_t* ec);
+void importer_insert_matrix(importer_t* ic, editor_t* ec);
+void importer_insert_image(importer_t* ic, editor_t* ec);
+void importer_imagegui_set_sensitive(importer_t* ic, const gchar* name,
+        gboolean mode);
+const gchar* importer_generate_table(importer_t* ic);
+void importer_generate_matrix(importer_t* ic);
+void importer_generate_image(importer_t* ic);
+
 #endif /* GUMMI_IMPORTER_H */

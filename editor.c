@@ -304,12 +304,10 @@ void editor_apply_searchtag(editor_t* ec) {
 
 void editor_search_next(editor_t* ec, gboolean inverse) {
     GtkTextIter current, start, end, mstart, mend;
-    GtkTextMark* mark;
     gboolean ret = FALSE, response = FALSE;
 
     /* place cursor to the next result */
-    mark = gtk_text_buffer_get_insert(ec_sourcebuffer);
-    gtk_text_buffer_get_iter_at_mark(ec_sourcebuffer, &current, mark);
+    editor_get_current_iter(ec, &current);
 
     if (ec->backwards ^ inverse)
        ret = gtk_source_iter_backward_search(&current, ec->term,
@@ -347,7 +345,6 @@ void editor_start_replace_next(editor_t* ec, const gchar* term,
         const gchar* rterm, gboolean backwards, gboolean wholeword,
         gboolean matchcase) {
     GtkTextIter current, mstart, mend;
-    GtkTextMark* mark;
     gboolean ret = FALSE;
 
     if (!ec->replace_activated) {
@@ -357,8 +354,7 @@ void editor_start_replace_next(editor_t* ec, const gchar* term,
     }
 
     /* place cursor to the next result */
-    mark = gtk_text_buffer_get_insert(ec_sourcebuffer);
-    gtk_text_buffer_get_iter_at_mark(ec_sourcebuffer, &current, mark);
+    editor_get_current_iter(ec, &current);
 
     if (backwards)
        ret = gtk_source_iter_backward_search(&current, term,
@@ -401,6 +397,12 @@ void editor_start_replace_all(editor_t* ec, const gchar* term,
             start =  mstart;
         } else break;
     }
+}
+
+void editor_get_current_iter(editor_t* ec, GtkTextIter* current) {
+    GtkTextMark* mark;
+    mark = gtk_text_buffer_get_insert(ec_sourcebuffer);
+    gtk_text_buffer_get_iter_at_mark(ec_sourcebuffer, current, mark);
 }
 
 void editor_undo_change(editor_t* ec) {

@@ -54,6 +54,7 @@ void editor_start_replace_next(editor_t* ec, const gchar* term,
 void editor_start_replace_all(editor_t* ec, const gchar* term,
         const gchar* rterm, gboolean backwards, gboolean wholeword,
         gboolean matchcase);
+void editor_get_current_iter(editor_t* ec, GtkTextIter* current);
 void editor_undo_change(editor_t* ec);
 void editor_redo_change(editor_t* ec);
 
