@@ -70,6 +70,7 @@ void slog(gint level, const gchar *fmt, ...) {
 
     if (!L_IS_TYPE(level, L_INFO) &&
         !L_IS_TYPE(level, L_DEBUG) && 
+        !L_IS_TYPE(level, L_ERROR) && 
         !L_IS_TYPE(level, L_G_INFO) &&
         !L_IS_TYPE(level, L_G_ERROR))
         exit(1);

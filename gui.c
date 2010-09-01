@@ -8,6 +8,7 @@
 #include "editor.h"
 #include "environment.h"
 #include "importer.h"
+#include "updatecheck.h"
 #include "utils.h"
 
 extern gummi_t*     gummi;
@@ -185,7 +186,7 @@ void on_menu_spelling_toggled(GtkWidget *widget, void * user) {
 }
 
 void on_menu_update_activate(GtkWidget *widget, void * user) {
-    // insert contents
+    updatecheck();
 }
 
 void on_menu_about_activate(GtkWidget *widget, void * user) {

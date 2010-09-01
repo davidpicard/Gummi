@@ -18,9 +18,9 @@
 #include "environment.h"
 #include "utils.h"
 
-static const char* config_filename = 0;
+static const gchar* config_filename = 0;
 
-const char config_str[] =
+const gchar config_str[] =
 "[Editor]\n"
 "line_numbers = True\n"
 "highlighting = True\n"
@@ -59,17 +59,15 @@ const char config_str[] =
 "	\\end{center}\n"
 "	\\end{document}\n\n";
 
-void config_init(const char* filename) {
+void config_init(const gchar* filename) {
     config_filename = filename;
-    if (!utils_validate_path(filename))
-        config_set_default();
 }
 
-const char* config_get_value(const char* term) {
+const gchar* config_get_value(const gchar* term) {
     FILE* fh = 0;
-    char buf[BUF_MAX];
-    static char ret[BUF_MAX];
-    char* pstr;
+    gchar buf[BUF_MAX];
+    static gchar ret[BUF_MAX];
+    gchar* pstr;
 
     if (!(fh = fopen(config_filename, "r"))) {
         slog(L_INFO, "can't find configuration file, reseting to default\n");
@@ -106,12 +104,12 @@ const char* config_get_value(const char* term) {
     return ret;
 }
 
-void config_set_value(const char* term, const char* value) {
+void config_set_value(const gchar* term, const gchar* value) {
     int i = 0, count = 0;
     int max = strlen(value) > BUF_MAX -1? BUF_MAX -1: strlen(value);
     finfo fin = config_load();
     int index = 0;
-    char buf[BUF_MAX];
+    gchar buf[BUF_MAX];
 
     if (-1 == (index = config_find_index_of(fin.pbuf, term)))
         slog(L_FATAL, "invalid configuration\n");
@@ -154,9 +152,9 @@ finfo config_load(void) {
     int i = 0, count = 0;
     FILE* fh = 0;
 
-    char** pbuf = (char**)g_malloc(CONFIG_MAX * sizeof(char*));
+    gchar** pbuf = (gchar**)g_malloc(CONFIG_MAX * sizeof(gchar*));
     for (i = 0; i < CONFIG_MAX; ++i)
-        pbuf[i] = (char*)g_malloc(BUF_MAX * sizeof(char));
+        pbuf[i] = (gchar*)g_malloc(BUF_MAX * sizeof(gchar));
 
     if (!(fh = fopen(config_filename, "r"))) {
         slog(L_INFO, "can't find configuration file, reseting to default\n");
@@ -174,7 +172,7 @@ finfo config_load(void) {
     return (finfo){ pbuf, count };
 }
 
-void config_save(char** pbuf, int len) {
+void config_save(gchar** pbuf, int len) {
     FILE* fh = 0;
     int i = 0;
     if (!(fh = fopen(config_filename, "w")))
@@ -187,7 +185,7 @@ void config_save(char** pbuf, int len) {
     fclose(fh);
 }
 
-int config_find_index_of(char** pbuf, const char* term) {
+int config_find_index_of(gchar** pbuf, const gchar* term) {
     int i = 0;
     for (i = 0; i < CONFIG_MAX; ++i) {
         if (0 == strncmp(pbuf[i], term, strlen(term)))
