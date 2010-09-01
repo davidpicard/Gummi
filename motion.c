@@ -7,6 +7,8 @@
 #include "motion.h"
 #include "utils.h"
 
+extern gummi_t* gummi;
+
 motion_t* motion_init(gint dum) {
     motion_t* m = (motion_t*)g_malloc(sizeof(motion_t));
     m->dummy = dum;
@@ -16,7 +18,8 @@ motion_t* motion_init(gint dum) {
 void motion_initial_preview(editor_t* ec) {
     motion_update_workfile(ec);
     motion_update_pdffile(ec);
-    preview_set_pdffile("/tmpfile.pdf");
+    // if succes.. 
+    preview_set_pdffile(gummi->pdffile);
 }
 
 
@@ -33,26 +36,30 @@ void motion_update_workfile(editor_t* ec) {
     text = gtk_text_iter_get_text (&start, &end);
     gtk_widget_set_sensitive(ec->sourceview, TRUE);
     
-    // TODO: gummi->workfile doesn't work properly here.. 
-    fp = fopen("tmpfile", "w");
+    fp =fopen(gummi->workfile, "w");
     
     if(fp == NULL) {
-        perror("failed to open sample.txt");
+        perror("failed to open workfile");
         // TODO: do your debug thingie!
     }
     fwrite(text, strlen(text), 1, fp);
     g_free(text);
     fclose(fp);
     // TODO: Maybe add editorviewer grab focus line here if necessary
-    
 }
 
 void motion_update_pdffile(editor_t* ec) {
     FILE *fp;
     int status;
     char path[PATH_MAX];
-    
-    fp = popen("pdflatex tmpfile", "r");
+    char command[PATH_MAX];
+    snprintf(command, sizeof command, "pdflatex "
+                                    "-interaction=nonstopmode "
+                                    "-file-line-error "
+                                    "-halt-on-error "
+                                    "-output-directory='%s' '%s'", \
+                                    "/tmp", gummi->workfile);
+    fp = popen(command, "r");
     if (fp == NULL) {
         // handle error
     }

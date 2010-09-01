@@ -41,27 +41,14 @@ preview_t* preview_init(GtkBuilder * builder) {
 
 
 void preview_set_pdffile(gchar *pdffile) {
-    
-    /* TEMPORARLY!! */
     GError *err = NULL;
-    gchar *curdir = g_get_current_dir();
-    char str1[200];
-    char str2[200];
-    char str3[200];
-    strcpy (str1,"file://");
-    strcpy (str2,curdir);
-    strncat (str1, str2, (sizeof str1 + sizeof str2));
-    strcpy(str3,str1);
-    strncat(str3, "/tmpfile.pdf", (sizeof str3 + 12));
-    printf("\n%s\n", str3);
-    /* TEMPORARLY!! */
-    
-    doc = poppler_document_new_from_file(str3, NULL, &err);
+    gchar *uri = "file://";
+    uri = g_strconcat(uri, pdffile, NULL);
+
+    doc = poppler_document_new_from_file(uri, NULL, &err);
     pagetotal = poppler_document_get_n_pages(doc); 
     page = poppler_document_get_page(doc, 0);
-    
 }
-
 
 
 gboolean on_expose(GtkWidget* w, GdkEventExpose* e, gpointer data) {
