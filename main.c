@@ -14,6 +14,7 @@
 #include "gui.h"
 #include "importer.h"
 #include "iofunctions.h"
+#include "template.h"
 #include "utils.h"
 
 static int debug = 0;
@@ -36,6 +37,7 @@ int main (int argc, char *argv[]) {
     iofunctions_t* iofunc;
     motion_t* motion;
     preview_t* preview;
+    template_t* templ;
 
     /* set up i18n */
     bindtextdomain(PACKAGE, "/usr/share/locale");
@@ -59,9 +61,12 @@ int main (int argc, char *argv[]) {
     editor = editor_init(builder);
     importer = importer_init(builder);
     iofunc = iofunctions_init();
-    preview = preview_init(builder);
     motion = motion_init(0); 
-    gummi = gummi_init(builder, editor, importer, iofunc, motion, preview);
+    preview = preview_init(builder);
+    templ = template_init(builder);
+
+    gummi =
+        gummi_init(builder, editor, importer, iofunc, motion, preview, templ);
 
     gui_init();
 

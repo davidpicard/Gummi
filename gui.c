@@ -58,7 +58,7 @@ void on_menu_new_activate(GtkWidget *widget, void* user) {
 }
 
 void on_menu_template_activate(GtkWidget *widget, void * user) {
-    // insert contents
+    gtk_widget_show_all(GTK_WIDGET(gummi->templ->templatewindow));
 }
 
 void on_menu_exportpdf_activate(GtkWidget *widget, void * user) {
@@ -220,12 +220,25 @@ void on_tool_textstyle_right_activate(GtkWidget* widget, void* user) {
     editor_set_selection_textstyle(gummi->editor, "tool_right");
 }
 
-gboolean on_button_searchwindow_close_clicked(GtkWidget *widget, void* user) {
+void on_button_template_ok_clicked(GtkWidget* widget, void* user) {
+    const gchar* text = template_get(gummi->templ);
+    if (text) {
+        editor_fill_buffer(gummi->editor, text);
+        gummi_create_environment(gummi, NULL);
+        gtk_widget_hide(GTK_WIDGET(gummi->templ->templatewindow));
+    }
+}
+
+void on_button_template_cancel_clicked(GtkWidget* widget, void* user) {
+    gtk_widget_hide(GTK_WIDGET(gummi->templ->templatewindow));
+}
+
+gboolean on_button_searchwindow_close_clicked(GtkWidget* widget, void* user) {
     gtk_widget_hide(GTK_WIDGET(searchgui->searchwindow));
     return TRUE;
 }
 
-void on_button_searchwindow_find_clicked(GtkWidget *widget, void* user) {
+void on_button_searchwindow_find_clicked(GtkWidget* widget, void* user) {
     editor_start_search(gummi->editor,
         gtk_entry_get_text(searchgui->searchentry),
         searchgui->backwards,
@@ -235,7 +248,7 @@ void on_button_searchwindow_find_clicked(GtkWidget *widget, void* user) {
     );
 }
 
-void on_button_searchwindow_replace_next_clicked(GtkWidget *widget, void* user)
+void on_button_searchwindow_replace_next_clicked(GtkWidget* widget, void* user)
 {
     editor_start_replace_next(gummi->editor,
         gtk_entry_get_text(searchgui->searchentry),
@@ -246,7 +259,7 @@ void on_button_searchwindow_replace_next_clicked(GtkWidget *widget, void* user)
     );
 }
 
-void on_button_searchwindow_replace_all_clicked(GtkWidget *widget, void* user) {
+void on_button_searchwindow_replace_all_clicked(GtkWidget* widget, void* user) {
     editor_start_replace_all(gummi->editor,
         gtk_entry_get_text(searchgui->searchentry),
         gtk_entry_get_text(searchgui->replaceentry),

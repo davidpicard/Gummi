@@ -16,19 +16,20 @@
 #include "utils.h"
 
 gummi_t* gummi_init(GtkBuilder* bd, editor_t* ed, importer_t* im,
-        iofunctions_t* iof, motion_t* mo, preview_t* prev) {
+        iofunctions_t* iof, motion_t* mo, preview_t* prev, template_t* tpl) {
     gummi_t* g = (gummi_t*)g_malloc(sizeof(gummi_t));
     g->workfd = -1;
+    g->filename = NULL;   /* current opened file name in workspace */
+    g->pdffile = NULL;
+    g->workfile = NULL;
+    g->tmpdir = g_get_tmp_dir();
     g->builder = bd;
     g->editor = ed;
     g->importer = im;
     g->iofunc = iof;
     g->motion = mo;
     g->preview = prev;
-    g->filename = NULL;   /* current opened file name in workspace */
-    g->pdffile = NULL;
-    g->workfile = NULL;
-    g->tmpdir = g_get_tmp_dir();
+    g->templ = tpl;
     return g;
 }
 

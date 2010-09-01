@@ -24,6 +24,7 @@
 #include "iofunctions.h"
 #include "motion.h"
 #include "preview.h"
+#include "template.h"
 
 #define _(T) gettext(T)
 
@@ -39,10 +40,11 @@ typedef struct _gummi {
     iofunctions_t* iofunc;
     motion_t* motion;
     preview_t* preview;
+    template_t* templ;
 } gummi_t;
 
 gummi_t* gummi_init(GtkBuilder* bd, editor_t* ed, importer_t* im,
-        iofunctions_t* iof, motion_t* mo, preview_t* prev);
+        iofunctions_t* iof, motion_t* mo, preview_t* prev, template_t* tpl);
         
 void gummi_create_environment(gummi_t* gummi, const gchar* filename);
 void gummi_set_filename(gummi_t* gummi, const gchar* name);

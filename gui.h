@@ -45,6 +45,8 @@ void on_tool_textstyle_underline_activate(GtkWidget* widget, void* user);
 void on_tool_textstyle_left_activate(GtkWidget* widget, void* user);
 void on_tool_textstyle_center_activate(GtkWidget* widget, void* user);
 void on_tool_textstyle_right_activate(GtkWidget* widget, void* user);
+void on_button_template_ok_clicked(GtkWidget* widget, void* user);
+void on_button_template_cancel_clicked(GtkWidget* widget, void* user);
 gboolean on_button_searchwindow_close_clicked(GtkWidget* widget, void* user);
 void on_button_searchwindow_find_clicked(GtkWidget* widget, void* user);
 void on_button_searchwindow_replace_next_clicked(GtkWidget* widget, void* user);
