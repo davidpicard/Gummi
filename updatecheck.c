@@ -12,21 +12,26 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
-//#include <netinet/in.h>
 #include <netdb.h>
 #include <unistd.h>
 
 #include <glib.h>
 
+#include "environment.h"
 #include "utils.h"
 
 void updatecheck(void) {
+    GtkDialog* dialog = 0;
     struct sockaddr_in servaddr;
     struct hostent *hp;
-    gint sock_fd;
+    gint sock_fd = 0, i = 0;
     gchar data[BUFSIZ];
+    const gchar* avail_version;
     const gchar* request = "GET /redmine/projects/gummi/repository/raw/"
-        "trunk/dev/latest HTTP/1.1\n";
+        "trunk/dev/latest HTTP/1.1\r\n"
+        "User-Agent: Gummi\r\n"
+        "Host: dev.midnightcoding.org\r\n"
+        "\r\n";
 
     if (-1 == (sock_fd = socket(AF_INET, SOCK_STREAM, 0))) {
         slog(L_ERROR, "socket() error\n");
@@ -48,10 +53,23 @@ void updatecheck(void) {
         goto error;
     }
 
-    write(sock_fd, request, strlen(request));
     read(sock_fd, data, BUFSIZ);
-    slog(L_G_INFO, "%s\n", data);
+    /* get version string */
+    for (i = strlen(data) -2; i >= 0 && data[i] != '\n'; --i);
+    avail_version = data + i + 1;
+    
+    slog(L_INFO, "Currently installed: "VERSION"\n");
+    slog(L_INFO, "Currently available: %s", avail_version);
 
+    dialog = gtk_message_dialog_new (NULL, 
+            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+            GTK_MESSAGE_INFO,
+            GTK_BUTTONS_OK,
+            "Currently installed:\n"VERSION"\n\nCurrently available:\n%s",
+            avail_version);
+    gtk_window_set_title(GTK_WINDOW(dialog), "Update Check");
+    gtk_dialog_run(GTK_DIALOG(dialog));      
+    gtk_widget_destroy(dialog);
     return;
 
 error:
