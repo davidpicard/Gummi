@@ -54,6 +54,8 @@ void editor_start_replace_next(editor_t* ec, const gchar* term,
 void editor_start_replace_all(editor_t* ec, const gchar* term,
         const gchar* rterm, gboolean backwards, gboolean wholeword,
         gboolean matchcase);
+void editor_undo_change(editor_t* ec);
+void editor_redo_change(editor_t* ec);
 void editor_do_formatting(editor_t* ec, GtkWidget* widget);
 
 #endif /* GUMMI_EDITOR_H */

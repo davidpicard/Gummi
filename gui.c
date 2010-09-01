@@ -108,6 +108,14 @@ void on_menu_paste_activate(GtkWidget *widget, void* user) {
     gtk_text_buffer_set_modified(g_e_buffer, TRUE);
 }
 
+void on_menu_undo_activate(GtkWidget *widget, void* user) {
+    editor_undo_change(gummi->editor);
+}
+
+void on_menu_redo_activate(GtkWidget *widget, void* user) {
+    editor_redo_change(gummi->editor);
+}
+
 void on_tool_textstyle_activate(GtkWidget* widget, void* user) {
     editor_set_selection_textstyle(gummi->editor, widget);
 }

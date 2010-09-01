@@ -340,14 +340,14 @@ void editor_start_replace_all(editor_t* ec, const gchar* term,
     }
 }
 
-void undo_change(editor_t* ec) {
+void editor_undo_change(editor_t* ec) {
     if (gtk_source_buffer_can_undo(ec->sourcebuffer)) {
         gtk_source_buffer_redo(ec->sourcebuffer);
         gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     }
 }
 
-void redo_change(editor_t* ec) {
+void editor_redo_change(editor_t* ec) {
     if (gtk_source_buffer_can_redo(ec->sourcebuffer)) {
         gtk_source_buffer_redo(ec->sourcebuffer);
         gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
