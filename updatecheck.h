@@ -10,6 +10,8 @@
 #ifndef GUMMI_UPDATE_CHECK
 #define GUMMI_UPDATE_CHECK
 
-void updatecheck(void);
+#include <glib.h>
+
+gboolean updatecheck(void);
 
 #endif /* GUMMI_UPDATE_CHECK */

@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <netdb.h>
 #include <unistd.h>
 
@@ -20,12 +21,13 @@
 #include "environment.h"
 #include "utils.h"
 
-void updatecheck(void) {
+gboolean updatecheck(void) {
     GtkWidget* dialog;
     struct sockaddr_in servaddr;
     struct hostent *hp;
     gint sock_fd = 0, i = 0;
-    gchar data[BUFSIZ];
+    struct timeval timeout;
+    gchar data[BUFSIZ] = { 0 };
     const gchar* avail_version;
     const gchar* request = "GET /redmine/projects/gummi/repository/raw/"
         "trunk/dev/latest HTTP/1.1\r\n"
@@ -35,13 +37,22 @@ void updatecheck(void) {
 
     if (-1 == (sock_fd = socket(AF_INET, SOCK_STREAM, 0))) {
         slog(L_ERROR, "socket() error\n");
-        goto error;
+        return FALSE;
+    }
+
+    /* set timeout to prevent hanging */
+    memset(&timeout, 0, sizeof(struct timeval));
+    timeout.tv_sec = 5;
+    if (setsockopt(sock_fd, SOL_SOCKET, SO_RCVTIMEO, &timeout,
+            sizeof(struct timeval))) {
+        slog(L_ERROR, "setsockopt() error\n");
+        return FALSE;
     }
 
     memset(&servaddr, 0, sizeof(servaddr));
     if (NULL == (hp = gethostbyname("dev.midnightcoding.org"))) {
         slog(L_ERROR, "gethostbyname() error\n");
-        goto error;
+        return FALSE;
     }
 
     memcpy((gchar*)&servaddr.sin_addr.s_addr, (gchar*)hp->h_addr, hp->h_length);
@@ -50,11 +61,16 @@ void updatecheck(void) {
 
     if (0 != connect(sock_fd, (struct sockaddr*)&servaddr, sizeof(servaddr))) {
         slog(L_G_ERROR, "connect() error");
-        goto error;
+        return FALSE;
     }
 
     write(sock_fd, request, strlen(request));
     read(sock_fd, data, BUFSIZ);
+
+    if (0 == strlen(data)) {
+        slog(L_ERROR, "connection timeout\n");
+        return FALSE;
+    }
 
     /* get version string */
     for (i = strlen(data) -2; i >= 0 && data[i] != '\n'; --i);
@@ -72,9 +88,6 @@ void updatecheck(void) {
     gtk_window_set_title(GTK_WINDOW(dialog), "Update Check");
     gtk_dialog_run(GTK_DIALOG(dialog));      
     gtk_widget_destroy(dialog);
-    return;
 
-error:
-    slog(L_G_ERROR, "Update check failed!\n");
-    return;
+    return TRUE;
 }

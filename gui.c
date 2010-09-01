@@ -186,7 +186,9 @@ void on_menu_spelling_toggled(GtkWidget *widget, void * user) {
 }
 
 void on_menu_update_activate(GtkWidget *widget, void * user) {
-    updatecheck();
+    gboolean ret = updatecheck();
+    if (!ret)
+        slog(L_G_ERROR, "Update check failed!\n");
 }
 
 void on_menu_about_activate(GtkWidget *widget, void * user) {
