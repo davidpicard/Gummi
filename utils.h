@@ -10,6 +10,8 @@
 #ifndef GUMMI_UTILS
 #define GUMMI_UTILS
 
+#include <glib.h>
+
 #define L_IS_TYPE(level, type) ((level & type) == type)
 #define L_IS_GUI(level) (level & 0xf0)
 #define L_INFO     0x01    /* for informative messages */
@@ -24,7 +26,7 @@
  * @brief slog initlization
  * @param debug boolean value for whether output debug message or not
  */
-void slog_init(int debug);
+void slog_init(gint debug);
 
 /**
  * @brief debug interface for gummi
@@ -32,7 +34,7 @@ void slog_init(int debug);
  * @param fmt just like the printf function
  * @param ... parameters for fmt
  */
-void slog(int level, const char *fmt, ...);
+void slog(gint level, const gchar *fmt, ...);
 
 gboolean utils_yes_no_dialog(const gchar* message);
 gboolean utils_validate_path(const gchar* path);

@@ -1,6 +1,10 @@
 #ifndef GUMMI_MOTION_H
 #define GUMMI_MOTION_H
 
+#include <glib.h>
+
+#include "editor.h"
+
 typedef struct _motion {
     gint dummy; // you can add members along the way
 } motion_t;

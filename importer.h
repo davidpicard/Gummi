@@ -10,6 +10,11 @@
 #ifndef GUMMI_IMPORTER_H
 #define GUMMI_IMPORTER_H
 
+#include <glib.h>
+#include <gtk/gtk.h>
+
+#include "editor.h"
+
 typedef struct _importer {
     GtkNotebook* import_tabs;
 
