@@ -35,6 +35,8 @@
 #include "utils.h"
 
 extern Gummi* gummi;
+extern GuEditor* ec;
+guint update;
 
 GuMotion* motion_init(gint dum) {
     GuMotion* m = (GuMotion*)g_malloc(sizeof(GuMotion));
@@ -45,10 +47,13 @@ GuMotion* motion_init(gint dum) {
 void motion_initial_preview(GuEditor* ec) {
     motion_update_workfile(ec);
     motion_update_pdffile(ec);
-    // if succes.. 
     preview_set_pdffile(gummi->pdffile);
+    // TODO: run some checks
+    // if config says compile_status is true:
+    
+    // TODO: shouldnt pass ec!!!
+    motion_start_updatepreview(ec);
 }
-
 
 void motion_update_workfile(GuEditor* ec) {
     GtkTextIter start;
@@ -63,7 +68,7 @@ void motion_update_workfile(GuEditor* ec) {
     text = gtk_text_iter_get_text (&start, &end);
     gtk_widget_set_sensitive(ec->sourceview, TRUE);
     
-    fp =fopen(gummi->workfile, "w");
+    fp = fopen(gummi->workfile, "w");
     
     if(fp == NULL) {
         perror("failed to open workfile");
@@ -73,6 +78,7 @@ void motion_update_workfile(GuEditor* ec) {
     g_free(text);
     fclose(fp);
     // TODO: Maybe add editorviewer grab focus line here if necessary
+    gtk_widget_grab_focus(ec->sourceview);
 }
 
 void motion_update_pdffile(GuEditor* ec) {
@@ -98,3 +104,24 @@ void motion_update_pdffile(GuEditor* ec) {
          // handle error
     }
 }
+
+
+void motion_start_updatepreview(GuEditor* ec) {
+    // request config and such.. 
+    update = g_timeout_add_seconds(2, motion_updatepreview, ec);
+}
+
+
+void motion_stop_updatepreview() {
+    g_source_remove(update);
+}
+
+
+gboolean motion_updatepreview(GuEditor* ec) {
+    motion_update_workfile(ec);
+    motion_update_pdffile(ec);
+    preview_refresh();
+    return TRUE;
+}
+
+

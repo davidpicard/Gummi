@@ -40,6 +40,10 @@ void motion_initial_preview(GuEditor* ec);
 void motion_update_workfile(GuEditor* ec);
 void motion_update_pdffile(GuEditor* ec);
 
+void motion_start_updatepreview();
+void motion_stop_updatepreview();
+gboolean motion_updatepreview();
+
 
 #endif /* GUMMI_MOTION_H */
 

@@ -38,12 +38,12 @@
 PopplerDocument* doc;
 PopplerPage* page;
 GtkWidget *drawarea;
+
+gchar *uri;
 int pagetotal;
 
 GuPreview* preview_init(GtkBuilder * builder) {
     GuPreview* p = (GuPreview*)g_malloc(sizeof(GuPreview));
-    GtkWidget *drawarea;
-    
     GdkColor white = {0,0xffff,0xffff,0xffff};
     
     drawarea = GTK_WIDGET(gtk_builder_get_object(builder, "preview_draw"));
@@ -51,20 +51,26 @@ GuPreview* preview_init(GtkBuilder * builder) {
 
     g_signal_connect(GTK_OBJECT (drawarea), "expose-event",
             G_CALLBACK(on_expose), NULL); 
-     
-
     return p;
 }
 
 
 void preview_set_pdffile(gchar *pdffile) {
     GError *err = NULL;
-    gchar *uri = "file://";
-    uri = g_strconcat(uri, pdffile, NULL);
-
+    
+    uri = g_strconcat("file://", pdffile, NULL);
     doc = poppler_document_new_from_file(uri, NULL, &err);
     pagetotal = poppler_document_get_n_pages(doc); 
     page = poppler_document_get_page(doc, 0);
+}
+
+void preview_refresh() {
+    GError *err = NULL;
+    
+    doc = poppler_document_new_from_file(uri, NULL, &err);
+    pagetotal = poppler_document_get_n_pages(doc); 
+    page = poppler_document_get_page(doc, 0);
+    gtk_widget_queue_draw(drawarea);
 }
 
 

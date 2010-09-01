@@ -34,6 +34,8 @@ typedef struct _GuPreview {
 
 GuPreview* preview_init(GtkBuilder * builder);
 void preview_set_pdffile(gchar *pdffile);
+void preview_refresh();
+
 gboolean on_expose(GtkWidget*, GdkEventExpose*, gpointer);
 
 #endif /* GUMMI_PREVIEW_H */
