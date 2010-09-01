@@ -7,6 +7,7 @@
  * All Rights reserved.
  */
 
+#include <stdlib.h>
 #include <string.h>
 
 #include "editor.h"
@@ -19,24 +20,38 @@ const gchar bracket_type[][16] = { "matrix", "pmatrix", "bmatrix",
 importer_t* importer_init(GtkBuilder* builder) {
     importer_t* i = (importer_t*)malloc(sizeof(importer_t));
 
-    i->import_tab = gtk_builder_get_object(builder, "import_tab");
+    i->import_tab =
+        GTK_NOTEBOOK(gtk_builder_get_object(builder, "import_tab"));
 
-    i->image_pane = gtk_builder_get_object(builder, "image_pane");
-    i->image_file = gtk_builder_get_object(builder, "image_file");
-    i->image_caption = gtk_builder_get_object(builder, "image_caption");
-    i->image_label = gtk_builder_get_object(builder, "image_label");
-    i->image_scale = gtk_builder_get_object(builder, "image_scale");
-    i->scaler = gtk_builder_get_object(builder, "image_scaler");
+    i->image_pane =
+        GTK_VIEWPORT(gtk_builder_get_object(builder, "image_pane"));
+    i->image_file =
+        GTK_ENTRY(gtk_builder_get_object(builder, "image_file"));
+    i->image_caption =
+        GTK_ENTRY(gtk_builder_get_object(builder, "image_caption"));
+    i->image_label =
+        GTK_ENTRY(gtk_builder_get_object(builder, "image_label"));
+    i->scaler =
+        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "image_scaler"));
 
-    i->table_pane = gtk_builder_get_object(builder, "table_pane");
-    i->table_comboalign = gtk_builder_get_object(builder, "table_comboalign");
-    i->table_comboborder = gtk_builder_get_object(builder, "table_comboborder");
-    i->table_rows = gtk_builder_get_object(builder, "table_rows");
-    i->table_cols = gtk_builder_get_object(builder, "table_cols");
+    i->table_pane =
+        GTK_VIEWPORT(gtk_builder_get_object(builder, "table_pane"));
+    i->table_comboalign =
+        GTK_COMBO_BOX(gtk_builder_get_object(builder, "table_comboalign"));
+    i->table_comboborder =
+        GTK_COMBO_BOX(gtk_builder_get_object(builder, "table_comboborder"));
+    i->table_rows =
+        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "table_rows"));
+    i->table_cols =
+        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "table_cols"));
 
-    i->matrix_rows = gtk_builder_get_object(builder, "table_rows");
-    i->matrix_cols = gtk_builder_get_object(builder, "table_cols");
-    i->matrix_combobracket =gtk_builder_get_object(builder,"table_combobracket");
+    i->matrix_rows =
+        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "table_rows"));
+    i->matrix_cols =
+        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "table_cols"));
+    i->matrix_combobracket =
+        GTK_COMBO_BOX(gtk_builder_get_object(builder,"table_combobracket"));
+
     gtk_adjustment_set_value(i->table_cols, 3);
     gtk_adjustment_set_value(i->table_rows, 3);
     gtk_adjustment_set_value(i->matrix_cols, 3);
@@ -48,9 +63,9 @@ void importer_insert_table(importer_t* ic, editor_t* ec) {
     GtkTextIter current;
     const gchar* text = importer_generate_table(ic);
     editor_get_current_iter(ec, &current);
-    gtk_text_buffer_insert(ec_sourcebuffer, &curret, text, strlen(text));
+    gtk_text_buffer_insert(ec_sourcebuffer, &current, text, strlen(text));
     gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
-    gtk_notebook_set_current_page(0);
+    gtk_notebook_set_current_page(ic->import_tab, 0);
 }
 
 void importer_insert_matrix(importer_t* ic, editor_t* ec) {
@@ -58,22 +73,23 @@ void importer_insert_matrix(importer_t* ic, editor_t* ec) {
     const gchar* text = importer_generate_matrix(ic);
     editor_insert_package(ec, "amsmath");
     editor_get_current_iter(ec, &current);
-    gtk_text_buffer_insert(ec_sourcebuffer, &curret, text, strlen(text));
+    gtk_text_buffer_insert(ec_sourcebuffer, &current, text, strlen(text));
     gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
-    gtk_notebook_set_current_page(0);
+    gtk_notebook_set_current_page(ic->import_tab, 0);
 }
 
 void importer_insert_image(importer_t* ic, editor_t* ec) {
     GtkTextIter current;
-    if (!utils_validate_path(imagefile))
-        return;
+    const gchar* text = importer_generate_image(ic);
+    //const gchar* imagefile = gtk_entry_get_text(ic->image_file);
+    //if (!utils_validate_path(imagefile))
+    //    return;
     editor_insert_package(ec, "graphicx");
-    importer_generate_image(ic);
     editor_get_current_iter(ec, &current);
-    gtk_text_buffer_insert(ec_sourcebuffer, &curret, text, strlen(text));
+    gtk_text_buffer_insert(ec_sourcebuffer, &current, text, strlen(text));
     gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     importer_imagegui_set_sensitive(ic, "", FALSE);
-    gtk_notebook_set_current_page(0);
+    gtk_notebook_set_current_page(ic->import_tab, 0);
 }
 
 void importer_imagegui_set_sensitive(importer_t* ic, const gchar* name,
@@ -96,7 +112,7 @@ const gchar* importer_generate_table(importer_t* ic) {
           line[] = "\n\\hline",
           tmp[BUFSIZ / 8];
     gint rows = gtk_adjustment_get_value(ic->table_rows);
-    gint cols gtk_adjustment_get_value(ic->table_cols);
+    gint cols = gtk_adjustment_get_value(ic->table_cols);
     gint borders = gtk_combo_box_get_active(ic->table_comboborder);
     gint alignment = gtk_combo_box_get_active(ic->table_comboalign);
 
@@ -120,7 +136,7 @@ const gchar* importer_generate_table(importer_t* ic) {
             else
                 strncat(table, "\\\\", BUFSIZ * 2);
         }
-        if (borders == 2 || (boders == 1 && i == rows -1))
+        if (borders == 2 || (borders == 1 && i == rows -1))
             strncat(table, line, BUFSIZ * 2);
     }
     strncat(result, begin_tabular, BUFSIZ *2);
@@ -129,7 +145,7 @@ const gchar* importer_generate_table(importer_t* ic) {
     return result;
 }
 
-void importer_generate_matrix(importer_t* ic) {
+const gchar* importer_generate_matrix(importer_t* ic) {
     gint i = 0, j = 0;
     static gchar result[BUFSIZ * 2] = { 0 };
     gchar tmp[BUFSIZ / 8];
@@ -156,7 +172,7 @@ void importer_generate_matrix(importer_t* ic) {
     return result;
 }
 
-void importer_generate_image(importer_t* ic) {
+const gchar* importer_generate_image(importer_t* ic) {
     const gchar* image_file = gtk_entry_get_text(ic->image_file);
     const gchar* caption = gtk_entry_get_text(ic->image_caption);
     const gchar* label = gtk_entry_get_text(ic->image_label);
