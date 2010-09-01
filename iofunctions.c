@@ -48,15 +48,7 @@ void iofunctions_load_file(iofunctions_t* iofunc, editor_t* ec, gchar *filename)
         iofunctions_load_default_text(iofunc, ec);
         return;
     }
-    
-    /* disable the text view while loading the buffer with the text */    
-    gtk_widget_set_sensitive(ec->sourceview, FALSE);
-    //buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (editor->text_view));
-    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(ec->sourcebuffer),
-        text, -1);
-    gtk_text_buffer_set_modified(GTK_TEXT_BUFFER
-        (ec->sourcebuffer), FALSE);
-    gtk_widget_set_sensitive(ec->sourceview, TRUE);
+    editor_fill_buffer(ec, text);
     g_free(text); 
 }
 
