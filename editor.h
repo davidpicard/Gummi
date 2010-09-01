@@ -48,6 +48,9 @@ void editor_start_search(editor_t* ec, const gchar* term,
         gboolean backwards, gboolean wholeword, gboolean matchcase);
 void editor_apply_searchtag(editor_t* ec);
 void editor_search_next(editor_t* ec, gboolean inverse);
+void editor_start_replace_next(editor_t* ec, const gchar* term,
+        const gchar* rterm, gboolean backwards, gboolean wholeword,
+        gboolean matchcase);
 void editor_start_replace_all(editor_t* ec, const gchar* term,
         const gchar* rterm, gboolean backwards, gboolean wholeword,
         gboolean matchcase);

@@ -72,5 +72,7 @@ int main (int argc, char *argv[]) {
 	
     motion_initial_preview(editor);
     gui_main();
+    gtk_builder_connect_signals(builder, NULL);       
+    gtk_main();
     return 0;
 }
