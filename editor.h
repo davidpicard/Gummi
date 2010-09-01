@@ -44,16 +44,13 @@ void editor_insert_bib(editor_t* ec, const gchar* package);
 void editor_set_selection_textstyle(editor_t* ec, GtkWidget* widget);
 void editor_apply_errortags(editor_t* ec, gint line);
 void editor_jumpto_search_result(editor_t* ec, gint direction);
-/* inverse: inverse the cursor position, in front of the word or behind */
 void editor_start_search(editor_t* ec, const gchar* term,
         gboolean backwards, gboolean wholeword, gboolean matchcase);
 void editor_apply_searchtag(editor_t* ec);
 void editor_search_next(editor_t* ec, gboolean inverse);
-
 void editor_start_replace_all(editor_t* ec, const gchar* term,
         const gchar* rterm, gboolean backwards, gboolean wholeword,
         gboolean matchcase);
-
 void editor_do_formatting(editor_t* ec, GtkWidget* widget);
 
 #endif /* GUMMI_EDITOR_H */
