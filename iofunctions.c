@@ -19,17 +19,17 @@
 
 // maybe create an environment struct with filename, statusbar, etc?
 
-iofunctions_t* iofunctions_init(void) {
-    iofunctions_t* iofunc = (iofunctions_t*)g_malloc(sizeof(iofunctions_t));
+GuIOFunc* iofunctions_init(void) {
+    GuIOFunc* iofunc = (GuIOFunc*)g_malloc(sizeof(GuIOFunc));
     return iofunc;
 }
 
-void iofunctions_load_default_text(iofunctions_t* iofunc, editor_t* ec) {
+void iofunctions_load_default_text(GuIOFunc* iofunc, GuEditor* ec) {
     slog(L_DEBUG, "loading default text\n");
     editor_fill_buffer(ec, config_get_value("welcome"));
 }
 
-void iofunctions_load_file(iofunctions_t* iofunc, editor_t* ec, gchar *filename)
+void iofunctions_load_file(GuIOFunc* iofunc, GuEditor* ec, gchar *filename)
 {
     GError          *err=NULL;
     gchar           *status;
@@ -55,7 +55,7 @@ void iofunctions_load_file(iofunctions_t* iofunc, editor_t* ec, gchar *filename)
     g_free(text); 
 }
 
-void iofunctions_write_file(iofunctions_t* iofunc, editor_t* ec,
+void iofunctions_write_file(GuIOFunc* iofunc, GuEditor* ec,
         gchar *filename) {
     GError          *err=NULL;
     gchar           *status;

@@ -23,8 +23,8 @@ PopplerPage* page;
 GtkWidget *drawarea;
 int pagetotal;
 
-preview_t* preview_init(GtkBuilder * builder) {
-    preview_t* p = (preview_t*)g_malloc(sizeof(preview_t));
+GuPreview* preview_init(GtkBuilder * builder) {
+    GuPreview* p = (GuPreview*)g_malloc(sizeof(GuPreview));
     GtkWidget *drawarea;
     
     GdkColor white = {0,0xffff,0xffff,0xffff};

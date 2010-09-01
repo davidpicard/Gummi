@@ -13,14 +13,14 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-typedef struct _template {
+typedef struct _Template {
     GtkWindow* templatewindow;
     GtkIconView* iconview;
     GtkButton* template_ok;
-} template_t;
+} GuTemplate;
 
-template_t* template_init(GtkBuilder* builder);
+GuTemplate* template_init(GtkBuilder* builder);
 void template_update_window(GdkEvent* event, void* button);
-const gchar* template_get(template_t* templ);
+const gchar* template_get(GuTemplate* templ);
 
 #endif /* GUMMI_TEMPLATE_H */

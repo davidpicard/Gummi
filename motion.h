@@ -5,14 +5,14 @@
 
 #include "editor.h"
 
-typedef struct _motion {
+typedef struct _GuMotion {
     gint dummy; // you can add members along the way
-} motion_t;
+} GuMotion;
 
-motion_t* motion_init(gint dum);
-void motion_initial_preview(editor_t* ec);
-void motion_update_workfile(editor_t* ec);
-void motion_update_pdffile(editor_t* ec);
+GuMotion* motion_init(gint dum);
+void motion_initial_preview(GuEditor* ec);
+void motion_update_workfile(GuEditor* ec);
+void motion_update_pdffile(GuEditor* ec);
 
 
 #endif /* GUMMI_MOTION_H */

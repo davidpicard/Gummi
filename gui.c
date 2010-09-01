@@ -11,9 +11,9 @@
 #include "updatecheck.h"
 #include "utils.h"
 
-extern gummi_t*     gummi;
-static searchgui_t*     searchgui;
-static importgui_t*     importgui;
+extern Gummi*     gummi;
+static GuSearchGui*     searchgui;
+static GuImportGui*     importgui;
 
 static GtkWidget   *mainwindow;
 static GtkWidget   *statusbar;
@@ -269,8 +269,8 @@ void on_button_searchwindow_replace_all_clicked(GtkWidget* widget, void* user) {
     );
 }
 
-importgui_t* importgui_init(void) {
-    importgui_t* i = (importgui_t*)g_malloc(sizeof(importgui_t));
+GuImportGui* importgui_init(void) {
+    GuImportGui* i = (GuImportGui*)g_malloc(sizeof(GuImportGui));
     i->box_image =
         GTK_HBOX(gtk_builder_get_object(g_builder, "box_image"));
     i->box_table =
@@ -416,9 +416,9 @@ gboolean statusbar_del_message(void* user) {
     return FALSE;
 }
 
-searchgui_t* searchgui_init(void) {
-    searchgui_t* searchgui;
-    searchgui = (searchgui_t*)g_malloc(sizeof(searchgui_t));
+GuSearchGui* searchgui_init(void) {
+    GuSearchGui* searchgui;
+    searchgui = (GuSearchGui*)g_malloc(sizeof(GuSearchGui));
     searchgui->searchwindow =
         GTK_WIDGET(gtk_builder_get_object(g_builder, "searchwindow"));
     searchgui->searchentry =
@@ -427,7 +427,7 @@ searchgui_t* searchgui_init(void) {
         GTK_ENTRY(gtk_builder_get_object(g_builder, "replaceentry"));
     searchgui->matchcase = TRUE;
     g_signal_connect(searchgui->searchentry, "changed",
-            G_CALLBACK(on_searchgui_text_changed), NULL);
+            G_CALLBACK(on_GuSearchGuiext_changed), NULL);
     return searchgui;
 }
 
@@ -446,7 +446,7 @@ void on_toggle_backwards_toggled(GtkWidget *widget, void* user) {
         gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 }
 
-void on_searchgui_text_changed(GtkEditable *editable, void* user) {
+void on_GuSearchGuiext_changed(GtkEditable *editable, void* user) {
     gummi->editor->replace_activated = FALSE;
 }
 

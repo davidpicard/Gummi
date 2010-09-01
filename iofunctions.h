@@ -12,15 +12,15 @@
 
 #include "editor.h"
 
-typedef struct _iofunctions {
+typedef struct _GuIOFunc {
     gint dummy;
-} iofunctions_t;
+} GuIOFunc;
 
-iofunctions_t* iofunctions_init(void);
+GuIOFunc* iofunctions_init(void);
 void iofunctions_error_message (const gchar *message);
-void iofunctions_load_default_text(iofunctions_t* iofunc, editor_t* ec);
-void iofunctions_load_file(iofunctions_t*, editor_t* ec, gchar*);
-void iofunctions_write_file(iofunctions_t* iofunc, editor_t* ec,
+void iofunctions_load_default_text(GuIOFunc* iofunc, GuEditor* ec);
+void iofunctions_load_file(GuIOFunc*, GuEditor* ec, gchar*);
+void iofunctions_write_file(GuIOFunc* iofunc, GuEditor* ec,
         gchar *filename);
 
 #endif /* GUMMI_IOFUNCTIONS_H */

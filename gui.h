@@ -8,23 +8,23 @@
 #define g_e_buffer GTK_TEXT_BUFFER(gummi->editor->sourcebuffer)
 #define g_builder gummi->builder
 
-typedef struct _searchgui  {
+typedef struct _GuSearchGui  {
     GtkWidget* searchwindow;
     GtkEntry* searchentry;
     GtkEntry* replaceentry;
     gboolean backwards;
     gboolean matchcase;
     gboolean wholeword;
-} searchgui_t;
+} GuSearchGui;
 
-typedef struct _importgui {
+typedef struct _GuImportGui {
     GtkHBox* box_image;
     GtkHBox* box_table;
     GtkHBox* box_matrix;
     GtkViewport* image_pane;
     GtkViewport* table_pane;
     GtkViewport* matrix_pane;
-} importgui_t;
+} GuImportGui;
 
 /* Main GUI */
 void gui_init(void);
@@ -62,14 +62,14 @@ void statusbar_set_message(gchar* message);
 gboolean statusbar_del_message(void* user);
 
 /* Search Window */
-searchgui_t* searchgui_init(void);
+GuSearchGui* searchgui_init(void);
 void on_toggle_matchcase_toggled(GtkWidget* widget, void* user);
 void on_toggle_wholeword_toggled(GtkWidget* widget, void* user);
 void on_toggle_backwards_toggled(GtkWidget* widget, void* user);
-void on_searchgui_text_changed(GtkEditable* editable, void* user);
+void on_GuSearchGuiext_changed(GtkEditable* editable, void* user);
 
 /* Import GUI */
-importgui_t* importgui_init(void);
+GuImportGui* importgui_init(void);
 void on_button_import_table_apply_clicked(GtkWidget* widget, void* user);
 void on_button_import_image_apply_clicked(GtkWidget* widget, void* user);
 void on_button_import_matrix_apply_clicked(GtkWidget* widget, void* user);

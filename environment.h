@@ -28,26 +28,26 @@
 
 #define _(T) gettext(T)
 
-typedef struct _gummi {
+typedef struct _Gummi {
     gint workfd;
     gchar* filename;
     gchar* pdffile;
     gchar* workfile;
     const gchar* tmpdir;
     GtkBuilder* builder;
-    editor_t* editor;
-    importer_t* importer;
-    iofunctions_t* iofunc;
-    motion_t* motion;
-    preview_t* preview;
-    template_t* templ;
-} gummi_t;
+    GuEditor* editor;
+    GuImporter* importer;
+    GuIOFunc* iofunc;
+    GuMotion* motion;
+    GuPreview* preview;
+    GuTemplate* templ;
+} Gummi;
 
-gummi_t* gummi_init(GtkBuilder* bd, editor_t* ed, importer_t* im,
-        iofunctions_t* iof, motion_t* mo, preview_t* prev, template_t* tpl);
+Gummi* gummi_init(GtkBuilder* bd, GuEditor* ed, GuImporter* im,
+        GuIOFunc* iof, GuMotion* mo, GuPreview* prev, GuTemplate* tpl);
         
-void gummi_create_environment(gummi_t* gummi, const gchar* filename);
-void gummi_set_filename(gummi_t* gummi, const gchar* name);
+void gummi_create_environment(Gummi* gummi, const gchar* filename);
+void gummi_set_filename(Gummi* gummi, const gchar* name);
     
 
 #endif /* GUMMI_ENVIRONMENT_H */

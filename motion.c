@@ -8,15 +8,15 @@
 #include "environment.h"
 #include "utils.h"
 
-extern gummi_t* gummi;
+extern Gummi* gummi;
 
-motion_t* motion_init(gint dum) {
-    motion_t* m = (motion_t*)g_malloc(sizeof(motion_t));
+GuMotion* motion_init(gint dum) {
+    GuMotion* m = (GuMotion*)g_malloc(sizeof(GuMotion));
     m->dummy = dum;
     return m;
 }
 
-void motion_initial_preview(editor_t* ec) {
+void motion_initial_preview(GuEditor* ec) {
     motion_update_workfile(ec);
     motion_update_pdffile(ec);
     // if succes.. 
@@ -24,7 +24,7 @@ void motion_initial_preview(editor_t* ec) {
 }
 
 
-void motion_update_workfile(editor_t* ec) {
+void motion_update_workfile(GuEditor* ec) {
     GtkTextIter start;
     GtkTextIter end;
     gchar *text;
@@ -49,7 +49,7 @@ void motion_update_workfile(editor_t* ec) {
     // TODO: Maybe add editorviewer grab focus line here if necessary
 }
 
-void motion_update_pdffile(editor_t* ec) {
+void motion_update_pdffile(GuEditor* ec) {
     FILE *fp;
     int status;
     char path[PATH_MAX];

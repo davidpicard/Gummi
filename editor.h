@@ -20,7 +20,7 @@
 #define ec_sourcebuffer GTK_TEXT_BUFFER(ec->sourcebuffer)
 #define ec_sourceview GTK_TEXT_VIEW(ec->sourceview)
 
-typedef struct _editor_context {
+typedef struct _GuEditor {
     GtkWidget *sourceview;
     GtkSourceBuffer *sourcebuffer;
     GtkTextTag* errortag;
@@ -32,30 +32,30 @@ typedef struct _editor_context {
     gboolean wholeword;
     gboolean matchcase;
     gboolean cur_swap;
-} editor_t;
+} GuEditor;
 
-editor_t* editor_init(GtkBuilder *builder);
-void editor_sourceview_config(editor_t* ec);
-void editor_activate_spellchecking(editor_t* ec, gboolean status);
-void editor_fill_buffer(editor_t* ec, const gchar* text);
-gchar* editor_grab_buffer(editor_t* ec);
-void editor_insert_package(editor_t* ec, const gchar* package);
-void editor_insert_bib(editor_t* ec, const gchar* package);
-void editor_set_selection_textstyle(editor_t* ec, const gchar* type);
-void editor_apply_errortags(editor_t* ec, gint line);
-void editor_jumpto_search_result(editor_t* ec, gint direction);
-void editor_start_search(editor_t* ec, const gchar* term,
+GuEditor* editor_init(GtkBuilder *builder);
+void editor_sourceview_config(GuEditor* ec);
+void editor_activate_spellchecking(GuEditor* ec, gboolean status);
+void editor_fill_buffer(GuEditor* ec, const gchar* text);
+gchar* editor_grab_buffer(GuEditor* ec);
+void editor_insert_package(GuEditor* ec, const gchar* package);
+void editor_insert_bib(GuEditor* ec, const gchar* package);
+void editor_set_selection_textstyle(GuEditor* ec, const gchar* type);
+void editor_apply_errortags(GuEditor* ec, gint line);
+void editor_jumpto_search_result(GuEditor* ec, gint direction);
+void editor_start_search(GuEditor* ec, const gchar* term,
         gboolean backwards, gboolean wholeword, gboolean matchcase, gboolean cs);
-void editor_apply_searchtag(editor_t* ec);
-void editor_search_next(editor_t* ec, gboolean inverse);
-void editor_start_replace_next(editor_t* ec, const gchar* term,
+void editor_apply_searchtag(GuEditor* ec);
+void editor_search_next(GuEditor* ec, gboolean inverse);
+void editor_start_replace_next(GuEditor* ec, const gchar* term,
         const gchar* rterm, gboolean backwards, gboolean wholeword,
         gboolean matchcase);
-void editor_start_replace_all(editor_t* ec, const gchar* term,
+void editor_start_replace_all(GuEditor* ec, const gchar* term,
         const gchar* rterm, gboolean backwards, gboolean wholeword,
         gboolean matchcase);
-void editor_get_current_iter(editor_t* ec, GtkTextIter* current);
-void editor_undo_change(editor_t* ec);
-void editor_redo_change(editor_t* ec);
+void editor_get_current_iter(GuEditor* ec, GtkTextIter* current);
+void editor_undo_change(GuEditor* ec);
+void editor_redo_change(GuEditor* ec);
 
 #endif /* GUMMI_EDITOR_H */

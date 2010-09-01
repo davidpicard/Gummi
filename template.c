@@ -83,8 +83,8 @@ const gchar* template_report =
 "\\subsection{Subsection}\n"
 "\\end{document}\n";
 
-template_t* template_init(GtkBuilder* builder) {
-    template_t* t = (template_t*)g_malloc(sizeof(template_t));
+GuTemplate* template_init(GtkBuilder* builder) {
+    GuTemplate* t = (GuTemplate*)g_malloc(sizeof(GuTemplate));
     t->templatewindow =
         GTK_WINDOW(gtk_builder_get_object(builder, "templatewindow"));
     t->iconview =
@@ -102,7 +102,7 @@ void template_update_window(GdkEvent* event, void* button) {
     gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 }
 
-const gchar* template_get(template_t* templ) {
+const gchar* template_get(GuTemplate* templ) {
     GList* selection = gtk_icon_view_get_selected_items(templ->iconview);
     switch (*(gint*)(selection->data)) {
         case 0:

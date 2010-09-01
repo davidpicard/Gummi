@@ -15,9 +15,9 @@
 
 #include "utils.h"
 
-gummi_t* gummi_init(GtkBuilder* bd, editor_t* ed, importer_t* im,
-        iofunctions_t* iof, motion_t* mo, preview_t* prev, template_t* tpl) {
-    gummi_t* g = (gummi_t*)g_malloc(sizeof(gummi_t));
+Gummi* gummi_init(GtkBuilder* bd, GuEditor* ed, GuImporter* im,
+        GuIOFunc* iof, GuMotion* mo, GuPreview* prev, GuTemplate* tpl) {
+    Gummi* g = (Gummi*)g_malloc(sizeof(Gummi));
     g->workfd = -1;
     g->filename = NULL;   /* current opened file name in workspace */
     g->pdffile = NULL;
@@ -33,7 +33,7 @@ gummi_t* gummi_init(GtkBuilder* bd, editor_t* ed, importer_t* im,
     return g;
 }
 
-void gummi_create_environment(gummi_t* gummi, const gchar* filename) {
+void gummi_create_environment(Gummi* gummi, const gchar* filename) {
     gchar tname[BUFSIZ];
     snprintf(tname, BUFSIZ, "%s/gummi_XXXXXXX", gummi->tmpdir);
     gint tname_len = strlen(tname) + 1;
@@ -60,7 +60,7 @@ void gummi_create_environment(gummi_t* gummi, const gchar* filename) {
     slog(L_INFO, "PDF: %s\n\n", gummi->pdffile); 
 }
 
-void gummi_set_filename(gummi_t* gummi, const gchar* name) {
+void gummi_set_filename(Gummi* gummi, const gchar* name) {
     if (gummi->filename)
         g_free(gummi->filename);
     if (name) {

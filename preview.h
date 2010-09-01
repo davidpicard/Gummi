@@ -11,11 +11,11 @@
 #define GUMMI_PREVIEW_H
 #include <gtk/gtk.h>
 
-typedef struct _preview {
+typedef struct _GuPreview {
     gint dummy;
-} preview_t;
+} GuPreview;
 
-preview_t* preview_init(GtkBuilder * builder);
+GuPreview* preview_init(GtkBuilder * builder);
 void preview_set_pdffile(gchar *pdffile);
 gboolean on_expose(GtkWidget*, GdkEventExpose*, gpointer);
 

@@ -18,7 +18,7 @@
 #include "utils.h"
 
 static int debug = 0;
-gummi_t* gummi = 0;
+Gummi* gummi = 0;
 
 static GOptionEntry entries[] = {
     { (const gchar*)"debug", (gchar)'d', 0, G_OPTION_ARG_NONE, &debug, 
@@ -32,12 +32,12 @@ void on_window_destroy (GtkObject *object, gpointer user_data) {
 
 int main (int argc, char *argv[]) {
     GtkBuilder* builder;
-    editor_t* editor;
-    importer_t* importer;
-    iofunctions_t* iofunc;
-    motion_t* motion;
-    preview_t* preview;
-    template_t* templ;
+    GuEditor* editor;
+    GuImporter* importer;
+    GuIOFunc* iofunc;
+    GuMotion* motion;
+    GuPreview* preview;
+    GuTemplate* templ;
 
     /* set up i18n */
     bindtextdomain(PACKAGE, "/usr/share/locale");

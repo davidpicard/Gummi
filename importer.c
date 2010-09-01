@@ -20,8 +20,8 @@ const gchar align_type[][4] = { "l", "c", "r" };
 const gchar bracket_type[][16] = { "matrix", "pmatrix", "bmatrix",
                                   "Bmatrix", "vmatrix", "Vmatrix" };
 
-importer_t* importer_init(GtkBuilder* builder) {
-    importer_t* i = (importer_t*)g_malloc(sizeof(importer_t));
+GuImporter* importer_init(GtkBuilder* builder) {
+    GuImporter* i = (GuImporter*)g_malloc(sizeof(GuImporter));
 
     i->import_tabs =
         GTK_NOTEBOOK(gtk_builder_get_object(builder, "import_tabs"));
@@ -64,7 +64,7 @@ importer_t* importer_init(GtkBuilder* builder) {
     return i;
 }
 
-void importer_insert_table(importer_t* ic, editor_t* ec) {
+void importer_insert_table(GuImporter* ic, GuEditor* ec) {
     GtkTextIter current;
     const gchar* text = importer_generate_table(ic);
     editor_get_current_iter(ec, &current);
@@ -75,7 +75,7 @@ void importer_insert_table(importer_t* ic, editor_t* ec) {
     gtk_notebook_set_current_page(ic->import_tabs, 0);
 }
 
-void importer_insert_matrix(importer_t* ic, editor_t* ec) {
+void importer_insert_matrix(GuImporter* ic, GuEditor* ec) {
     GtkTextIter current;
     const gchar* text = importer_generate_matrix(ic);
     editor_insert_package(ec, "amsmath");
@@ -87,7 +87,7 @@ void importer_insert_matrix(importer_t* ic, editor_t* ec) {
     gtk_notebook_set_current_page(ic->import_tabs, 0);
 }
 
-void importer_insert_image(importer_t* ic, editor_t* ec) {
+void importer_insert_image(GuImporter* ic, GuEditor* ec) {
     GtkTextIter current;
     const gchar* text = importer_generate_image(ic);
     const gchar* imagefile = gtk_entry_get_text(ic->image_file);
@@ -105,7 +105,7 @@ void importer_insert_image(importer_t* ic, editor_t* ec) {
     gtk_notebook_set_current_page(ic->import_tabs, 0);
 }
 
-void importer_imagegui_set_sensitive(importer_t* ic, const gchar* name,
+void importer_imagegui_set_sensitive(GuImporter* ic, const gchar* name,
        gboolean mode) {
     gtk_widget_set_sensitive(GTK_WIDGET(ic->image_label), mode);
     gtk_widget_set_sensitive(GTK_WIDGET(ic->image_caption), mode);
@@ -116,7 +116,7 @@ void importer_imagegui_set_sensitive(importer_t* ic, const gchar* name,
     gtk_adjustment_set_value(ic->scaler, 1.00);
 }
 
-const gchar* importer_generate_table(importer_t* ic) {
+const gchar* importer_generate_table(GuImporter* ic) {
     gint i = 0, j = 0;
     static gchar result[BUFSIZ * 2] = { 0 };
     gchar table[BUFSIZ * 2] = { 0 },
@@ -161,7 +161,7 @@ const gchar* importer_generate_table(importer_t* ic) {
     return result;
 }
 
-const gchar* importer_generate_matrix(importer_t* ic) {
+const gchar* importer_generate_matrix(GuImporter* ic) {
     gint i = 0, j = 0;
     static gchar result[BUFSIZ * 2] = { 0 };
     gchar tmp[BUFSIZ / 8];
@@ -191,7 +191,7 @@ const gchar* importer_generate_matrix(importer_t* ic) {
     return result;
 }
 
-const gchar* importer_generate_image(importer_t* ic) {
+const gchar* importer_generate_image(GuImporter* ic) {
     const gchar* image_file = gtk_entry_get_text(ic->image_file);
     const gchar* caption = gtk_entry_get_text(ic->image_caption);
     const gchar* label = gtk_entry_get_text(ic->image_label);
