@@ -44,6 +44,8 @@ typedef struct _PrefsGui {
     GtkCheckButton* autosaving;
     GtkCheckButton* compile_status;
     GtkSpinButton* autosave_timer;
+    GtkComboBox* combo_languages;
+    GtkListStore* list_languages;
     GtkTextView* default_text;
     GtkTextBuffer* default_buffer;
     GtkComboBox* typesetter;

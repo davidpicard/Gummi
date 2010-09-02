@@ -469,6 +469,10 @@ PrefsGui* prefsgui_init(void) {
         GTK_CHECK_BUTTON(gtk_builder_get_object(builder, "compile_status")); 
     p->autosave_timer =
         GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "autosave_timer"));
+    p->combo_languages =
+        GTK_COMBO_BOX(gtk_builder_get_object(builder, "combo_languages"));
+    p->list_languages =
+        GTK_LIST_STORE(gtk_builder_get_object(builder, "list_languages"));
     p->default_text =
         GTK_TEXT_VIEW(gtk_builder_get_object(builder, "default_text"));
     p->default_buffer = 
@@ -537,7 +541,10 @@ void prefsgui_set_current_settings(PrefsGui* prefs) {
     if (0 == strcmp(config_get_value("compile_scheme"), "real_time"))
         gtk_combo_box_set_active(prefs->compile_scheme, 1);
 
-    /* TODO: spell language */
+#ifdef USE_GTKSPELL
+#else
+    gtk_widget_set_sensitive(GTK_WIDGET(prefs->combo_languages), FALSE);
+#endif
 }
 
 GuSearchGui* searchgui_init(void) {
