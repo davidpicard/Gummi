@@ -39,6 +39,10 @@ typedef struct _PrefsGui {
     GtkNotebook* notebook;
     GtkCheckButton* textwrap_button;
     GtkCheckButton* wordwrap_button;
+    GtkCheckButton* line_numbers;
+    GtkCheckButton* highlighting;
+    GtkCheckButton* autosaving;
+    GtkCheckButton* compile_status;
     GtkSpinButton* autosave_timer;
     GtkTextView* default_text;
     GtkTextBuffer* default_buffer;
@@ -48,8 +52,8 @@ typedef struct _PrefsGui {
     GtkSpinButton* compile_timer;
 
     GtkVBox* view_box;
-    GtkVBox* editor_box;
-    GtkVBox* compile_box;
+    GtkHBox* editor_box;
+    GtkHBox* compile_box;
 } PrefsGui;
 
 typedef struct _GuSearchGui  {
@@ -108,7 +112,7 @@ gboolean statusbar_del_message(void* user);
 /* Preference GUI */
 PrefsGui* prefsgui_init(void);
 void prefsgui_main(void);
-void prefsgui_set_current_settings(void);
+void prefsgui_set_current_settings(PrefsGui* prefs);
 
 /* Search Window */
 GuSearchGui* searchgui_init(void);

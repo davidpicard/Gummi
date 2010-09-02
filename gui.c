@@ -27,6 +27,7 @@
 #include "gui.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 #include <glib.h>
 
@@ -61,6 +62,7 @@ void gui_init() {
     
     hpaned= GTK_WIDGET(gtk_builder_get_object(g_builder, "hpaned"));
     gtk_paned_set_position(GTK_PANED(hpaned), (width/2)); 
+    prefsgui = prefsgui_init();
     searchgui = searchgui_init();
     importgui = importgui_init();
 }
@@ -166,7 +168,6 @@ void on_menu_selectall_activate(GtkWidget *widget, void * user) {
 }
 
 void on_menu_preferences_activate(GtkWidget *widget, void * user) {
-    prefsgui_init();
     prefsgui_main();
 }
 
@@ -445,76 +446,98 @@ gboolean statusbar_del_message(void* user) {
 }
 
 PrefsGui* prefsgui_init(void) {
-    prefsgui = (PrefsGui*)g_malloc(sizeof(PrefsGui));
+    PrefsGui* p = (PrefsGui*)g_malloc(sizeof(PrefsGui));
     GtkBuilder* builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, "gui/prefs.glade", NULL);
     gtk_builder_set_translation_domain(builder, PACKAGE);
 
-    prefsgui->prefwindow =
+    p->prefwindow =
         GTK_WIDGET(gtk_builder_get_object(builder, "prefwindow"));
-    prefsgui->notebook =
+    p->notebook =
         GTK_NOTEBOOK(gtk_builder_get_object(builder, "notebook1"));
-    prefsgui->textwrap_button =
+    p->textwrap_button =
         GTK_CHECK_BUTTON(gtk_builder_get_object(builder, "textwrapping"));
-    prefsgui->wordwrap_button =
+    p->wordwrap_button =
         GTK_CHECK_BUTTON(gtk_builder_get_object(builder, "wordwrapping"));
-    prefsgui->autosave_timer =
+    p->line_numbers =
+        GTK_CHECK_BUTTON(gtk_builder_get_object(builder, "line_numbers")); 
+    p->highlighting =
+        GTK_CHECK_BUTTON(gtk_builder_get_object(builder, "highlighting")); 
+    p->autosaving =
+        GTK_CHECK_BUTTON(gtk_builder_get_object(builder, "autosaving")); 
+    p->compile_status =
+        GTK_CHECK_BUTTON(gtk_builder_get_object(builder, "compile_status")); 
+    p->autosave_timer =
         GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "autosave_timer"));
-    prefsgui->default_text =
+    p->default_text =
         GTK_TEXT_VIEW(gtk_builder_get_object(builder, "default_text"));
-    prefsgui->default_buffer = 
-        gtk_text_view_get_buffer(prefsgui->default_text);
-    prefsgui->typesetter =
+    p->default_buffer = 
+        gtk_text_view_get_buffer(p->default_text);
+    p->typesetter =
         GTK_COMBO_BOX(gtk_builder_get_object(builder, "combo_typesetter"));
-    prefsgui->editor_font =
+    p->editor_font =
         GTK_FONT_BUTTON(gtk_builder_get_object(builder, "editor_font"));
-    prefsgui->compile_scheme =
+    p->compile_scheme =
         GTK_COMBO_BOX(gtk_builder_get_object(builder, "combo_compilescheme"));
-    prefsgui->compile_timer =
+    p->compile_timer =
         GTK_SPIN_BUTTON(gtk_builder_get_object(builder, "compile_timer"));
 
-    prefsgui->view_box =
+    p->view_box =
         GTK_VBOX(gtk_builder_get_object(builder, "view_box"));
-    prefsgui->editor_box =
-        GTK_VBOX(gtk_builder_get_object(builder, "editor_box"));
-    prefsgui->compile_box =
-        GTK_VBOX(gtk_builder_get_object(builder, "compile_box"));
+    p->editor_box =
+        GTK_HBOX(gtk_builder_get_object(builder, "editor_box"));
+    p->compile_box =
+        GTK_HBOX(gtk_builder_get_object(builder, "compile_box"));
 
-    gtk_window_set_transient_for(GTK_WINDOW(prefsgui->prefwindow), 
+    gtk_window_set_transient_for(GTK_WINDOW(p->prefwindow), 
                                  GTK_WINDOW(mainwindow));
 
     const gchar* font = config_get_value("font");
     slog(L_DEBUG, "setting font to %s\n", font);
     PangoFontDescription* font_desc = pango_font_description_from_string(font);
-    gtk_widget_modify_font(GTK_WIDGET(prefsgui->default_text), font_desc);
+    gtk_widget_modify_font(GTK_WIDGET(p->default_text), font_desc);
     pango_font_description_free(font_desc);
-    /* TODO: spell language */
+
     gtk_builder_connect_signals(builder, NULL);
-    prefsgui_set_current_settings();
-    return prefsgui;
+    prefsgui_set_current_settings(p);
+    return p;
 }
 
 void prefsgui_main(void) {
     gtk_widget_show_all(GTK_WIDGET(prefsgui->prefwindow));
 }
 
-void prefsgui_set_current_settings(void) {
-   // gtk_text_buffer_set_text(prefsgui->default_buffer, config_get_value("welcome"), 0);
-    /*
-    gtk_spin_button_set_value(autosave_timer,
-            atoi(config_get_value("autosave_timer")/60));
-    gtk_spin_button_set_value(compile_timer,
-            atoi(config_get_value("compile_timer")));
-    gtk_font_button_set_font_name(editor_font, config_get_value("font"));
-    gtk_text_buffer_set_text(default_buffer, config_get_value("welcome"));
+void prefsgui_set_current_settings(PrefsGui* prefs) {
+    /* set all checkboxs */
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs->textwrap_button),
+            (gboolean)config_get_value("textwrapping"));
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs->wordwrap_button),
+            (gboolean)config_get_value("wordwrapping"));
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs->line_numbers),
+            (gboolean)config_get_value("line_numbers"));
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs->highlighting),
+            (gboolean)config_get_value("highlighting"));
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs->autosaving),
+            (gboolean)config_get_value("autosaving"));
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs->compile_status),
+            (gboolean)config_get_value("compile_status"));
 
-    if (0 == strcmp(config_get_value("typesetter", "xelatex")))
-        gtk_combo_box_set_active(1);
+    gtk_spin_button_set_value(prefs->autosave_timer,
+            atoi(config_get_value("autosave_timer"))/60);
+    gtk_spin_button_set_value(prefs->compile_timer,
+            atoi(config_get_value("compile_timer")));
+    gtk_font_button_set_font_name(prefs->editor_font,
+            config_get_value("font"));
+    gtk_text_buffer_set_text(prefs->default_buffer,
+            config_get_value("welcome"), strlen(config_get_value("welcome")));
+
+    if (0 == strcmp(config_get_value("typesetter"), "xelatex"))
+        gtk_combo_box_set_active(prefs->typesetter, 1);
 
     if (0 == strcmp(config_get_value("compile_scheme"), "real_time"))
-        gtk_combo_box_set_active(1);
-*/
+        gtk_combo_box_set_active(prefs->compile_scheme, 1);
 
+    /* TODO: spell language */
 }
 
 GuSearchGui* searchgui_init(void) {
