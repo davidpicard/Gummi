@@ -141,7 +141,6 @@ pdata utils_peopn(gchar* const argv[]) {
             dup(pipes[1]);
             close(pipes[0]);
             execvp(argv[0], argv);
-            perror("execvp");
             slog(L_FATAL, "execlp() failed\n");
 
         case -1:

@@ -562,7 +562,7 @@ void prefsgui_set_current_settings(PrefsGui* prefs) {
 
 #ifdef USE_GTKSPELL
     /* list available languages */
-    static gchar* const argv[2] = { "enchant-lsmod", "-list-dicts" };
+    static gchar* const argv[2] = { "enchant-lsmod", "-list-dicts", NULL };
     gchar* ptr = 0;
     gint count = 1;
 
@@ -575,7 +575,7 @@ void prefsgui_set_current_settings(PrefsGui* prefs) {
         if (ptr[0] != '(') {
             gtk_list_store_append(prefs->list_languages, treeIter);
             gtk_list_store_set_value(prefs->list_languages, treeIter, 1,
-                    (gchararray)ptr);
+                    (GValue*)ptr);
         }
         ptr = strtok(NULL, " \n");
     }
