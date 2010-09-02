@@ -73,8 +73,7 @@ void motion_update_workfile(GuEditor* ec) {
     fp = fopen(gummi->workfile, "w");
     
     if(fp == NULL) {
-        perror("failed to open workfile");
-        // TODO: do your debug thingie!
+        slog(L_DEBUG, "unable to create workfile in tmpdir");
     }
     fwrite(text, strlen(text), 1, fp);
     g_free(text);
@@ -125,12 +124,12 @@ void motion_stop_updatepreview() {
 
 
 gboolean motion_updatepreview(GuEditor* ec) {
-    //if (gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(ec->sourcebuffer)) == TRUE) {
+    if (gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(ec->sourcebuffer)) == TRUE) {
         gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(ec->sourcebuffer), FALSE);
         motion_update_workfile(ec);
         motion_update_pdffile(ec);
         preview_refresh();
-    //}
+    }
     return TRUE;
 }
 
