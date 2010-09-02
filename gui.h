@@ -36,6 +36,7 @@
 #include "iofunctions.h"
 
 #define g_e_buffer GTK_TEXT_BUFFER(gummi->editor->sourcebuffer)
+#define g_e_view GTK_TEXT_VIEW(gummi->editor->sourceview)
 #define g_builder gummi->builder
 
 typedef struct _PrefsGui {
@@ -56,6 +57,8 @@ typedef struct _PrefsGui {
     GtkFontButton* editor_font;
     GtkComboBox* compile_scheme;
     GtkSpinButton* compile_timer;
+    GtkImage* changeimg;
+    GtkLabel* changelabel;
 
     GtkVBox* view_box;
     GtkHBox* editor_box;

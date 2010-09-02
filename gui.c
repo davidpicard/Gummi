@@ -501,6 +501,11 @@ PrefsGui* prefsgui_init(void) {
     p->compile_box =
         GTK_HBOX(gtk_builder_get_object(builder, "compile_box"));
 
+    p->changeimg =
+        GTK_IMAGE(gtk_builder_get_object(builder, "changeimg"));
+    p->changelabel =
+        GTK_LABEL(gtk_builder_get_object(builder, "changelabel"));
+
     gtk_window_set_transient_for(GTK_WINDOW(p->prefwindow), 
                                  GTK_WINDOW(mainwindow));
 
@@ -580,6 +585,48 @@ void prefsgui_set_current_settings(PrefsGui* prefs) {
 #endif
 }
 
+void toggle_linenumbers(GtkWidget* widget, void* user) {
+    gint newval = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+
+    config_set_value("line_numbers", newval? "True": "False");
+    gtk_source_view_set_show_line_numbers(GTK_SOURCE_VIEW(
+                gummi->editor->sourceview), newval);
+}
+
+void toggle_highlighting(GtkWidget* widget, void* user) {
+    gint newval = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+
+    config_set_value("highlighting", newval? "True": "False");
+    gtk_source_view_set_highlight_current_line(GTK_SOURCE_VIEW(
+                gummi->editor->sourceview), newval);
+}
+
+void toggle_textwrapping(GtkWidget* widget, void* user) {
+    gint newval = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+
+    config_set_value("textwrapping", newval? "True": "False");
+    if (newval) {
+        gtk_text_view_set_wrap_mode(g_e_view, GTK_WRAP_CHAR);
+        gtk_widget_set_sensitive(GTK_WIDGET(prefsgui->wordwrap_button), TRUE);
+    } else {
+        gtk_text_view_set_wrap_mode(g_e_view, GTK_WRAP_NONE);
+        config_set_value("wordwrapping", "False");
+        gtk_toggle_button_set_active(
+                GTK_TOGGLE_BUTTON(prefsgui->wordwrap_button), FALSE);
+        gtk_widget_set_sensitive(GTK_WIDGET(prefsgui->wordwrap_button), FALSE);
+    }
+}
+
+void toggle_wordwrapping(GtkWidget* widget, void* user) {
+    gint newval = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+
+    config_set_value("wordwrapping", newval? "True": "False");
+    if (newval)
+        gtk_text_view_set_wrap_mode(g_e_view, GTK_WRAP_WORD);
+    else
+        gtk_text_view_set_wrap_mode(g_e_view, GTK_WRAP_CHAR);
+}
+
 void on_prefs_close_clicked(GtkWidget* widget, void* user) {
     GtkTextIter start, end;
     if (2 == gtk_notebook_get_current_page(prefsgui->notebook)) {
@@ -594,6 +641,62 @@ void on_prefs_close_clicked(GtkWidget* widget, void* user) {
 void on_prefs_reset_clicked(GtkWidget* widget, void* user) {
     config_set_default();
     prefsgui_set_current_settings(prefsgui);
+}
+
+void on_autosave_value_changed(GtkWidget* widget, void* user) {
+    gint newval = gtk_spin_button_get_value(GTK_SPIN_BUTTON(widget));
+    gchar val_str[16];
+
+    snprintf(val_str, 16, "%d", newval);
+    config_set_value("autosave_timer", val_str);
+    //iofunction_reset_autosave();
+}
+
+void on_compile_value_changed(GtkWidget* widget, void* user) {
+    gint newval = gtk_spin_button_get_value(GTK_SPIN_BUTTON(widget));
+    gchar val_str[16];
+
+    snprintf(val_str, 16, "%d", newval);
+    config_set_value("compile_timer", val_str);
+    if (config_get_value("compile_status")) {
+       // motion_stop_updatepreview(gummi->editor);
+       // motion_start_updatepreview(gummi->editor);
+    }
+}
+
+void on_editor_font_set(GtkWidget* widget, void* user) {
+    const gchar* font = gtk_font_button_get_font_name(GTK_FONT_BUTTON(widget));
+    slog(L_DEBUG, "setting font to %s\n", font);
+    PangoFontDescription* font_desc = pango_font_description_from_string(font);
+    gtk_widget_modify_font(GTK_WIDGET(gummi->editor->sourceview), font_desc);
+    pango_font_description_free(font_desc);
+}
+
+void on_combo_typesetter_changed(GtkWidget* widget, void* user) {
+    gint selected = gtk_combo_box_get_active(GTK_COMBO_BOX(widget));
+    const gchar typesetter[][16] = { "pdflatex", "xelatex" };
+    config_set_value("typesetter", typesetter[selected]);
+    gtk_widget_show(GTK_WIDGET(prefsgui->changeimg));
+    gtk_widget_show(GTK_WIDGET(prefsgui->changelabel));
+}
+
+void on_combo_language_changed(GtkWidget* widget, void* user) {
+    gchar* selected = gtk_combo_box_get_active_text(GTK_COMBO_BOX(widget));
+    config_set_value("spell_language", selected);
+    editor_activate_spellchecking(gummi->editor, FALSE);
+    editor_activate_spellchecking(gummi->editor, TRUE);
+}
+
+void on_combo_compilescheme_changed(GtkWidget* widget, void* user) {
+    gint selected = gtk_combo_box_get_active(GTK_COMBO_BOX(widget));
+    const gchar scheme[][16] = { "on_idle", "real_time" };
+    if (config_get_value("compile_status")) {
+        motion_stop_updatepreview(gummi->motion);
+        config_set_value("compile_scheme", scheme[selected]);
+        motion_start_updatepreview(gummi->motion);
+    } else {
+        config_set_value("compile_scheme", scheme[selected]);
+    }
 }
 
 GuSearchGui* searchgui_init(void) {
