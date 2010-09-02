@@ -73,6 +73,9 @@ void motion_update_workfile(GuEditor* ec) {
     text = gtk_text_iter_get_text (&start, &end);
     gtk_widget_set_sensitive(ec->sourceview, TRUE);
     
+    // TODO: restore text iters to selection before compile
+    //gtk_text_buffer_select_range(ec->sourcebuffer, ec->
+    
     fp = fopen(gummi->workfile, "w");
     
     if(fp == NULL) {
