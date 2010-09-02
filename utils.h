@@ -43,6 +43,11 @@
 #define L_G_ERROR  0x20    /* recoverable error */
 #define L_G_FATAL  0x40    /* inrecoverable error */
 
+typedef struct _pdata {
+    gint ret;
+    gchar* data;
+} pdata;
+
 /**
  * @brief slog initlization
  * @param debug boolean value for whether output debug message or not
@@ -59,5 +64,6 @@ void slog(gint level, const gchar *fmt, ...);
 
 gboolean utils_yes_no_dialog(const gchar* message);
 gboolean utils_validate_path(const gchar* path);
+pdata utils_peopn(gchar* const* argv);
 
 #endif /* GUMMI_UTILS */

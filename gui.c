@@ -33,6 +33,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef WIN32
+#   include <unistd.h>
+#endif
+
 #include <glib.h>
 
 #include "configfile.h"
@@ -500,14 +504,18 @@ PrefsGui* prefsgui_init(void) {
     gtk_window_set_transient_for(GTK_WINDOW(p->prefwindow), 
                                  GTK_WINDOW(mainwindow));
 
-    const gchar* font = config_get_value("font");
-    slog(L_DEBUG, "setting font to %s\n", font);
-    PangoFontDescription* font_desc = pango_font_description_from_string(font);
-    gtk_widget_modify_font(GTK_WIDGET(p->default_text), font_desc);
-    pango_font_description_free(font_desc);
+#ifndef USE_GTKSPELL
+    /* remove gtkspell related GUIs if not used */
+    GtkHBox* hbox11 = GTK_HBOX(gtk_builder_get_object(builder, "hbox11"));
+    GtkHBox* hbox10 = GTK_HBOX(gtk_builder_get_object(builder, "hbox10"));
+    GtkLabel* label9 = GTK_LABEL(gtk_builder_get_object(builder, "label9"));
+    gtk_container_remove(GTK_CONTAINER(hbox11), GTK_WIDGET(label9));
+    gtk_container_remove(GTK_CONTAINER(hbox10), GTK_WIDGET(p->combo_languages));
+#endif
 
     gtk_builder_connect_signals(builder, NULL);
     prefsgui_set_current_settings(p);
+
     return p;
 }
 
@@ -516,6 +524,13 @@ void prefsgui_main(void) {
 }
 
 void prefsgui_set_current_settings(PrefsGui* prefs) {
+    /* set font */
+    const gchar* font = config_get_value("font");
+    slog(L_DEBUG, "setting font to %s\n", font);
+    PangoFontDescription* font_desc = pango_font_description_from_string(font);
+    gtk_widget_modify_font(GTK_WIDGET(prefs->default_text), font_desc);
+    pango_font_description_free(font_desc);
+
     /* set all checkboxs */
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs->textwrap_button),
             (gboolean)config_get_value("textwrapping"));
@@ -546,8 +561,25 @@ void prefsgui_set_current_settings(PrefsGui* prefs) {
         gtk_combo_box_set_active(prefs->compile_scheme, 1);
 
 #ifdef USE_GTKSPELL
-#else
-    gtk_widget_set_sensitive(GTK_WIDGET(prefs->combo_languages), FALSE);
+    /* list available languages */
+    static gchar* const argv[2] = { "enchant-lsmod", "-list-dicts" };
+    gchar* ptr = 0;
+    gint count = 1;
+
+    pdata pret = utils_peopn(argv);
+
+    ptr = strtok(pret.data, " \n");
+    while (ptr) {
+        GtkTreeIter* treeIter = (GtkTreeIter*)g_malloc(sizeof(GtkTreeIter));
+        memset(treeIter, 0, sizeof(GtkTreeIter));
+        if (ptr[0] != '(') {
+            gtk_list_store_append(prefs->list_languages, treeIter);
+            gtk_list_store_set_value(prefs->list_languages, treeIter, 1,
+                    (gchararray)ptr);
+        }
+        ptr = strtok(NULL, " \n");
+    }
+    gtk_combo_box_set_active(prefs->combo_languages, 0);
 #endif
 }
 

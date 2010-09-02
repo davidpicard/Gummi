@@ -38,6 +38,8 @@
 #   define VERSION "svn"
 #endif
 
+#define USE_GTKSPELL
+
 #include <libintl.h>
 
 #include "editor.h"

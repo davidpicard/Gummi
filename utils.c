@@ -33,6 +33,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef WIN32
+#   include <unistd.h>
+#   include <sys/types.h>
+#   include <sys/wait.h>
+#endif
+
 #include <glib.h>
 #include <gtk/gtk.h>
 
@@ -120,4 +126,33 @@ gboolean utils_validate_path(const gchar* path) {
     result = g_file_query_exists(file, NULL);
     g_object_unref(file);
     return result;
+}
+
+pdata utils_peopn(gchar* const argv[]) {
+    static gchar buf[BUFSIZ];
+    gint pipes[2];
+    pid_t pid = 0;
+    gint status = 0;
+    if (0 != pipe(pipes))
+        slog(L_FATAL, "pipe() failed\n");
+    switch (pid = fork()) {
+        case 0:
+            close(1);
+            dup(pipes[1]);
+            close(pipes[0]);
+            execvp(argv[0], argv);
+            perror("execvp");
+            slog(L_FATAL, "execlp() failed\n");
+
+        case -1:
+            slog(L_FATAL, "fork() failed\n");
+
+        default:
+            if (-1 == (status = waitpid(pid, &status, 0)))
+                slog(L_FATAL, "waitpid() failed");
+            read(pipes[0], buf, BUFSIZ);
+            close(pipes[0]);
+            close(pipes[1]);
+    }
+    return (pdata){status, buf};
 }
