@@ -27,10 +27,12 @@
 #include "motion.h"
 
 #include <gtk/gtk.h>
+#include <glib.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
+#include "configfile.h"
 #include "environment.h"
 #include "utils.h"
 
@@ -107,8 +109,13 @@ void motion_update_pdffile(GuEditor* ec) {
 
 
 void motion_start_updatepreview(GuEditor* ec) {
-    // request config and such.. 
-    update = g_timeout_add_seconds(2, motion_updatepreview, ec);
+    gboolean compile_activated;
+    guint compile_timer;
+    compile_activated = (gboolean)config_get_value("compile_status");
+    compile_timer = atoi(config_get_value("compile_timer"));
+    if (compile_activated) {
+        update = g_timeout_add_seconds(compile_timer, motion_updatepreview, ec);
+    }
 }
 
 
@@ -118,9 +125,12 @@ void motion_stop_updatepreview() {
 
 
 gboolean motion_updatepreview(GuEditor* ec) {
-    motion_update_workfile(ec);
-    motion_update_pdffile(ec);
-    preview_refresh();
+    //if (gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(ec->sourcebuffer)) == TRUE) {
+        gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(ec->sourcebuffer), FALSE);
+        motion_update_workfile(ec);
+        motion_update_pdffile(ec);
+        preview_refresh();
+    //}
     return TRUE;
 }
 
