@@ -570,12 +570,10 @@ void prefsgui_set_current_settings(PrefsGui* prefs) {
 
     ptr = strtok(pret.data, " \n");
     while (ptr) {
-        GtkTreeIter* treeIter = (GtkTreeIter*)g_malloc(sizeof(GtkTreeIter));
-        memset(treeIter, 0, sizeof(GtkTreeIter));
+        GtkTreeIter iter;
         if (ptr[0] != '(') {
-            gtk_list_store_append(prefs->list_languages, treeIter);
-            gtk_list_store_set_value(prefs->list_languages, treeIter, 1,
-                    (GValue*)ptr);
+            gtk_list_store_append(prefs->list_languages, &iter);
+            gtk_list_store_set(prefs->list_languages, &iter, 0, ptr, -1);
         }
         ptr = strtok(NULL, " \n");
     }
