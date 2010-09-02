@@ -562,7 +562,7 @@ void prefsgui_set_current_settings(PrefsGui* prefs) {
 
 #ifdef USE_GTKSPELL
     /* list available languages */
-    static gchar* const argv[2] = { "enchant-lsmod", "-list-dicts", NULL };
+    static gchar* const argv[3] = { "enchant-lsmod", "-list-dicts", NULL };
     gchar* ptr = 0;
     gint count = 1;
 
