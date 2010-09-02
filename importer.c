@@ -75,7 +75,7 @@ GuImporter* importer_init(GtkBuilder* builder) {
     i->matrix_cols =
         GTK_ADJUSTMENT(gtk_builder_get_object(builder, "matrix_cols"));
     i->matrix_combobracket =
-        GTK_COMBO_BOX(gtk_builder_get_object(builder,"table_combobracket"));
+        GTK_COMBO_BOX(gtk_builder_get_object(builder,"matrix_combobracket"));
 
     gtk_adjustment_set_value(i->table_cols, 3);
     gtk_adjustment_set_value(i->table_rows, 3);
@@ -208,7 +208,9 @@ const gchar* importer_generate_matrix(GuImporter* ic) {
                 strncat(result, "\\\\", BUFSIZ * 2 -strlen(result) -1);
         }
     }
-    strncat(result, "\n\\end{matrix}$\n", BUFSIZ * 2 -strlen(result) -1);
+    strncat(result, "\n\\end{", BUFSIZ * 2 -strlen(result) -1);
+    strncat(result, bracket_type[bracket], BUFSIZ * 2 -strlen(result) -1);
+    strncat(result, "}$\n", BUFSIZ * 2 -strlen(result) -1);
     return result;
 }
 
