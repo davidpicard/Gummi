@@ -72,7 +72,7 @@ void gummi_create_environment(Gummi* gummi, const gchar* filename) {
     if (gummi->pdffile) g_free(gummi->pdffile);
     gummi->pdffile = (gchar*)g_malloc(tname_len + 4);    
     strncpy(gummi->pdffile, tname, tname_len +4);
-    strncat(gummi->pdffile, ".pdf", tname_len +4);
+    strncat(gummi->pdffile, ".pdf", tname_len - strlen(gummi->pdffile) +3);
     
     slog(L_INFO, "Environment created for:\n");
     slog(L_INFO, "TEX: %s\n", gummi->filename);

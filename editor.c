@@ -220,15 +220,11 @@ void editor_set_selection_textstyle(GuEditor* ec, const gchar* type) {
         }
 
     /* generate regex expression */
-    strncpy(regexbuf, "(.*)", BUFSIZ);
-    if (style[selected][1][0] == '\\')
-        strncat(regexbuf, "\\", BUFSIZ);
-    strncat(regexbuf, style[selected][1], BUFSIZ);
-    strncat(regexbuf, "(.*)", BUFSIZ);
-    if (style[selected][2][0] == '\\')
-        strncat(regexbuf, "\\", BUFSIZ);
-    strncat(regexbuf, style[selected][2], BUFSIZ);
-    strncat(regexbuf, "(.*)", BUFSIZ);
+    snprintf(regexbuf, BUFSIZ, "(.*)%s%s(.*)%s%s(.*)",
+            (style[selected][1][0] == '\\')? "\\": "",
+            style[selected][1],
+            (style[selected][2][0] == '\\')? "\\": "",
+            style[selected][2]);
 
     match_str = g_regex_new(regexbuf, G_REGEX_DOTALL, 0, &error);
 

@@ -112,8 +112,8 @@ const gchar* config_get_value(const gchar* term) {
                 fgets(buf, BUF_MAX, fh);
                 buf[strlen(buf) -1] = 0;
                 if (buf[0] == '\t') {
-                    strncat(ret, "\n", BUF_MAX);
-                    strncat(ret, buf + 1, BUF_MAX);
+                    strncat(ret, "\n", BUF_MAX - strlen(ret) -1);
+                    strncat(ret, buf + 1, BUF_MAX - strlen(ret) -1);
                 } else break;
             }
             break;

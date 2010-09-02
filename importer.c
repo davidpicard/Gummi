@@ -153,31 +153,32 @@ const gchar* importer_generate_table(GuImporter* ic) {
     result[0] = 0;
 
     if (borders)
-        strncat(begin_tabular, "|", BUFSIZ);
+        strncat(begin_tabular, "|", BUFSIZ - strlen(begin_tabular) -1);
     for (i = 0; i < cols; ++i) {
-        strncat(begin_tabular, align_type[alignment], BUFSIZ);
+        strncat(begin_tabular, align_type[alignment], BUFSIZ
+                -strlen(begin_tabular) -1);
         if (borders == 2 || (borders == 1 && i == cols -1))
-            strncat(begin_tabular, "|", BUFSIZ);
+            strncat(begin_tabular, "|", BUFSIZ -strlen(begin_tabular) -1);
     }
-    strncat(begin_tabular, "}", BUFSIZ);
+    strncat(begin_tabular, "}", BUFSIZ -strlen(begin_tabular) -1);
     if (borders)
-        strncat(table, line, BUFSIZ * 2);
+        strncat(table, line, BUFSIZ * 2 -strlen(table) -1);
     for (i = 0; i < rows; ++i) {
-        strncat(table, "\n\t", BUFSIZ * 2);
+        strncat(table, "\n\t", BUFSIZ * 2 -strlen(table) -1);
         for (j = 0; j < cols; ++j) {
             snprintf(tmp, BUFSIZ/8, "%d%d", i + 1, j + 1);
-            strncat(table, tmp, BUFSIZ * 2);
+            strncat(table, tmp, BUFSIZ * 2 -strlen(table) -1);
             if (j != cols -1)
-                strncat(table, " & ", BUFSIZ * 2);
+                strncat(table, " & ", BUFSIZ * 2 -strlen(table) -1);
             else
-                strncat(table, "\\\\", BUFSIZ * 2);
+                strncat(table, "\\\\", BUFSIZ * 2 -strlen(table) -1);
         }
         if (borders == 2 || (borders == 1 && i == rows -1))
-            strncat(table, line, BUFSIZ * 2);
+            strncat(table, line, BUFSIZ * 2 -strlen(table) -1);
     }
-    strncat(result, begin_tabular, BUFSIZ *2);
-    strncat(result, table, BUFSIZ *2);
-    strncat(result, end_tabular, BUFSIZ *2);
+    strncat(result, begin_tabular, BUFSIZ *2 -strlen(result) -1);
+    strncat(result, table, BUFSIZ *2 -strlen(result) -1);
+    strncat(result, end_tabular, BUFSIZ *2 -strlen(result) -1);
     return result;
 }
 
@@ -192,22 +193,22 @@ const gchar* importer_generate_matrix(GuImporter* ic) {
     /* clear previous data */
     result[0] = 0;
 
-    strncat(result, "$\\begin{", BUFSIZ * 2);
-    strncat(result, bracket_type[bracket], BUFSIZ * 2);
-    strncat(result, "}", BUFSIZ * 2);
+    strncat(result, "$\\begin{", BUFSIZ * 2 -strlen(result) -1);
+    strncat(result, bracket_type[bracket], BUFSIZ * 2 -strlen(result) -1);
+    strncat(result, "}", BUFSIZ * 2 - strlen(result) -1);
 
     for (i = 0; i < rows; ++i) {
-        strncat(result, "\n\t", BUFSIZ * 2);
+        strncat(result, "\n\t", BUFSIZ * 2 -strlen(result) -1);
         for (j = 0; j < cols; ++j) {
             snprintf(tmp, BUFSIZ/8, "%d%d", i + 1, j + 1);
-            strncat(result, tmp, BUFSIZ * 2);
+            strncat(result, tmp, BUFSIZ * 2 -strlen(result) -1);
             if (j != cols -1)
-                strncat(result, " & ", BUFSIZ * 2);
+                strncat(result, " & ", BUFSIZ * 2 -strlen(result) -1);
             else
-                strncat(result, "\\\\", BUFSIZ * 2);
+                strncat(result, "\\\\", BUFSIZ * 2 -strlen(result) -1);
         }
     }
-    strncat(result, "\n\\end{matrix}$\n", BUFSIZ * 2);
+    strncat(result, "\n\\end{matrix}$\n", BUFSIZ * 2 -strlen(result) -1);
     return result;
 }
 
