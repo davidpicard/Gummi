@@ -30,10 +30,12 @@
 
 #include "template.h"
 
+#include <stdlib.h>
+
 #include <glib.h>
 #include <gtk/gtk.h>
 
-const gchar* template_article = 
+gchar* template_article = 
 "\\documentclass{article}\n"
 "\\author{[YOUR NAME]\\\\\n"
 "\\texttt{[YOUR EMAIL]}\n"
@@ -45,7 +47,7 @@ const gchar* template_article =
 "\n"
 "\\end{document}\n";
 
-const gchar* template_book =
+gchar* template_book =
 "\\documentclass[12pt]{book}\n"
 "\n"
 "\\begin{document}\n"
@@ -71,7 +73,7 @@ const gchar* template_book =
 "\n"
 "\\end{document}\n";
 
-const gchar* template_letter =
+gchar* template_letter =
 "\\documentclass{letter}\n"
 "\n"
 "\\signature{[YOURNAME]}\n"
@@ -87,7 +89,7 @@ const gchar* template_letter =
 "\\end{letter}\n"
 "\\end{document}\n";
 
-const gchar* template_report =
+gchar* template_report =
 "\\documentclass[]{report}\n"
 "\\begin{document}\n"
 "\n"
@@ -124,20 +126,8 @@ void template_update_window(GdkEvent* event, void* button) {
 }
 
 const gchar* template_get(GuTemplate* templ) {
+    const gchar* templates[] = { template_article, template_book,
+                                 template_letter, template_report };
     GList* selection = gtk_icon_view_get_selected_items(templ->iconview);
-    switch (*(gint*)(selection->data)) {
-        case 0:
-            return template_article;
-            break;
-        case 1:
-            return template_book;
-            break;
-        case 2:
-            return template_letter;
-            break;
-        case 3:
-            return template_report;
-            break;
-    }
-    return NULL;
+    return templates[atoi(gtk_tree_path_to_string(selection->data))];
 }
