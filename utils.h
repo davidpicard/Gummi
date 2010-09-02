@@ -64,6 +64,6 @@ void slog(gint level, const gchar *fmt, ...);
 
 gboolean utils_yes_no_dialog(const gchar* message);
 gboolean utils_validate_path(const gchar* path);
-pdata utils_peopn(gchar* const* argv);
+pdata utils_popen(gchar* const argv[]);
 
 #endif /* GUMMI_UTILS */

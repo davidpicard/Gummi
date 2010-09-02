@@ -33,7 +33,7 @@
 #include <glib.h>
 
 #define CONFIG_MAX 64
-#define BUF_MAX 256
+#define BUF_MAX BUFSIZ / 8
 
 typedef struct _finfo {
     gchar** pbuf;
@@ -69,7 +69,7 @@ void config_set_value(const gchar* term, const gchar* value);
 
 /* [Internal] */
 finfo config_load(void); 
-void config_save(gchar** pbuf, int len);
+void config_save(finfo fin);
 int config_find_index_of(gchar** pbuf, const gchar* term);
 
 #endif /* GUMMI_CONFIGFILE */

@@ -128,7 +128,7 @@ gboolean utils_validate_path(const gchar* path) {
     return result;
 }
 
-pdata utils_peopn(gchar* const argv[]) {
+pdata utils_popen(gchar* const argv[]) {
     static gchar buf[BUFSIZ];
     gint pipes[2];
     pid_t pid = 0;
@@ -141,7 +141,7 @@ pdata utils_peopn(gchar* const argv[]) {
             dup(pipes[1]);
             close(pipes[0]);
             execvp(argv[0], argv);
-            slog(L_FATAL, "execlp() failed\n");
+            slog(L_FATAL, "execvp() failed\n");
 
         case -1:
             slog(L_FATAL, "fork() failed\n");

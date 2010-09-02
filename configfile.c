@@ -137,15 +137,15 @@ void config_set_value(const gchar* term, const gchar* value) {
 
     fin.pbuf[index][strlen(term) + 3] = 0;
     for (i = 0; i < max; ++i) {
-        if (count == BUF_MAX -1) break;
+        if (count == BUF_MAX -2) break;
         buf[count++] = value[i];
         if (value[i] == '\n')
             buf[count++] = '\t';
     }
     buf[count] = 0;
 
-    strncat(fin.pbuf[index], buf, BUF_MAX -2);
-    strncat(fin.pbuf[index], "\n", BUF_MAX);
+    strncat(fin.pbuf[index], buf, BUF_MAX - strlen(fin.pbuf[index]) -2);
+    strncat(fin.pbuf[index], "\n", BUF_MAX - strlen(fin.pbuf[index]) -1);
 
     for (i = index + 1; i < fin.len; ++i) {
         if (fin.pbuf[i][0] == '\t')
@@ -153,7 +153,7 @@ void config_set_value(const gchar* term, const gchar* value) {
         else break;
     }
 
-    config_save(fin.pbuf, fin.len);
+    config_save(fin);
 
     for (i = 0; i < CONFIG_MAX; ++i)
         g_free(fin.pbuf[i]);
@@ -184,24 +184,24 @@ finfo config_load(void) {
     }
 
     while (!feof(fh)) {
-        if (count == BUF_MAX -1)
+        if (count == CONFIG_MAX -1)
             slog(L_FATAL, "maximum buffer size reached\n");
         fgets(pbuf[count++], BUF_MAX, fh);
-        pbuf[count -1][strlen(pbuf[count -1]) -1] = 0;
     }
+    --count;
     fclose(fh);
     return (finfo){ pbuf, count };
 }
 
-void config_save(gchar** pbuf, int len) {
+void config_save(finfo fin) {
     FILE* fh = 0;
     int i = 0;
     if (!(fh = fopen(config_filename, "w")))
         slog(L_FATAL, "can't open config for writing... abort\n");
 
-    for (i = 0; i < len; ++i) {
-        fputs(pbuf[i], fh);
-        fputs("\n", fh);
+    for (i = 0; i < fin.len; ++i) {
+        if (strlen(fin.pbuf[i]))
+            fputs(fin.pbuf[i], fh);
     }
     fclose(fh);
 }

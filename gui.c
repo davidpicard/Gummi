@@ -513,8 +513,8 @@ PrefsGui* prefsgui_init(void) {
     gtk_container_remove(GTK_CONTAINER(hbox10), GTK_WIDGET(p->combo_languages));
 #endif
 
-    gtk_builder_connect_signals(builder, NULL);
     prefsgui_set_current_settings(p);
+    gtk_builder_connect_signals(builder, NULL);
 
     return p;
 }
@@ -562,11 +562,10 @@ void prefsgui_set_current_settings(PrefsGui* prefs) {
 
 #ifdef USE_GTKSPELL
     /* list available languages */
-    static gchar* const argv[3] = { "enchant-lsmod", "-list-dicts", NULL };
+    gchar* const argv[3] = { "enchant-lsmod", "-list-dicts", NULL };
     gchar* ptr = 0;
-    gint count = 1;
 
-    pdata pret = utils_peopn(argv);
+    pdata pret = utils_popen(argv);
 
     ptr = strtok(pret.data, " \n");
     while (ptr) {
@@ -579,6 +578,22 @@ void prefsgui_set_current_settings(PrefsGui* prefs) {
     }
     gtk_combo_box_set_active(prefs->combo_languages, 0);
 #endif
+}
+
+void on_prefs_close_clicked(GtkWidget* widget, void* user) {
+    GtkTextIter start, end;
+    if (2 == gtk_notebook_get_current_page(prefsgui->notebook)) {
+        gtk_text_buffer_get_start_iter(prefsgui->default_buffer, &start);
+        gtk_text_buffer_get_end_iter(prefsgui->default_buffer, &end);
+        config_set_value("welcome", gtk_text_buffer_get_text(
+                prefsgui->default_buffer, &start, &end, FALSE));
+    }
+    gtk_widget_hide(GTK_WIDGET(prefsgui->prefwindow));
+}
+
+void on_prefs_reset_clicked(GtkWidget* widget, void* user) {
+    config_set_default();
+    prefsgui_set_current_settings(prefsgui);
 }
 
 GuSearchGui* searchgui_init(void) {
