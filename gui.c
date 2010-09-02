@@ -68,7 +68,7 @@ void gui_init() {
 }
 
 void gui_main() {
-   // gtk_builder_connect_signals(g_builder, NULL);       
+    gtk_builder_connect_signals(g_builder, NULL);       
     gtk_widget_show_all(mainwindow);
     gtk_main();
 }
