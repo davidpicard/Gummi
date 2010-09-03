@@ -84,7 +84,7 @@ void gui_init() {
 }
 
 void gui_main() {
-    //gtk_builder_connect_signals(g_builder, NULL);       
+    gtk_builder_connect_signals(g_builder, NULL);       
     gtk_widget_show_all(mainwindow);
     gtk_main();
 }
@@ -684,6 +684,9 @@ void on_editor_font_set(GtkWidget* widget, void* user) {
     gtk_widget_modify_font(GTK_WIDGET(gummi->editor->sourceview), font_desc);
     pango_font_description_free(font_desc);
 }
+
+
+    
 
 void on_combo_typesetter_changed(GtkWidget* widget, void* user) {
     gint selected = gtk_combo_box_get_active(GTK_COMBO_BOX(widget));

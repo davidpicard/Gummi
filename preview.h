@@ -40,6 +40,9 @@ GuPreview* preview_init(GtkBuilder * builder);
 void preview_set_pdffile(gchar *pdffile);
 void preview_refresh();
 
+void preview_set_pagedata();
+void preview_goto_page(int page_number);
+
 gboolean on_expose(GtkWidget*, GdkEventExpose*, gpointer);
 
 #endif /* GUMMI_PREVIEW_H */
