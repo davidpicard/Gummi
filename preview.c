@@ -46,6 +46,8 @@ PopplerPage* page;
 GtkWidget *drawarea;
 GtkWidget *page_next;
 GtkWidget *page_prev;
+GtkWidget *page_label;
+GtkWidget *page_input;
 GtkWidget *scrollw;
 
 gchar *uri;
@@ -67,6 +69,8 @@ GuPreview* preview_init(GtkBuilder * builder) {
     scrollw = GTK_WIDGET(gtk_builder_get_object(builder, "preview_scroll"));
     page_next = GTK_WIDGET(gtk_builder_get_object(builder, "page_next"));
     page_prev = GTK_WIDGET(gtk_builder_get_object(builder, "page_prev"));
+    page_label = GTK_WIDGET(gtk_builder_get_object(builder, "page_label"));
+    page_input = GTK_WIDGET(gtk_builder_get_object(builder, "page_input"));
     gtk_widget_modify_bg (drawarea, GTK_STATE_NORMAL, &bg); 
 
     g_signal_connect(GTK_OBJECT (drawarea), "expose-event",
@@ -83,8 +87,10 @@ void preview_set_pdffile(gchar *pdffile) {
     doc = poppler_document_new_from_file(uri, NULL, &err);
     page = poppler_document_get_page(doc, page_current);
     poppler_page_get_size(page, &page_width, &page_height);
+    page_total = poppler_document_get_n_pages(doc);
     page_ratio = (page_width / page_height);
     page_scale = 1.0;
+    preview_set_pagedata();
 }
 
 void preview_refresh() {
@@ -104,7 +110,14 @@ void preview_set_pagedata() {
     else if (page_current >= page_total) {
         preview_goto_page(page_total -1);
     }
-    // set label text
+    char current[8];
+    snprintf(current, sizeof current, "%d", (page_current+1));
+    char total[8];
+    snprintf(total, sizeof total, "of %d", page_total);
+
+    gtk_entry_set_text(GTK_ENTRY(page_input), current);
+    gtk_label_set_text(GTK_LABEL(page_label), total);
+    
 }
 
 
