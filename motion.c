@@ -89,27 +89,20 @@ void motion_update_workfile(GuEditor* ec) {
 }
 
 void motion_update_pdffile(GuEditor* ec) {
-    FILE *fp;
-    int status;
-    char path[PATH_MAX];
-    char command[PATH_MAX];
-    snprintf(command, sizeof command, "pdflatex "
-                                    "-interaction=nonstopmode "
-                                    "-file-line-error "
-                                    "-halt-on-error "
-                                    "-output-directory='%s' '%s'", \
-                                    gummi->tmpdir, gummi->workfile);
-    fp = popen(command, "r");
-    if (fp == NULL) {
-        // handle error
-    }
-    while (fgets(path, PATH_MAX, fp) != NULL)
-        printf("%s", path);
-        
-    status = pclose(fp);
-    if (status == -1) {
-         // handle error
-    }
+    const char *typesetter = config_get_value("typesetter");
+    char output_dir[PATH_MAX];
+    snprintf(output_dir, sizeof output_dir, "-output-directory=%s", gummi->tmpdir);
+    
+    gchar* const pdfarg[7] = {typesetter,
+                              "-interaction=nonstopmode",
+                              "-file-line-error",
+                              "-halt-on-error",
+                              output_dir,
+                              gummi->workfile,
+                              NULL };
+
+    pdata cresult = utils_popen(pdfarg);
+    errorbuffer_set_text(cresult.data);
 }
 
 

@@ -51,9 +51,10 @@ static GuSearchGui*     searchgui;
 static GuImportGui*     importgui;
 static PrefsGui*        prefsgui;
 
-static GtkWidget   *mainwindow;
-static GtkWidget   *statusbar;
-static guint        statusid;
+static GtkWidget       *mainwindow;
+static GtkTextBuffer   *errorbuff;
+static GtkWidget       *statusbar;
+static guint            statusid;
 
 /* Many of the functions in this file are based on the excellent GTK+
  * tutorials written by Micah Carrick that can be found on: 
@@ -61,10 +62,17 @@ static guint        statusid;
 
 void gui_init() {
     GtkWidget    *hpaned;
+    GtkWidget    *errortext;
     gint          width, height;
     
     mainwindow = GTK_WIDGET(gtk_builder_get_object (g_builder, "mainwindow"));
+    errortext = GTK_WIDGET(gtk_builder_get_object (g_builder, "errorfield"));
     statusbar = GTK_WIDGET(gtk_builder_get_object (g_builder, "statusbar"));
+    
+    PangoFontDescription* font_desc = pango_font_description_from_string("Monospace 8");
+    gtk_widget_modify_font(errortext, font_desc);
+    pango_font_description_free(font_desc);
+    errorbuff = gtk_text_view_get_buffer(GTK_TEXT_VIEW(errortext));
     statusid = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "Gummi");
     gtk_window_get_size(GTK_WINDOW(mainwindow), &width, &height);
     
@@ -76,7 +84,7 @@ void gui_init() {
 }
 
 void gui_main() {
-    gtk_builder_connect_signals(g_builder, NULL);       
+    //gtk_builder_connect_signals(g_builder, NULL);       
     gtk_widget_show_all(mainwindow);
     gtk_main();
 }
@@ -441,6 +449,11 @@ gchar* get_save_filename(const gchar* name, const gchar* filter) {
     
     gtk_widget_destroy (chooser);
     return filename;
+}
+
+void errorbuffer_set_text(gchar *message) {
+    // TODO: Could place errorbuff in gui struct?
+    gtk_text_buffer_set_text(errorbuff, message, -1);
 }
 
 void statusbar_set_message(gchar *message) {

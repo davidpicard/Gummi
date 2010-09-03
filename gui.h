@@ -115,6 +115,7 @@ gchar* get_open_filename(const gchar* name, const gchar* filter);
 gchar* get_save_filename(const gchar* name, const gchar* filter);
 gboolean check_for_save(void);
 
+void errorbuffer_set_text(gchar *message);
 void statusbar_set_message(gchar* message);
 gboolean statusbar_del_message(void* user);
 
