@@ -45,6 +45,7 @@
 #include "iofunctions.h"
 #include "template.h"
 #include "utils.h"
+#include "biblio.h"
 
 static int debug = 0;
 Gummi* gummi = 0;
@@ -68,6 +69,7 @@ int main (int argc, char *argv[]) {
     GuMotion* motion;
     GuPreview* preview;
     GuTemplate* templ;
+    GuBiblio* biblio;
 
     /* set up i18n */
     bindtextdomain(PACKAGE, "/usr/share/locale");
@@ -96,6 +98,7 @@ int main (int argc, char *argv[]) {
     motion = motion_init(0); 
     preview = preview_init(builder);
     templ = template_init(builder);
+    biblio = biblio_init(builder);
 
     gummi = gummi_init(builder, gui, editor, importer, iofunc, motion,
             preview, templ);
