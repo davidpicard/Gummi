@@ -98,6 +98,7 @@ typedef struct _GummiGui {
 /* Main GUI */
 GummiGui* gui_init(GtkBuilder* builder);
 void gui_main(void);
+void gui_quit(void);
 void on_menu_new_activate(GtkWidget* widget, void* user);
 void on_menu_open_activate(GtkWidget* widget, void* user);
 void on_menu_save_activate(GtkWidget* widget, void* user);

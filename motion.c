@@ -120,8 +120,8 @@ void motion_stop_updatepreview() {
 
 
 gboolean motion_updatepreview(GuEditor* ec) {
-    if (gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(ec->sourcebuffer)) == TRUE) {
-        gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(ec->sourcebuffer), FALSE);
+    if (gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(ec->sourcebuffer)) == TRUE)
+    {
         motion_update_workfile(ec);
         motion_update_pdffile(ec);
         preview_refresh();

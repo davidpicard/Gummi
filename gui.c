@@ -92,11 +92,17 @@ void gui_main() {
     gtk_main();
 }
 
+void gui_quit() {
+    if (check_for_save())
+      on_menu_save_activate(NULL, NULL);  
+    gtk_main_quit();
+}
+
 void on_menu_new_activate(GtkWidget *widget, void* user) {
     const char *text;
     
-    if (check_for_save () == TRUE)
-          on_menu_save_activate(NULL, NULL);  
+    if (check_for_save ())
+        on_menu_save_activate(NULL, NULL);  
     /* clear editor for a new file */
     text = config_get_value("welcome");
     gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_e_buffer), text, -1);
@@ -394,7 +400,7 @@ void on_import_tabs_switch_page(GtkNotebook* notebook, GtkNotebookPage* page,
 gboolean check_for_save() {
     gboolean      ret = FALSE;
     
-    if (gtk_text_buffer_get_modified (g_e_buffer) == TRUE) {
+    if (gtk_text_buffer_get_modified (g_e_buffer)) {
         /* we need to prompt for save */    
         GtkWidget       *dialog;
 
