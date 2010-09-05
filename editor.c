@@ -86,6 +86,10 @@ GuEditor* editor_init(GtkBuilder* builder) {
 #endif
 
     editor_sourceview_config(ec);
+
+    g_signal_connect(ec_sourceview, "key-press-event",
+            G_CALLBACK(editor_buffer_set_modified_cb), ec);
+    gtk_text_buffer_set_modified(ec_sourcebuffer, FALSE);
     return ec;
 }
 
@@ -115,8 +119,8 @@ void editor_sourceview_config(GuEditor* ec) {
     g_object_set(G_OBJECT(ec->searchtag), "background", "yellow", NULL);
 }
 
-void editor_activate_spellchecking(GuEditor* ec, gboolean status) {
 #ifdef USE_GTKSPELL
+void editor_activate_spellchecking(GuEditor* ec, gboolean status) {
     const gchar* lang = config_get_value("spell_language");
     GError* err = NULL;
     if (status) {
@@ -126,12 +130,11 @@ void editor_activate_spellchecking(GuEditor* ec, gboolean status) {
         if (!gtkspell_set_language(spell, lang, &err))
             slog(L_INFO, "gtkspell: %s\n", err->message);
     } else {
-        GtkSpell* spell = gtkspell_get_from_text_view(
-                ec_sourceview);
+        GtkSpell* spell = gtkspell_get_from_text_view(ec_sourceview);
         gtkspell_detach(spell);
     }
-#endif
 }
+#endif
 
 void editor_fill_buffer(GuEditor* ec, const gchar* text) {
     GtkTextIter start;
@@ -141,7 +144,7 @@ void editor_fill_buffer(GuEditor* ec, const gchar* text) {
     gtk_text_buffer_get_start_iter(ec_sourcebuffer, &start);
     gtk_widget_set_sensitive(GTK_WIDGET(ec->sourceview), FALSE);
     gtk_text_buffer_insert(ec_sourcebuffer, &start, text, strlen(text));
-    gtk_text_buffer_set_modified(ec_sourcebuffer, FALSE);
+    gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(ec->sourceview), TRUE);
     gtk_source_buffer_end_not_undoable_action(ec->sourcebuffer);
     gtk_text_buffer_end_user_action(ec_sourcebuffer);
@@ -171,6 +174,7 @@ void editor_insert_package(GuEditor* ec, const gchar* package) {
                 pkgstr, strlen(pkgstr));
         gtk_text_buffer_end_user_action(ec_sourcebuffer);
         gtk_source_buffer_end_not_undoable_action(ec->sourcebuffer);
+        gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     }
 }
 
@@ -191,6 +195,7 @@ void editor_insert_bib(GuEditor* ec, const gchar* package) {
                 pkgstr, strlen(pkgstr));
         gtk_text_buffer_end_user_action(ec_sourcebuffer);
         gtk_source_buffer_end_not_undoable_action(ec->sourcebuffer);
+        gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     }
 }
 
@@ -443,4 +448,10 @@ void editor_redo_change(GuEditor* ec) {
         gtk_source_buffer_redo(ec->sourcebuffer);
         gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     }
+}
+
+gboolean editor_buffer_set_modified_cb(GtkWidget* w, GdkEventKey* e, void* ec) {
+    gtk_text_buffer_set_modified(
+            GTK_TEXT_BUFFER(((GuEditor*)ec)->sourcebuffer), TRUE);
+    return FALSE;
 }

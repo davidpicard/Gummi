@@ -128,30 +128,14 @@ gboolean utils_validate_path(const gchar* path) {
     return result;
 }
 
-pdata utils_popen(gchar* const argv[]) {
+pdata utils_popen_r(const gchar* cmd) {
+    FILE* fp = popen(cmd, "r");
     static gchar buf[BUFSIZ];
-    gint pipes[2];
-    pid_t pid = 0;
     gint status = 0;
-    if (0 != pipe(pipes))
-        slog(L_FATAL, "pipe() failed\n");
-    switch (pid = fork()) {
-        case 0:
-            close(1);
-            dup(pipes[1]);
-            close(pipes[0]);
-            execvp(argv[0], argv);
-            slog(L_FATAL, "execvp() failed\n");
 
-        case -1:
-            slog(L_FATAL, "fork() failed\n");
-
-        default:
-            if (-1 == (status = waitpid(pid, &status, 0)))
-                slog(L_FATAL, "waitpid() failed");
-            read(pipes[0], buf, BUFSIZ);
-            close(pipes[0]);
-            close(pipes[1]);
-    }
+    if (!fp)
+        slog(L_FATAL, "popen error");
+    fread(buf, BUFSIZ, 1, fp);
+    status = WEXITSTATUS(pclose(fp));
     return (pdata){status, buf};
 }

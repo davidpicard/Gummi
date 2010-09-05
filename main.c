@@ -61,6 +61,7 @@ void on_window_destroy (GtkObject *object, gpointer user_data) {
 
 int main (int argc, char *argv[]) {
     GtkBuilder* builder;
+    GummiGui* gui;
     GuEditor* editor;
     GuImporter* importer;
     GuIOFunc* iofunc;
@@ -88,6 +89,7 @@ int main (int argc, char *argv[]) {
     gtk_builder_set_translation_domain(builder, PACKAGE);
 
     /* initialize classes */
+    gui = gui_init(builder);
     editor = editor_init(builder);
     importer = importer_init(builder);
     iofunc = iofunctions_init();
@@ -95,10 +97,8 @@ int main (int argc, char *argv[]) {
     preview = preview_init(builder);
     templ = template_init(builder);
 
-    gummi =
-        gummi_init(builder, editor, importer, iofunc, motion, preview, templ);
-
-    gui_init();
+    gummi = gummi_init(builder, gui, editor, importer, iofunc, motion,
+            preview, templ);
 
     if ( argc != 2 ) {
         iofunctions_load_default_text(gummi->iofunc, editor);

@@ -42,6 +42,7 @@
 
 #include <libintl.h>
 
+#include "gui.h"
 #include "editor.h"
 #include "importer.h"
 #include "iofunctions.h"
@@ -58,6 +59,7 @@ typedef struct _Gummi {
     gchar* workfile;
     const gchar* tmpdir;
     GtkBuilder* builder;
+    GummiGui* gui;
     GuEditor* editor;
     GuImporter* importer;
     GuIOFunc* iofunc;
@@ -66,7 +68,7 @@ typedef struct _Gummi {
     GuTemplate* templ;
 } Gummi;
 
-Gummi* gummi_init(GtkBuilder* bd, GuEditor* ed, GuImporter* im,
+Gummi* gummi_init(GtkBuilder* bd, GummiGui* gu, GuEditor* ed, GuImporter* im,
         GuIOFunc* iof, GuMotion* mo, GuPreview* prev, GuTemplate* tpl);
         
 void gummi_create_environment(Gummi* gummi, const gchar* filename);

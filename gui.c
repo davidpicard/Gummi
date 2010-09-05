@@ -46,55 +46,57 @@
 #include "updatecheck.h"
 #include "utils.h"
 
-extern Gummi*           gummi;
-static GuSearchGui*     searchgui;
-static GuImportGui*     importgui;
-static PrefsGui*        prefsgui;
-
-static GtkWidget       *mainwindow;
-static GtkTextBuffer   *errorbuff;
-static GtkWidget       *statusbar;
-static guint            statusid;
+extern Gummi* gummi;
 
 /* Many of the functions in this file are based on the excellent GTK+
  * tutorials written by Micah Carrick that can be found on: 
  * http://www.micahcarrick.com/gtk-glade-tutorial-part-3.html */
 
-void gui_init() {
+GummiGui* gui_init(GtkBuilder* builder) {
     GtkWidget    *hpaned;
     GtkWidget    *errortext;
     gint          width, height;
+
+    GummiGui* g = (GummiGui*)g_malloc(sizeof(GummiGui));
     
-    mainwindow = GTK_WIDGET(gtk_builder_get_object (g_builder, "mainwindow"));
-    errortext = GTK_WIDGET(gtk_builder_get_object (g_builder, "errorfield"));
-    statusbar = GTK_WIDGET(gtk_builder_get_object (g_builder, "statusbar"));
+    errortext = GTK_WIDGET(gtk_builder_get_object(builder, "errorfield"));
+    g->mainwindow =
+        GTK_WIDGET(gtk_builder_get_object(builder, "mainwindow"));
+    g->statusbar =
+        GTK_STATUSBAR(gtk_builder_get_object(builder, "statusbar"));
+    g->rightpane =
+        GTK_HBOX(gtk_builder_get_object(builder, "vbox2"));
+    g->errorbuff =
+        gtk_text_view_get_buffer(GTK_TEXT_VIEW(errortext));
+    g->statusid =
+        gtk_statusbar_get_context_id(GTK_STATUSBAR(g->statusbar), "Gummi");
+
+    g->prefsgui = prefsgui_init(g);
+    g->searchgui = searchgui_init(builder);
+    g->importgui = importgui_init(builder);
     
-    PangoFontDescription* font_desc = pango_font_description_from_string("Monospace 8");
+    PangoFontDescription* font_desc = 
+        pango_font_description_from_string("Monospace 8");
     gtk_widget_modify_font(errortext, font_desc);
     pango_font_description_free(font_desc);
-    errorbuff = gtk_text_view_get_buffer(GTK_TEXT_VIEW(errortext));
-    statusid = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "Gummi");
-    gtk_window_get_size(GTK_WINDOW(mainwindow), &width, &height);
+    gtk_window_get_size(GTK_WINDOW(g->mainwindow), &width, &height);
     
-    hpaned= GTK_WIDGET(gtk_builder_get_object(g_builder, "hpaned"));
+    hpaned= GTK_WIDGET(gtk_builder_get_object(builder, "hpaned"));
     gtk_paned_set_position(GTK_PANED(hpaned), (width/2)); 
-    prefsgui = prefsgui_init();
-    searchgui = searchgui_init();
-    importgui = importgui_init();
+    return g;
 }
 
 void gui_main() {
     gtk_builder_connect_signals(g_builder, NULL);       
-    gtk_widget_show_all(mainwindow);
+    gtk_widget_show_all(gummi->gui->mainwindow);
     gtk_main();
 }
 
 void on_menu_new_activate(GtkWidget *widget, void* user) {
     const char *text;
     
-    if (check_for_save () == TRUE) {
+    if (check_for_save () == TRUE)
           on_menu_save_activate(NULL, NULL);  
-    }
     /* clear editor for a new file */
     text = config_get_value("welcome");
     gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_e_buffer), text, -1);
@@ -200,10 +202,10 @@ void on_menu_fullscreen_toggled(GtkWidget *widget, void * user) {
 }
 
 void on_menu_find_activate(GtkWidget *widget, void* user) {
-    gtk_entry_set_text(searchgui->searchentry, "");
-    gtk_entry_set_text(searchgui->replaceentry, "");
-    gtk_widget_grab_focus(GTK_WIDGET(searchgui->searchentry));
-    gtk_widget_show_all(GTK_WIDGET(searchgui->searchwindow));
+    gtk_entry_set_text(gummi->gui->searchgui->searchentry, "");
+    gtk_entry_set_text(gummi->gui->searchgui->replaceentry, "");
+    gtk_widget_grab_focus(GTK_WIDGET(gummi->gui->searchgui->searchentry));
+    gtk_widget_show_all(GTK_WIDGET(gummi->gui->searchgui->searchwindow));
 }
 
 void on_menu_findnext_activate(GtkWidget *widget, void * user) {
@@ -279,16 +281,16 @@ void on_button_template_cancel_clicked(GtkWidget* widget, void* user) {
 }
 
 gboolean on_button_searchwindow_close_clicked(GtkWidget* widget, void* user) {
-    gtk_widget_hide(GTK_WIDGET(searchgui->searchwindow));
+    gtk_widget_hide(GTK_WIDGET(gummi->gui->searchgui->searchwindow));
     return TRUE;
 }
 
 void on_button_searchwindow_find_clicked(GtkWidget* widget, void* user) {
     editor_start_search(gummi->editor,
-        gtk_entry_get_text(searchgui->searchentry),
-        searchgui->backwards,
-        searchgui->wholeword,
-        searchgui->matchcase,
+        gtk_entry_get_text(gummi->gui->searchgui->searchentry),
+        gummi->gui->searchgui->backwards,
+        gummi->gui->searchgui->wholeword,
+        gummi->gui->searchgui->matchcase,
         0
     );
 }
@@ -296,38 +298,38 @@ void on_button_searchwindow_find_clicked(GtkWidget* widget, void* user) {
 void on_button_searchwindow_replace_next_clicked(GtkWidget* widget, void* user)
 {
     editor_start_replace_next(gummi->editor,
-        gtk_entry_get_text(searchgui->searchentry),
-        gtk_entry_get_text(searchgui->replaceentry),
-        searchgui->backwards,
-        searchgui->wholeword,
-        searchgui->matchcase
+        gtk_entry_get_text(gummi->gui->searchgui->searchentry),
+        gtk_entry_get_text(gummi->gui->searchgui->replaceentry),
+        gummi->gui->searchgui->backwards,
+        gummi->gui->searchgui->wholeword,
+        gummi->gui->searchgui->matchcase
     );
 }
 
 void on_button_searchwindow_replace_all_clicked(GtkWidget* widget, void* user) {
     editor_start_replace_all(gummi->editor,
-        gtk_entry_get_text(searchgui->searchentry),
-        gtk_entry_get_text(searchgui->replaceentry),
-        searchgui->backwards,
-        searchgui->wholeword,
-        searchgui->matchcase
+        gtk_entry_get_text(gummi->gui->searchgui->searchentry),
+        gtk_entry_get_text(gummi->gui->searchgui->replaceentry),
+        gummi->gui->searchgui->backwards,
+        gummi->gui->searchgui->wholeword,
+        gummi->gui->searchgui->matchcase
     );
 }
 
-GuImportGui* importgui_init(void) {
+GuImportGui* importgui_init(GtkBuilder* builder) {
     GuImportGui* i = (GuImportGui*)g_malloc(sizeof(GuImportGui));
     i->box_image =
-        GTK_HBOX(gtk_builder_get_object(g_builder, "box_image"));
+        GTK_HBOX(gtk_builder_get_object(builder, "box_image"));
     i->box_table =
-        GTK_HBOX(gtk_builder_get_object(g_builder, "box_table"));
+        GTK_HBOX(gtk_builder_get_object(builder, "box_table"));
     i->box_matrix =
-        GTK_HBOX(gtk_builder_get_object(g_builder, "box_matrix"));
+        GTK_HBOX(gtk_builder_get_object(builder, "box_matrix"));
     i->image_pane =
-        GTK_VIEWPORT(gtk_builder_get_object(g_builder, "image_pane"));
+        GTK_VIEWPORT(gtk_builder_get_object(builder, "image_pane"));
     i->table_pane =
-        GTK_VIEWPORT(gtk_builder_get_object(g_builder, "table_pane"));
+        GTK_VIEWPORT(gtk_builder_get_object(builder, "table_pane"));
     i->matrix_pane =
-        GTK_VIEWPORT(gtk_builder_get_object(g_builder, "matrix_pane"));
+        GTK_VIEWPORT(gtk_builder_get_object(builder, "matrix_pane"));
     return i;
 }
 
@@ -351,37 +353,40 @@ void on_image_file_activate(void) {
 void on_import_tabs_switch_page(GtkNotebook* notebook, GtkNotebookPage* page,
         guint page_num, void* user) {
     GList* list = NULL;
-    list = gtk_container_get_children(GTK_CONTAINER(importgui->box_image));
+    list = gtk_container_get_children(
+            GTK_CONTAINER(gummi->gui->importgui->box_image));
     while (list) {
-        gtk_container_remove(GTK_CONTAINER(importgui->box_image),
+        gtk_container_remove(GTK_CONTAINER(gummi->gui->importgui->box_image),
                 GTK_WIDGET(list->data));
         list = list->next;
     }
-    list = gtk_container_get_children(GTK_CONTAINER(importgui->box_table));
+    list = gtk_container_get_children(
+            GTK_CONTAINER(gummi->gui->importgui->box_table));
     while (list) {
-        gtk_container_remove(GTK_CONTAINER(importgui->box_table),
+        gtk_container_remove(GTK_CONTAINER(gummi->gui->importgui->box_table),
                 GTK_WIDGET(list->data));
         list = list->next;
     }
-    list = gtk_container_get_children(GTK_CONTAINER(importgui->box_matrix));
+    list = gtk_container_get_children(
+            GTK_CONTAINER(gummi->gui->importgui->box_matrix));
     while (list) {
-        gtk_container_remove(GTK_CONTAINER(importgui->box_matrix),
+        gtk_container_remove(GTK_CONTAINER(gummi->gui->importgui->box_matrix),
                 GTK_WIDGET(list->data));
         list = list->next;
     }
 
     switch (page_num) {
         case 1:
-            gtk_container_add(GTK_CONTAINER(importgui->box_image),
-                    GTK_WIDGET(importgui->image_pane));
+            gtk_container_add(GTK_CONTAINER(gummi->gui->importgui->box_image),
+                    GTK_WIDGET(gummi->gui->importgui->image_pane));
             break;
         case 2:
-            gtk_container_add(GTK_CONTAINER(importgui->box_table),
-                    GTK_WIDGET(importgui->table_pane));
+            gtk_container_add(GTK_CONTAINER(gummi->gui->importgui->box_table),
+                    GTK_WIDGET(gummi->gui->importgui->table_pane));
             break;
         case 3:
-            gtk_container_add(GTK_CONTAINER(importgui->box_matrix),
-                    GTK_WIDGET(importgui->matrix_pane));
+            gtk_container_add(GTK_CONTAINER(gummi->gui->importgui->box_matrix),
+                    GTK_WIDGET(gummi->gui->importgui->matrix_pane));
             break;
     }
 }
@@ -390,34 +395,34 @@ gboolean check_for_save() {
     gboolean      ret = FALSE;
     
     if (gtk_text_buffer_get_modified (g_e_buffer) == TRUE) {
-    /* we need to prompt for save */    
-    GtkWidget       *dialog;
-    
-    const gchar *msg  = "Do you want to save the changes you have made?";
-    
-    dialog = gtk_message_dialog_new (NULL, 
-             GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-             GTK_MESSAGE_QUESTION,
-             GTK_BUTTONS_YES_NO,
-             "%s", msg);
-    
-    gtk_window_set_title (GTK_WINDOW (dialog), "Save?");
-    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_NO) {
-        ret = FALSE;
-    }      
-    else ret = TRUE;
-        
-    gtk_widget_destroy (dialog);      
-    }     
+        /* we need to prompt for save */    
+        GtkWidget       *dialog;
+
+        const gchar *msg  = "Do you want to save the changes you have made?";
+
+        dialog = gtk_message_dialog_new (NULL, 
+                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                GTK_MESSAGE_QUESTION,
+                GTK_BUTTONS_YES_NO,
+                "%s", msg);
+
+        gtk_window_set_title (GTK_WINDOW (dialog), "Save?");
+        if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_NO) {
+            ret = FALSE;
+        }      
+        else ret = TRUE;
+
+        gtk_widget_destroy (dialog);      
+    }
     return ret;
 }
 
 gchar* get_open_filename(const gchar* name, const gchar* filter) {
     GtkWidget   *chooser;
-    gchar       *filename;
+    gchar       *filename = NULL;
        
     chooser = gtk_file_chooser_dialog_new ("Open File...",
-           GTK_WINDOW (mainwindow),
+           GTK_WINDOW (gummi->gui->mainwindow),
            GTK_FILE_CHOOSER_ACTION_OPEN,
            GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
            GTK_STOCK_OPEN, GTK_RESPONSE_OK,
@@ -436,7 +441,7 @@ gchar* get_save_filename(const gchar* name, const gchar* filter) {
     gchar           *filename=NULL;
         
     chooser = gtk_file_chooser_dialog_new ("Save File...",
-                           GTK_WINDOW (mainwindow),
+                           GTK_WINDOW (gummi->gui->mainwindow),
                            GTK_FILE_CHOOSER_ACTION_SAVE,
                            GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                            GTK_STOCK_SAVE, GTK_RESPONSE_OK,
@@ -452,22 +457,23 @@ gchar* get_save_filename(const gchar* name, const gchar* filter) {
 }
 
 void errorbuffer_set_text(gchar *message) {
-    // TODO: Could place errorbuff in gui struct?
-    gtk_text_buffer_set_text(errorbuff, message, -1);
+    gtk_text_buffer_set_text(gummi->gui->errorbuff, message, -1);
 }
 
 void statusbar_set_message(gchar *message) {
-    gtk_statusbar_push (GTK_STATUSBAR(statusbar), statusid, message);
+    gtk_statusbar_push (GTK_STATUSBAR(gummi->gui->statusbar),
+            gummi->gui->statusid, message);
     g_timeout_add_seconds(4, statusbar_del_message, NULL);
 }
 
 gboolean statusbar_del_message(void* user) {
-    gtk_statusbar_pop(GTK_STATUSBAR(statusbar),statusid);
+    gtk_statusbar_pop(GTK_STATUSBAR(gummi->gui->statusbar),
+            gummi->gui->statusid);
     return FALSE;
 }
 
-PrefsGui* prefsgui_init(void) {
-    PrefsGui* p = (PrefsGui*)g_malloc(sizeof(PrefsGui));
+GuPrefsGui* prefsgui_init(GummiGui* gui) {
+    GuPrefsGui* p = (GuPrefsGui*)g_malloc(sizeof(GuPrefsGui));
     GtkBuilder* builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, "gui/prefs.glade", NULL);
     gtk_builder_set_translation_domain(builder, PACKAGE);
@@ -520,7 +526,7 @@ PrefsGui* prefsgui_init(void) {
         GTK_LABEL(gtk_builder_get_object(builder, "changelabel"));
 
     gtk_window_set_transient_for(GTK_WINDOW(p->prefwindow), 
-                                 GTK_WINDOW(mainwindow));
+                                 GTK_WINDOW(gui->mainwindow));
 
 #ifndef USE_GTKSPELL
     /* remove gtkspell related GUIs if not used */
@@ -538,10 +544,10 @@ PrefsGui* prefsgui_init(void) {
 }
 
 void prefsgui_main(void) {
-    gtk_widget_show_all(GTK_WIDGET(prefsgui->prefwindow));
+    gtk_widget_show_all(GTK_WIDGET(gummi->gui->prefsgui->prefwindow));
 }
 
-void prefsgui_set_current_settings(PrefsGui* prefs) {
+void prefsgui_set_current_settings(GuPrefsGui* prefs) {
     /* set font */
     const gchar* font = config_get_value("font");
     slog(L_DEBUG, "setting font to %s\n", font);
@@ -580,10 +586,9 @@ void prefsgui_set_current_settings(PrefsGui* prefs) {
 
 #ifdef USE_GTKSPELL
     /* list available languages */
-    gchar* const argv[3] = { "enchant-lsmod", "-list-dicts", NULL };
     gchar* ptr = 0;
 
-    pdata pret = utils_popen(argv);
+    pdata pret = utils_popen_r("enchant-lsmod -list-dicts");
 
     ptr = strtok(pret.data, " \n");
     while (ptr) {
@@ -620,13 +625,13 @@ void toggle_textwrapping(GtkWidget* widget, void* user) {
     config_set_value("textwrapping", newval? "True": "False");
     if (newval) {
         gtk_text_view_set_wrap_mode(g_e_view, GTK_WRAP_CHAR);
-        gtk_widget_set_sensitive(GTK_WIDGET(prefsgui->wordwrap_button), TRUE);
+        gtk_widget_set_sensitive(GTK_WIDGET(gummi->gui->prefsgui->wordwrap_button), TRUE);
     } else {
         gtk_text_view_set_wrap_mode(g_e_view, GTK_WRAP_NONE);
         config_set_value("wordwrapping", "False");
         gtk_toggle_button_set_active(
-                GTK_TOGGLE_BUTTON(prefsgui->wordwrap_button), FALSE);
-        gtk_widget_set_sensitive(GTK_WIDGET(prefsgui->wordwrap_button), FALSE);
+                GTK_TOGGLE_BUTTON(gummi->gui->prefsgui->wordwrap_button), FALSE);
+        gtk_widget_set_sensitive(GTK_WIDGET(gummi->gui->prefsgui->wordwrap_button), FALSE);
     }
 }
 
@@ -642,18 +647,20 @@ void toggle_wordwrapping(GtkWidget* widget, void* user) {
 
 void on_prefs_close_clicked(GtkWidget* widget, void* user) {
     GtkTextIter start, end;
-    if (2 == gtk_notebook_get_current_page(prefsgui->notebook)) {
-        gtk_text_buffer_get_start_iter(prefsgui->default_buffer, &start);
-        gtk_text_buffer_get_end_iter(prefsgui->default_buffer, &end);
+    if (2 == gtk_notebook_get_current_page(gummi->gui->prefsgui->notebook)) {
+        gtk_text_buffer_get_start_iter(gummi->gui->prefsgui->default_buffer,
+                &start);
+        gtk_text_buffer_get_end_iter(gummi->gui->prefsgui->default_buffer,
+                &end);
         config_set_value("welcome", gtk_text_buffer_get_text(
-                prefsgui->default_buffer, &start, &end, FALSE));
+                gummi->gui->prefsgui->default_buffer, &start, &end, FALSE));
     }
-    gtk_widget_hide(GTK_WIDGET(prefsgui->prefwindow));
+    gtk_widget_hide(GTK_WIDGET(gummi->gui->prefsgui->prefwindow));
 }
 
 void on_prefs_reset_clicked(GtkWidget* widget, void* user) {
     config_set_default();
-    prefsgui_set_current_settings(prefsgui);
+    prefsgui_set_current_settings(gummi->gui->prefsgui);
 }
 
 void on_autosave_value_changed(GtkWidget* widget, void* user) {
@@ -685,23 +692,22 @@ void on_editor_font_set(GtkWidget* widget, void* user) {
     pango_font_description_free(font_desc);
 }
 
-
-    
-
 void on_combo_typesetter_changed(GtkWidget* widget, void* user) {
     gint selected = gtk_combo_box_get_active(GTK_COMBO_BOX(widget));
     const gchar typesetter[][16] = { "pdflatex", "xelatex" };
     config_set_value("typesetter", typesetter[selected]);
-    gtk_widget_show(GTK_WIDGET(prefsgui->changeimg));
-    gtk_widget_show(GTK_WIDGET(prefsgui->changelabel));
+    gtk_widget_show(GTK_WIDGET(gummi->gui->prefsgui->changeimg));
+    gtk_widget_show(GTK_WIDGET(gummi->gui->prefsgui->changelabel));
 }
 
+#ifdef USE_GTKSPELL
 void on_combo_language_changed(GtkWidget* widget, void* user) {
     gchar* selected = gtk_combo_box_get_active_text(GTK_COMBO_BOX(widget));
     config_set_value("spell_language", selected);
     editor_activate_spellchecking(gummi->editor, FALSE);
     editor_activate_spellchecking(gummi->editor, TRUE);
 }
+#endif
 
 void on_combo_compilescheme_changed(GtkWidget* widget, void* user) {
     gint selected = gtk_combo_box_get_active(GTK_COMBO_BOX(widget));
@@ -715,33 +721,33 @@ void on_combo_compilescheme_changed(GtkWidget* widget, void* user) {
     }
 }
 
-GuSearchGui* searchgui_init(void) {
-    GuSearchGui* searchgui;
-    searchgui = (GuSearchGui*)g_malloc(sizeof(GuSearchGui));
-    searchgui->searchwindow =
-        GTK_WIDGET(gtk_builder_get_object(g_builder, "searchwindow"));
-    searchgui->searchentry =
-        GTK_ENTRY(gtk_builder_get_object(g_builder, "searchentry"));
-    searchgui->replaceentry =
-        GTK_ENTRY(gtk_builder_get_object(g_builder, "replaceentry"));
-    searchgui->matchcase = TRUE;
-    g_signal_connect(searchgui->searchentry, "changed",
+GuSearchGui* searchgui_init(GtkBuilder* builder) {
+    GuSearchGui* s;
+    s = (GuSearchGui*)g_malloc(sizeof(GuSearchGui));
+    s->searchwindow =
+        GTK_WIDGET(gtk_builder_get_object(builder, "searchwindow"));
+    s->searchentry =
+        GTK_ENTRY(gtk_builder_get_object(builder, "searchentry"));
+    s->replaceentry =
+        GTK_ENTRY(gtk_builder_get_object(builder, "replaceentry"));
+    s->matchcase = TRUE;
+    g_signal_connect(s->searchentry, "changed",
             G_CALLBACK(on_GuSearchGuiext_changed), NULL);
-    return searchgui;
+    return s;
 }
 
 void on_toggle_matchcase_toggled(GtkWidget *widget, void* user) {
-    searchgui->matchcase =
+    gummi->gui->searchgui->matchcase =
         gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 }
 
 void on_toggle_wholeword_toggled(GtkWidget *widget, void* user) {
-    searchgui->wholeword =
+    gummi->gui->searchgui->wholeword =
         gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 }
 
 void on_toggle_backwards_toggled(GtkWidget *widget, void* user) {
-    searchgui->backwards =
+    gummi->gui->searchgui->backwards =
         gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 }
 

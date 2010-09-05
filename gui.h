@@ -39,7 +39,7 @@
 #define g_e_view GTK_TEXT_VIEW(gummi->editor->sourceview)
 #define g_builder gummi->builder
 
-typedef struct _PrefsGui {
+typedef struct _GuPrefsGui {
     GtkWidget* prefwindow;
     GtkNotebook* notebook;
     GtkCheckButton* textwrap_button;
@@ -63,7 +63,7 @@ typedef struct _PrefsGui {
     GtkVBox* view_box;
     GtkHBox* editor_box;
     GtkHBox* compile_box;
-} PrefsGui;
+} GuPrefsGui;
 
 typedef struct _GuSearchGui  {
     GtkWidget* searchwindow;
@@ -83,8 +83,20 @@ typedef struct _GuImportGui {
     GtkViewport* matrix_pane;
 } GuImportGui;
 
+typedef struct _GummiGui {
+    GuPrefsGui* prefsgui;
+    GuSearchGui* searchgui;
+    GuImportGui* importgui;
+
+    GtkWidget *mainwindow;
+    GtkTextBuffer *errorbuff;
+    GtkHBox* rightpane;
+    GtkStatusbar *statusbar;
+    guint statusid;
+} GummiGui;
+
 /* Main GUI */
-void gui_init(void);
+GummiGui* gui_init(GtkBuilder* builder);
 void gui_main(void);
 void on_menu_new_activate(GtkWidget* widget, void* user);
 void on_menu_open_activate(GtkWidget* widget, void* user);
@@ -120,19 +132,19 @@ void statusbar_set_message(gchar* message);
 gboolean statusbar_del_message(void* user);
 
 /* Preference GUI */
-PrefsGui* prefsgui_init(void);
+GuPrefsGui* prefsgui_init(GummiGui* gui);
 void prefsgui_main(void);
-void prefsgui_set_current_settings(PrefsGui* prefs);
+void prefsgui_set_current_settings(GuPrefsGui* prefs);
 
 /* Search Window */
-GuSearchGui* searchgui_init(void);
+GuSearchGui* searchgui_init(GtkBuilder* builder);
 void on_toggle_matchcase_toggled(GtkWidget* widget, void* user);
 void on_toggle_wholeword_toggled(GtkWidget* widget, void* user);
 void on_toggle_backwards_toggled(GtkWidget* widget, void* user);
 void on_GuSearchGuiext_changed(GtkEditable* editable, void* user);
 
 /* Import GUI */
-GuImportGui* importgui_init(void);
+GuImportGui* importgui_init(GtkBuilder* builder);
 void on_button_import_table_apply_clicked(GtkWidget* widget, void* user);
 void on_button_import_image_apply_clicked(GtkWidget* widget, void* user);
 void on_button_import_matrix_apply_clicked(GtkWidget* widget, void* user);

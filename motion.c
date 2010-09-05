@@ -89,19 +89,16 @@ void motion_update_workfile(GuEditor* ec) {
 }
 
 void motion_update_pdffile(GuEditor* ec) {
-    const char *typesetter = config_get_value("typesetter");
-    char output_dir[PATH_MAX];
-    snprintf(output_dir, sizeof output_dir, "-output-directory=%s", gummi->tmpdir);
-    
-    gchar* const pdfarg[7] = {typesetter,
-                              "-interaction=nonstopmode",
-                              "-file-line-error",
-                              "-halt-on-error",
-                              output_dir,
-                              gummi->workfile,
-                              NULL };
+    gchar command[BUFSIZ];
+    snprintf(command, sizeof command, "%s "
+                                      "-interaction=nonstopmode "
+                                      "-file-line-error "
+                                      "-halt-on-error "
+                                      "-output-directory='%s' '%s'", \
+                                      config_get_value("typesetter"),
+                                      gummi->tmpdir, gummi->workfile);
 
-    pdata cresult = utils_popen(pdfarg);
+    pdata cresult = utils_popen_r(command);
     errorbuffer_set_text(cresult.data);
 }
 

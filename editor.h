@@ -56,7 +56,11 @@ typedef struct _GuEditor {
 
 GuEditor* editor_init(GtkBuilder *builder);
 void editor_sourceview_config(GuEditor* ec);
+
+#ifdef USE_GTKSPELL
 void editor_activate_spellchecking(GuEditor* ec, gboolean status);
+#endif
+
 void editor_fill_buffer(GuEditor* ec, const gchar* text);
 gchar* editor_grab_buffer(GuEditor* ec);
 void editor_insert_package(GuEditor* ec, const gchar* package);
@@ -64,8 +68,8 @@ void editor_insert_bib(GuEditor* ec, const gchar* package);
 void editor_set_selection_textstyle(GuEditor* ec, const gchar* type);
 void editor_apply_errortags(GuEditor* ec, gint line);
 void editor_jumpto_search_result(GuEditor* ec, gint direction);
-void editor_start_search(GuEditor* ec, const gchar* term,
-        gboolean backwards, gboolean wholeword, gboolean matchcase, gboolean cs);
+void editor_start_search(GuEditor* ec, const gchar* term, gboolean backwards,
+        gboolean wholeword, gboolean matchcase, gboolean cs);
 void editor_apply_searchtag(GuEditor* ec);
 void editor_search_next(GuEditor* ec, gboolean inverse);
 void editor_start_replace_next(GuEditor* ec, const gchar* term,
@@ -77,5 +81,6 @@ void editor_start_replace_all(GuEditor* ec, const gchar* term,
 void editor_get_current_iter(GuEditor* ec, GtkTextIter* current);
 void editor_undo_change(GuEditor* ec);
 void editor_redo_change(GuEditor* ec);
+gboolean editor_buffer_set_modified_cb(GtkWidget* w, GdkEventKey* e, void* ec);
 
 #endif /* GUMMI_EDITOR_H */

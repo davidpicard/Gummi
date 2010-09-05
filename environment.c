@@ -35,7 +35,7 @@
 
 #include "utils.h"
 
-Gummi* gummi_init(GtkBuilder* bd, GuEditor* ed, GuImporter* im,
+Gummi* gummi_init(GtkBuilder* bd, GummiGui *gu, GuEditor* ed, GuImporter* im,
         GuIOFunc* iof, GuMotion* mo, GuPreview* prev, GuTemplate* tpl) {
     Gummi* g = (Gummi*)g_malloc(sizeof(Gummi));
     g->workfd = -1;
@@ -44,6 +44,7 @@ Gummi* gummi_init(GtkBuilder* bd, GuEditor* ed, GuImporter* im,
     g->workfile = NULL;
     g->tmpdir = g_get_tmp_dir();
     g->builder = bd;
+    g->gui = gu;
     g->editor = ed;
     g->importer = im;
     g->iofunc = iof;

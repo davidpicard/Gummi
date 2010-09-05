@@ -82,22 +82,13 @@ void iofunctions_write_file(GuIOFunc* iofunc, GuEditor* ec,
     gchar           *status;
     gchar           *text;
     gboolean         result;
-    GtkTextBuffer   *buffer;
-    GtkTextIter      start, end;
 
     status = g_strdup_printf ("Saving %s...", filename);
     statusbar_set_message(status);    
     g_free (status);
     while (gtk_events_pending()) gtk_main_iteration();
     
-    /* disable text view and get contents of buffer */ 
-    gtk_widget_set_sensitive (ec->sourceview, FALSE);
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ec->sourceview));
-    gtk_text_buffer_get_start_iter (buffer, &start);
-    gtk_text_buffer_get_end_iter (buffer, &end);
-    text = gtk_text_buffer_get_text (buffer, &start, &end, FALSE);       
-    gtk_text_buffer_set_modified (buffer, FALSE);
-    gtk_widget_set_sensitive (ec->sourceview, TRUE);
+    text = editor_grab_buffer(ec);
     
     /* set the contents of the file to the text from the buffer */
     if (filename != NULL)    
