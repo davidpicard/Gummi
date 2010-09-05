@@ -131,7 +131,8 @@ void editor_activate_spellchecking(GuEditor* ec, gboolean status) {
             slog(L_INFO, "gtkspell: %s\n", err->message);
     } else {
         GtkSpell* spell = gtkspell_get_from_text_view(ec_sourceview);
-        gtkspell_detach(spell);
+        if (spell)
+            gtkspell_detach(spell);
     }
 }
 #endif

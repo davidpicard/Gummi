@@ -36,9 +36,10 @@
 #include <gtksourceview/gtksourcebuffer.h>
 #include <gtksourceview/gtksourceview.h>
 
-#define SEARCH_RESULT_INIT_SIZE 16
 #define ec_sourcebuffer GTK_TEXT_BUFFER(ec->sourcebuffer)
 #define ec_sourceview GTK_TEXT_VIEW(ec->sourceview)
+
+#define USE_GTKSPELL
 
 typedef struct _GuEditor {
     GtkWidget *sourceview;
