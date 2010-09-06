@@ -37,4 +37,8 @@
 
 GuBiblio* biblio_init(GtkBuilder* builder);
 
+gboolean on_bibprogressbar_update();
+
+gboolean compile_bibliography();
+
 #endif /* GUMMI_BIBLIO_H */

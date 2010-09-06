@@ -113,9 +113,23 @@ void motion_start_updatepreview(GuEditor* ec) {
     }
 }
 
+/* NOTE: We should probably remove all config_get_value calls from the
+ * update functions, as it will cause disk IO requesting the value with
+ * every preview update*/
 
 void motion_stop_updatepreview() {
     g_source_remove(update);
+}
+
+void motion_update_auxfile() {
+    gchar command[BUFSIZ];
+    snprintf(command, sizeof command, "%s "
+                                      "--draftmode "
+                                      "-interaction=nonstopmode "
+                                      "--output-directory='%s' '%s'", \
+                                      config_get_value("typesetter"),
+                                      gummi->tmpdir, gummi->workfile);
+    utils_popen_r(command);
 }
 
 
