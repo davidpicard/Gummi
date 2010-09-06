@@ -279,11 +279,10 @@ void editor_apply_errortags(GuEditor* ec, gint line) {
 
 void editor_jumpto_search_result(GuEditor* ec, gint direction) {
     if (!ec->term) return;
-    if (direction == 1) {
+    if (direction == 1)
         editor_search_next(ec, FALSE);
-    } else {
+    else
         editor_search_next(ec, TRUE);
-    }
 }
 
 void editor_start_search(GuEditor* ec, const gchar* term,
