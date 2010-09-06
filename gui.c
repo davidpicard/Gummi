@@ -63,12 +63,26 @@ GummiGui* gui_init(GtkBuilder* builder) {
     errortext = GTK_WIDGET(gtk_builder_get_object(builder, "errorfield"));
     g->mainwindow =
         GTK_WIDGET(gtk_builder_get_object(builder, "mainwindow"));
+    g->toolbar =
+        GTK_HBOX(gtk_builder_get_object(builder, "toolbar"));
     g->statusbar =
         GTK_STATUSBAR(gtk_builder_get_object(builder, "statusbar"));
     g->rightpane =
-        GTK_HBOX(gtk_builder_get_object(builder, "vbox2"));
+        GTK_VBOX(gtk_builder_get_object(builder, "rightpanebox"));
+    g->previewoff = GTK_TOGGLE_TOOL_BUTTON(
+            gtk_builder_get_object(builder, "tool_previewoff"));
     g->errorbuff =
         gtk_text_view_get_buffer(GTK_TEXT_VIEW(errortext));
+#ifdef USE_GTKSPELL
+    g->menu_spelling =
+        GTK_CHECK_MENU_ITEM(gtk_builder_get_object(builder, "menu_spelling"));
+#endif
+    g->menu_toolbar =
+        GTK_CHECK_MENU_ITEM(gtk_builder_get_object(builder, "menu_toolbar"));
+    g->menu_statusbar =
+        GTK_CHECK_MENU_ITEM(gtk_builder_get_object(builder, "menu_statusbar"));
+    g->menu_rightpane =
+        GTK_CHECK_MENU_ITEM(gtk_builder_get_object(builder, "menu_rightpane"));
     g->statusid =
         gtk_statusbar_get_context_id(GTK_STATUSBAR(g->statusbar), "Gummi");
 
@@ -84,6 +98,27 @@ GummiGui* gui_init(GtkBuilder* builder) {
     
     hpaned= GTK_WIDGET(gtk_builder_get_object(builder, "hpaned"));
     gtk_paned_set_position(GTK_PANED(hpaned), (width/2)); 
+
+#ifndef USE_GTKSPELL
+    gtk_widget_set_sensitive(GTK_WIDGET(g->menu_spelling), FALSE);
+#endif
+    if (config_get_value("toolbar")) {
+        gtk_check_menu_item_set_active(g->menu_toolbar, TRUE);
+        gtk_widget_show(GTK_WIDGET(g->toolbar));
+    }
+
+    if (config_get_value("statusbar")) {
+        gtk_check_menu_item_set_active(g->menu_statusbar, TRUE);
+        gtk_widget_show(GTK_WIDGET(g->statusbar));
+    }
+
+    if (config_get_value("rightpane")) {
+        gtk_check_menu_item_set_active(g->menu_statusbar, TRUE);
+        gtk_widget_show(GTK_WIDGET(g->rightpane));
+    } else {
+        gtk_toggle_tool_button_set_active(g->previewoff, TRUE);
+    }
+
     return g;
 }
 
@@ -185,11 +220,13 @@ void on_menu_redo_activate(GtkWidget *widget, void* user) {
 }
 
 void on_menu_delete_activate(GtkWidget *widget, void * user) {
-    // insert contents
+    gtk_text_buffer_delete_selection(g_e_buffer, FALSE, TRUE);
 }
 
 void on_menu_selectall_activate(GtkWidget *widget, void * user) {
-    // insert contents
+    GtkTextIter start, end;
+    gtk_text_buffer_get_bounds(g_e_buffer, &start, &end);
+    gtk_text_buffer_select_range(g_e_buffer, &start, &end);
 }
 
 void on_menu_preferences_activate(GtkWidget *widget, void * user) {
@@ -197,15 +234,30 @@ void on_menu_preferences_activate(GtkWidget *widget, void * user) {
 }
 
 void on_menu_statusbar_toggled(GtkWidget *widget, void * user) {
-    // insert contents
+    if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget))) {
+        gtk_widget_show(GTK_WIDGET(gummi->gui->statusbar));
+        config_set_value("statusbar", "True");
+    } else {
+        gtk_widget_hide(GTK_WIDGET(gummi->gui->statusbar));
+        config_set_value("statusbar", "False");
+    }
 }
 
 void on_menu_toolbar_toggled(GtkWidget *widget, void * user) {
-    // insert contents
+    if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget))) {
+        gtk_widget_show(GTK_WIDGET(gummi->gui->toolbar));
+        config_set_value("toolbar", "True");
+    } else {
+        gtk_widget_hide(GTK_WIDGET(gummi->gui->toolbar));
+        config_set_value("toolbar", "False");
+    }
 }
 
 void on_menu_fullscreen_toggled(GtkWidget *widget, void * user) {
-    // insert contents
+    if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget)))
+        gtk_window_fullscreen(GTK_WINDOW(gummi->gui->mainwindow));
+    else
+        gtk_window_unfullscreen(GTK_WINDOW(gummi->gui->mainwindow));
 }
 
 void on_menu_find_activate(GtkWidget *widget, void* user) {
@@ -216,11 +268,11 @@ void on_menu_find_activate(GtkWidget *widget, void* user) {
 }
 
 void on_menu_findnext_activate(GtkWidget *widget, void * user) {
-    // insert contents
+    editor_jumpto_search_result(gummi->editor, 1);
 }
 
 void on_menu_findprev_activate(GtkWidget *widget, void * user) {
-    // insert contents
+    editor_jumpto_search_result(gummi->editor, -1);
 }
 
 void on_menu_bibload_activate(GtkWidget *widget, void * user) {
@@ -235,9 +287,17 @@ void on_menu_docstat_activate(GtkWidget *widget, void * user) {
     // insert contents
 }
 
+#ifdef USE_GTKSPELL
 void on_menu_spelling_toggled(GtkWidget *widget, void * user) {
-    // insert contents
+    if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget))) {
+        editor_activate_spellchecking(gummi->editor, TRUE);
+        config_set_value("spelling", "True");
+    } else {
+        editor_activate_spellchecking(gummi->editor, FALSE);
+        config_set_value("spelling", "False");
+    }
 }
+#endif
 
 void on_menu_update_activate(GtkWidget *widget, void * user) {
     gboolean ret = updatecheck();
@@ -246,9 +306,34 @@ void on_menu_update_activate(GtkWidget *widget, void * user) {
 }
 
 void on_menu_about_activate(GtkWidget *widget, void * user) {
-    // insert contents
-}
+    const gchar* authors[] = { "Alexander van der Mey\n"
+        "<alexvandermey@gmail.com>",
+        "Wei-Ning Huang\n"
+        "<aitjcize@gmail.com>\n",
+        "Contributors:",
+        "Thomas van der Burgt",
+        "Cameron Grout", NULL };
+    const gchar* artists[] = {"Template icon set from:\n"
+        "http://www.fatcow.com/free-icons/",
+        "Windows version Icon set from Elemetary Project:\n"
+        "http://www.elementary-project.com/", NULL};
 
+    GtkAboutDialog* dialog = GTK_ABOUT_DIALOG(gtk_about_dialog_new());
+    gtk_window_set_transient_for(GTK_WINDOW(dialog),
+                                 GTK_WINDOW(gummi->gui->mainwindow));
+    gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
+    gtk_about_dialog_set_authors(dialog, authors);
+    gtk_about_dialog_set_program_name(dialog, PACKAGE_NAME);
+    gtk_about_dialog_set_version(dialog, PACKAGE_VERSION);
+    gtk_about_dialog_set_website(dialog, PACKAGE_URL);
+    gtk_about_dialog_set_copyright(dialog, PACKAGE_COPYRIGHT);
+    gtk_about_dialog_set_license(dialog, PACKAGE_LICENSE);
+    //gtk_about_dialog_set_logo_icon_name(dialog, GUMMI_ICON)
+    gtk_about_dialog_set_comments(dialog, PACKAGE_COMMENTS);
+    gtk_about_dialog_set_artists(dialog, artists);
+    gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(GTK_WIDGET(dialog));
+}
 
 void on_tool_textstyle_bold_activate(GtkWidget* widget, void* user) {
     editor_set_selection_textstyle(gummi->editor, "tool_bold");
@@ -698,13 +783,15 @@ void toggle_textwrapping(GtkWidget* widget, void* user) {
     config_set_value("textwrapping", newval? "True": "False");
     if (newval) {
         gtk_text_view_set_wrap_mode(g_e_view, GTK_WRAP_CHAR);
-        gtk_widget_set_sensitive(GTK_WIDGET(gummi->gui->prefsgui->wordwrap_button), TRUE);
+        gtk_widget_set_sensitive(
+                GTK_WIDGET(gummi->gui->prefsgui->wordwrap_button), TRUE);
     } else {
         gtk_text_view_set_wrap_mode(g_e_view, GTK_WRAP_NONE);
         config_set_value("wordwrapping", "False");
-        gtk_toggle_button_set_active(
-                GTK_TOGGLE_BUTTON(gummi->gui->prefsgui->wordwrap_button), FALSE);
-        gtk_widget_set_sensitive(GTK_WIDGET(gummi->gui->prefsgui->wordwrap_button), FALSE);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(
+                    gummi->gui->prefsgui->wordwrap_button), FALSE);
+        gtk_widget_set_sensitive(
+                GTK_WIDGET(gummi->gui->prefsgui->wordwrap_button), FALSE);
     }
 }
 
@@ -752,8 +839,8 @@ void on_compile_value_changed(GtkWidget* widget, void* user) {
     snprintf(val_str, 16, "%d", newval);
     config_set_value("compile_timer", val_str);
     if (config_get_value("compile_status")) {
-       // motion_stop_updatepreview(gummi->editor);
-       // motion_start_updatepreview(gummi->editor);
+       motion_stop_updatepreview(gummi->motion);
+       motion_start_updatepreview(gummi->motion);
     }
 }
 
@@ -805,7 +892,7 @@ GuSearchGui* searchgui_init(GtkBuilder* builder) {
         GTK_ENTRY(gtk_builder_get_object(builder, "replaceentry"));
     s->matchcase = TRUE;
     g_signal_connect(s->searchentry, "changed",
-            G_CALLBACK(on_GuSearchGuiext_changed), NULL);
+            G_CALLBACK(on_searchgui_text_changed), NULL);
     return s;
 }
 
@@ -824,7 +911,7 @@ void on_toggle_backwards_toggled(GtkWidget *widget, void* user) {
         gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 }
 
-void on_GuSearchGuiext_changed(GtkEditable *editable, void* user) {
+void on_searchgui_text_changed(GtkEditable *editable, void* user) {
     gummi->editor->replace_activated = FALSE;
 }
 

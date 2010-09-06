@@ -74,7 +74,7 @@ const gchar config_str[] =
 "	\\begin{center}\n"
 "	\\Huge{Welcome to Gummi} \\\\\\\n"
 "	\\\\\n"
-"	\\LARGE{You are using the "VERSION" version.\\\\\n"
+"	\\LARGE{You are using the "PACKAGE_VERSION" version.\\\\\n"
 "	I welcome your suggestions at\\\\\n"
 "	http://gummi.midnightcoding.org}\\\\\n"
 "	\\end{center}\n"

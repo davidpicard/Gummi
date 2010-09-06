@@ -102,15 +102,15 @@ gboolean updatecheck(void) {
     for (i = strlen(data) -2; i >= 0 && data[i] != '\n'; --i);
     avail_version = data + i + 1;
     
-    slog(L_INFO, "Currently installed: "VERSION"\n");
+    slog(L_INFO, "Currently installed: "PACKAGE_VERSION"\n");
     slog(L_INFO, "Currently available: %s", avail_version);
 
     dialog = gtk_message_dialog_new (NULL, 
-            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-            GTK_MESSAGE_INFO,
-            GTK_BUTTONS_OK,
-            "Currently installed:\n"VERSION"\n\nCurrently available:\n%s",
-            avail_version);
+        GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+        GTK_MESSAGE_INFO,
+        GTK_BUTTONS_OK,
+        "Currently installed:\n"PACKAGE_VERSION"\n\nCurrently available:\n%s",
+        avail_version);
     gtk_window_set_title(GTK_WINDOW(dialog), "Update Check");
     gtk_dialog_run(GTK_DIALOG(dialog));      
     gtk_widget_destroy(dialog);

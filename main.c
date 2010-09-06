@@ -84,7 +84,7 @@ int main (int argc, char *argv[]) {
     config_init("gummi.cfg");
     gtk_init (&argc, &argv);
     
-    slog(L_DEBUG, PACKAGE" version: "VERSION"\n");
+    slog(L_DEBUG, PACKAGE_NAME" version: "PACKAGE_VERSION"\n");
     builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, "gui/gummi.glade", NULL);
     gtk_builder_set_translation_domain(builder, PACKAGE);

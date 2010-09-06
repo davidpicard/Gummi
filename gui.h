@@ -64,7 +64,7 @@ typedef struct _GuPrefsGui {
     GtkHBox* compile_box;
 } GuPrefsGui;
 
-typedef struct _GuSearchGui  {
+typedef struct _GuSearchGui {
     GtkWidget* searchwindow;
     GtkEntry* searchentry;
     GtkEntry* replaceentry;
@@ -89,8 +89,14 @@ typedef struct _GummiGui {
 
     GtkWidget *mainwindow;
     GtkTextBuffer *errorbuff;
-    GtkHBox* rightpane;
+    GtkVBox* rightpane;
+    GtkHBox* toolbar;
     GtkStatusbar *statusbar;
+    GtkToggleToolButton* previewoff;
+    GtkCheckMenuItem* menu_spelling;
+    GtkCheckMenuItem* menu_toolbar;
+    GtkCheckMenuItem* menu_statusbar;
+    GtkCheckMenuItem* menu_rightpane;
     guint statusid;
 } GummiGui;
 
@@ -108,6 +114,21 @@ void on_menu_copy_activate(GtkWidget* widget, void* user);
 void on_menu_paste_activate(GtkWidget* widget, void* user);
 void on_menu_undo_activate(GtkWidget* widget, void* user);
 void on_menu_redo_activate(GtkWidget* widget, void* user);
+void on_menu_delete_activate(GtkWidget *widget, void * user);
+void on_menu_selectall_activate(GtkWidget *widget, void * user);
+void on_menu_preferences_activate(GtkWidget *widget, void * user);
+void on_menu_statusbar_toggled(GtkWidget *widget, void * user);
+void on_menu_toolbar_toggled(GtkWidget *widget, void * user);
+void on_menu_fullscreen_toggled(GtkWidget *widget, void * user);
+void on_menu_find_activate(GtkWidget *widget, void* user);
+void on_menu_findnext_activate(GtkWidget *widget, void * user);
+void on_menu_findprev_activate(GtkWidget *widget, void * user);
+void on_menu_bibload_activate(GtkWidget *widget, void * user);
+void on_menu_bibupdate_activate(GtkWidget *widget, void * user);
+void on_menu_docstat_activate(GtkWidget *widget, void * user);
+void on_menu_spelling_toggled(GtkWidget *widget, void * user);
+void on_menu_update_activate(GtkWidget *widget, void * user);
+void on_menu_about_activate(GtkWidget *widget, void * user);
 void on_tool_textstyle_bold_activate(GtkWidget* widget, void* user);
 void on_tool_textstyle_italic_activate(GtkWidget* widget, void* user);
 void on_tool_textstyle_underline_activate(GtkWidget* widget, void* user);
@@ -126,7 +147,7 @@ void on_import_tabs_switch_page(GtkNotebook* notebook, GtkNotebookPage* page,
 void on_bibcompile_clicked(GtkWidget* widget, void* user);
 void on_bibrefresh_clicked(GtkWidget* widget, void* user);
 void on_bibreference_clicked(GtkWidget* widget, void* user);
-gboolean on_bibprogressbar_update();
+gboolean on_bibprogressbar_update(void);
 
 void preview_next_page(GtkWidget* widget, void* user);
 void preview_prev_page(GtkWidget* widget, void* user);
@@ -147,10 +168,18 @@ void prefsgui_set_current_settings(GuPrefsGui* prefs);
 
 /* Search Window */
 GuSearchGui* searchgui_init(GtkBuilder* builder);
+void on_prefs_close_clicked(GtkWidget* widget, void* user);
+void on_prefs_reset_clicked(GtkWidget* widget, void* user);
 void on_toggle_matchcase_toggled(GtkWidget* widget, void* user);
 void on_toggle_wholeword_toggled(GtkWidget* widget, void* user);
 void on_toggle_backwards_toggled(GtkWidget* widget, void* user);
-void on_GuSearchGuiext_changed(GtkEditable* editable, void* user);
+void on_searchgui_text_changed(GtkEditable* editable, void* user);
+void on_autosave_value_changed(GtkWidget* widget, void* user);
+void on_compile_value_changed(GtkWidget* widget, void* user);
+void on_editor_font_set(GtkWidget* widget, void* user);
+void on_combo_typesetter_changed(GtkWidget* widget, void* user);
+void on_combo_language_changed(GtkWidget* widget, void* user);
+void on_combo_compilescheme_changed(GtkWidget* widget, void* user);
 
 /* Import GUI */
 GuImportGui* importgui_init(GtkBuilder* builder);
