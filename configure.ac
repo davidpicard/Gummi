@@ -43,13 +43,13 @@ PKG_CHECK_MODULES(gtksourceview, [gtksourceview-2.0 >= 2.9.7],,
 GUI_CFLAGS="$GUI_CFLAGS $gtksourceview_CFLAGS"
 GUI_LIBS="$GUI_LIBS $gtksourceview_LIBS"
 
-PKG_CHECK_MODULES(poppler, [poppler-glib >= 0.12.4],,
-	[AC_MSG_ERROR([You need Poppler >= 0.12.4 to build $PACKAGE])]) 
+PKG_CHECK_MODULES(poppler, [poppler-glib],,
+	[AC_MSG_ERROR([You need Poppler to build $PACKAGE])]) 
 GUI_CFLAGS="$GUI_CFLAGS $poppler_CFLAGS"
 GUI_LIBS="$GUI_LIBS $poppler_LIBS"
 
-PKG_CHECK_MODULES(gtkspell, [gtkspell-2.0 >= 2.0.2 ],,
-	[AC_MSG_ERROR([You need GtkSpell >= 2.0.2 to build $PACKAGE])]) 
+PKG_CHECK_MODULES(gtkspell, [gtkspell-2.0],,
+	[AC_MSG_ERROR([You need GtkSpell  to build $PACKAGE])]) 
 GUI_CFLAGS="$GUI_CFLAGS $gtkspell_CFLAGS"
 GUI_LIBS="$GUI_LIBS $gtkspell_LIBS"
 

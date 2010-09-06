@@ -5322,12 +5322,12 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_poppler_CFLAGS="$poppler_CFLAGS"
     else
         if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"poppler-glib >= 0.12.4\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "poppler-glib >= 0.12.4") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"poppler-glib\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "poppler-glib") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_poppler_CFLAGS=`$PKG_CONFIG --cflags "poppler-glib >= 0.12.4" 2>/dev/null`
+  pkg_cv_poppler_CFLAGS=`$PKG_CONFIG --cflags "poppler-glib" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -5340,12 +5340,12 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_poppler_LIBS="$poppler_LIBS"
     else
         if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"poppler-glib >= 0.12.4\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "poppler-glib >= 0.12.4") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"poppler-glib\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "poppler-glib") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_poppler_LIBS=`$PKG_CONFIG --libs "poppler-glib >= 0.12.4" 2>/dev/null`
+  pkg_cv_poppler_LIBS=`$PKG_CONFIG --libs "poppler-glib" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -5364,18 +5364,18 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        poppler_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "poppler-glib >= 0.12.4"`
+	        poppler_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "poppler-glib"`
         else
-	        poppler_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "poppler-glib >= 0.12.4"`
+	        poppler_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "poppler-glib"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$poppler_PKG_ERRORS" >&5
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-                as_fn_error "You need Poppler >= 0.12.4 to build $PACKAGE" "$LINENO" 5
+                as_fn_error "You need Poppler to build $PACKAGE" "$LINENO" 5
 elif test $pkg_failed = untried; then
-	as_fn_error "You need Poppler >= 0.12.4 to build $PACKAGE" "$LINENO" 5
+	as_fn_error "You need Poppler to build $PACKAGE" "$LINENO" 5
 else
 	poppler_CFLAGS=$pkg_cv_poppler_CFLAGS
 	poppler_LIBS=$pkg_cv_poppler_LIBS
@@ -5396,12 +5396,12 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_gtkspell_CFLAGS="$gtkspell_CFLAGS"
     else
         if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtkspell-2.0 >= 2.0.2 \""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtkspell-2.0 >= 2.0.2 ") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtkspell-2.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gtkspell-2.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_gtkspell_CFLAGS=`$PKG_CONFIG --cflags "gtkspell-2.0 >= 2.0.2 " 2>/dev/null`
+  pkg_cv_gtkspell_CFLAGS=`$PKG_CONFIG --cflags "gtkspell-2.0" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -5414,12 +5414,12 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_gtkspell_LIBS="$gtkspell_LIBS"
     else
         if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtkspell-2.0 >= 2.0.2 \""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtkspell-2.0 >= 2.0.2 ") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtkspell-2.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gtkspell-2.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_gtkspell_LIBS=`$PKG_CONFIG --libs "gtkspell-2.0 >= 2.0.2 " 2>/dev/null`
+  pkg_cv_gtkspell_LIBS=`$PKG_CONFIG --libs "gtkspell-2.0" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -5438,18 +5438,18 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        gtkspell_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gtkspell-2.0 >= 2.0.2 "`
+	        gtkspell_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gtkspell-2.0"`
         else
-	        gtkspell_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gtkspell-2.0 >= 2.0.2 "`
+	        gtkspell_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gtkspell-2.0"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$gtkspell_PKG_ERRORS" >&5
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-                as_fn_error "You need GtkSpell >= 2.0.2 to build $PACKAGE" "$LINENO" 5
+                as_fn_error "You need GtkSpell  to build $PACKAGE" "$LINENO" 5
 elif test $pkg_failed = untried; then
-	as_fn_error "You need GtkSpell >= 2.0.2 to build $PACKAGE" "$LINENO" 5
+	as_fn_error "You need GtkSpell  to build $PACKAGE" "$LINENO" 5
 else
 	gtkspell_CFLAGS=$pkg_cv_gtkspell_CFLAGS
 	gtkspell_LIBS=$pkg_cv_gtkspell_LIBS
