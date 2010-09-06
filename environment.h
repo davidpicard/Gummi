@@ -56,13 +56,12 @@ typedef struct _Gummi {
     GummiGui* gui;
     GuEditor* editor;
     GuImporter* importer;
-    GuIOFunc* iofunc;
     GuMotion* motion;
     GuPreview* preview;
     GuTemplate* templ;
 } Gummi;
 
-Gummi* gummi_init(GummiGui* gu, GuEditor* ed, GuImporter* im, GuIOFunc* iof,
-        GuMotion* mo, GuPreview* prev, GuTemplate* tpl);
+Gummi* gummi_init(GummiGui* gu, GuEditor* ed, GuImporter* im, GuMotion* mo,
+        GuPreview* prev, GuTemplate* tpl);
 
 #endif /* GUMMI_ENVIRONMENT_H */

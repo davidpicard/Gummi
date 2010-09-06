@@ -31,13 +31,12 @@
 
 #include "utils.h"
 
-Gummi* gummi_init(GummiGui *gu, GuEditor* ed, GuImporter* im, GuIOFunc* iof,
-        GuMotion* mo, GuPreview* prev, GuTemplate* tpl) {
+Gummi* gummi_init(GummiGui *gu, GuEditor* ed, GuImporter* im, GuMotion* mo,
+        GuPreview* prev, GuTemplate* tpl) {
     Gummi* g = (Gummi*)g_malloc(sizeof(Gummi));
     g->gui = gu;
     g->editor = ed;
     g->importer = im;
-    g->iofunc = iof;
     g->motion = mo;
     g->preview = prev;
     g->templ = tpl;

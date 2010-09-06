@@ -130,7 +130,7 @@ void on_menu_open_activate(GtkWidget *widget, void* user) {
     }
     filename = get_open_filename("Tex files", "txt/*");
     if (filename != NULL) 
-        iofunctions_load_file(gummi->iofunc, gummi->editor, filename); 
+        iofunctions_load_file(gummi->editor, filename); 
 }
 
 void on_menu_save_activate(GtkWidget *widget, void* user) {
@@ -139,7 +139,7 @@ void on_menu_save_activate(GtkWidget *widget, void* user) {
         filename = get_save_filename("Tex files", "txt/*");
     if (filename) {
         motion_set_filename(gummi->motion, filename);
-        iofunctions_write_file(gummi->iofunc, gummi->editor, filename); 
+        iofunctions_write_file(gummi->editor, filename); 
     }
 }
 
@@ -148,7 +148,7 @@ void on_menu_saveas_activate(GtkWidget *widget, void* user) {
     if (!gummi->motion->filename)
         filename = get_save_filename("Tex files", "txt/*");
     if (filename) {
-        iofunctions_write_file(gummi->iofunc, gummi->editor, filename); 
+        iofunctions_write_file(gummi->editor, filename); 
         motion_create_environment(gummi->motion, filename);
     }
 }

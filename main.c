@@ -65,7 +65,6 @@ int main (int argc, char *argv[]) {
     GummiGui* gui;
     GuEditor* editor;
     GuImporter* importer;
-    GuIOFunc* iofunc;
     GuMotion* motion;
     GuPreview* preview;
     GuTemplate* templ;
@@ -94,19 +93,18 @@ int main (int argc, char *argv[]) {
     gui = gui_init(builder);
     editor = editor_init(builder);
     importer = importer_init(builder);
-    iofunc = iofunctions_init();
     motion = motion_init(0); 
     preview = preview_init(builder);
     templ = template_init(builder);
     biblio = biblio_init(builder);
 
-    gummi = gummi_init(gui, editor, importer, iofunc, motion, preview, templ);
+    gummi = gummi_init(gui, editor, importer, motion, preview, templ);
 
     if ( argc != 2 ) {
-        iofunctions_load_default_text(gummi->iofunc, editor);
+        iofunctions_load_default_text(editor);
         motion_create_environment(motion, NULL);
     } else {
-        iofunctions_load_file(gummi->iofunc, editor, argv[1]);
+        iofunctions_load_file(editor, argv[1]);
         motion_create_environment(motion, argv[1]);
     }
 	
