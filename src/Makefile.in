@@ -45,18 +45,14 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_gummi_OBJECTS = gummi-biblio.$(OBJEXT) gummi-configfile.$(OBJEXT) \
-	gummi-editor.$(OBJEXT) gummi-environment.$(OBJEXT) \
-	gummi-gui.$(OBJEXT) gummi-importer.$(OBJEXT) \
-	gummi-iofunctions.$(OBJEXT) gummi-main.$(OBJEXT) \
-	gummi-motion.$(OBJEXT) gummi-preview.$(OBJEXT) \
-	gummi-template.$(OBJEXT) gummi-updatecheck.$(OBJEXT) \
-	gummi-utils.$(OBJEXT)
+am_gummi_OBJECTS = biblio.$(OBJEXT) configfile.$(OBJEXT) \
+	editor.$(OBJEXT) environment.$(OBJEXT) gui.$(OBJEXT) \
+	importer.$(OBJEXT) iofunctions.$(OBJEXT) main.$(OBJEXT) \
+	motion.$(OBJEXT) preview.$(OBJEXT) template.$(OBJEXT) \
+	updatecheck.$(OBJEXT) utils.$(OBJEXT)
 gummi_OBJECTS = $(am_gummi_OBJECTS)
 am__DEPENDENCIES_1 =
 gummi_DEPENDENCIES = $(am__DEPENDENCIES_1)
-gummi_LINK = $(CCLD) $(gummi_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -173,7 +169,11 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-gummi_CFLAGS = -export-dynamic -Wall -O2 $(GUI_CFLAGS)
+AM_CFLAGS = $(GUI_CFLAGS) \
+	    -export-dynamic -Wall -O2 \
+	    -DDATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+	    -DLOCALE_DIR=\"$(datadir)/locale\"
+
 gummi_LDADD = $(GUI_LIBS)
 gummi_SOURCES = biblio.c  biblio.h \
 		configfile.c configfile.h \
@@ -262,7 +262,7 @@ clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 gummi$(EXEEXT): $(gummi_OBJECTS) $(gummi_DEPENDENCIES) 
 	@rm -f gummi$(EXEEXT)
-	$(gummi_LINK) $(gummi_OBJECTS) $(gummi_LDADD) $(LIBS)
+	$(LINK) $(gummi_OBJECTS) $(gummi_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -270,19 +270,19 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gummi-biblio.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gummi-configfile.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gummi-editor.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gummi-environment.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gummi-gui.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gummi-importer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gummi-iofunctions.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gummi-main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gummi-motion.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gummi-preview.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gummi-template.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gummi-updatecheck.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gummi-utils.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/biblio.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/configfile.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/editor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/environment.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gui.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/importer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iofunctions.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/motion.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/preview.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/template.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/updatecheck.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -297,188 +297,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
-
-gummi-biblio.o: biblio.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-biblio.o -MD -MP -MF $(DEPDIR)/gummi-biblio.Tpo -c -o gummi-biblio.o `test -f 'biblio.c' || echo '$(srcdir)/'`biblio.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-biblio.Tpo $(DEPDIR)/gummi-biblio.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='biblio.c' object='gummi-biblio.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-biblio.o `test -f 'biblio.c' || echo '$(srcdir)/'`biblio.c
-
-gummi-biblio.obj: biblio.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-biblio.obj -MD -MP -MF $(DEPDIR)/gummi-biblio.Tpo -c -o gummi-biblio.obj `if test -f 'biblio.c'; then $(CYGPATH_W) 'biblio.c'; else $(CYGPATH_W) '$(srcdir)/biblio.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-biblio.Tpo $(DEPDIR)/gummi-biblio.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='biblio.c' object='gummi-biblio.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-biblio.obj `if test -f 'biblio.c'; then $(CYGPATH_W) 'biblio.c'; else $(CYGPATH_W) '$(srcdir)/biblio.c'; fi`
-
-gummi-configfile.o: configfile.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-configfile.o -MD -MP -MF $(DEPDIR)/gummi-configfile.Tpo -c -o gummi-configfile.o `test -f 'configfile.c' || echo '$(srcdir)/'`configfile.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-configfile.Tpo $(DEPDIR)/gummi-configfile.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='configfile.c' object='gummi-configfile.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-configfile.o `test -f 'configfile.c' || echo '$(srcdir)/'`configfile.c
-
-gummi-configfile.obj: configfile.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-configfile.obj -MD -MP -MF $(DEPDIR)/gummi-configfile.Tpo -c -o gummi-configfile.obj `if test -f 'configfile.c'; then $(CYGPATH_W) 'configfile.c'; else $(CYGPATH_W) '$(srcdir)/configfile.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-configfile.Tpo $(DEPDIR)/gummi-configfile.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='configfile.c' object='gummi-configfile.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-configfile.obj `if test -f 'configfile.c'; then $(CYGPATH_W) 'configfile.c'; else $(CYGPATH_W) '$(srcdir)/configfile.c'; fi`
-
-gummi-editor.o: editor.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-editor.o -MD -MP -MF $(DEPDIR)/gummi-editor.Tpo -c -o gummi-editor.o `test -f 'editor.c' || echo '$(srcdir)/'`editor.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-editor.Tpo $(DEPDIR)/gummi-editor.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='editor.c' object='gummi-editor.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-editor.o `test -f 'editor.c' || echo '$(srcdir)/'`editor.c
-
-gummi-editor.obj: editor.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-editor.obj -MD -MP -MF $(DEPDIR)/gummi-editor.Tpo -c -o gummi-editor.obj `if test -f 'editor.c'; then $(CYGPATH_W) 'editor.c'; else $(CYGPATH_W) '$(srcdir)/editor.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-editor.Tpo $(DEPDIR)/gummi-editor.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='editor.c' object='gummi-editor.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-editor.obj `if test -f 'editor.c'; then $(CYGPATH_W) 'editor.c'; else $(CYGPATH_W) '$(srcdir)/editor.c'; fi`
-
-gummi-environment.o: environment.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-environment.o -MD -MP -MF $(DEPDIR)/gummi-environment.Tpo -c -o gummi-environment.o `test -f 'environment.c' || echo '$(srcdir)/'`environment.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-environment.Tpo $(DEPDIR)/gummi-environment.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='environment.c' object='gummi-environment.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-environment.o `test -f 'environment.c' || echo '$(srcdir)/'`environment.c
-
-gummi-environment.obj: environment.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-environment.obj -MD -MP -MF $(DEPDIR)/gummi-environment.Tpo -c -o gummi-environment.obj `if test -f 'environment.c'; then $(CYGPATH_W) 'environment.c'; else $(CYGPATH_W) '$(srcdir)/environment.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-environment.Tpo $(DEPDIR)/gummi-environment.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='environment.c' object='gummi-environment.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-environment.obj `if test -f 'environment.c'; then $(CYGPATH_W) 'environment.c'; else $(CYGPATH_W) '$(srcdir)/environment.c'; fi`
-
-gummi-gui.o: gui.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-gui.o -MD -MP -MF $(DEPDIR)/gummi-gui.Tpo -c -o gummi-gui.o `test -f 'gui.c' || echo '$(srcdir)/'`gui.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-gui.Tpo $(DEPDIR)/gummi-gui.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gui.c' object='gummi-gui.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-gui.o `test -f 'gui.c' || echo '$(srcdir)/'`gui.c
-
-gummi-gui.obj: gui.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-gui.obj -MD -MP -MF $(DEPDIR)/gummi-gui.Tpo -c -o gummi-gui.obj `if test -f 'gui.c'; then $(CYGPATH_W) 'gui.c'; else $(CYGPATH_W) '$(srcdir)/gui.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-gui.Tpo $(DEPDIR)/gummi-gui.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gui.c' object='gummi-gui.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-gui.obj `if test -f 'gui.c'; then $(CYGPATH_W) 'gui.c'; else $(CYGPATH_W) '$(srcdir)/gui.c'; fi`
-
-gummi-importer.o: importer.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-importer.o -MD -MP -MF $(DEPDIR)/gummi-importer.Tpo -c -o gummi-importer.o `test -f 'importer.c' || echo '$(srcdir)/'`importer.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-importer.Tpo $(DEPDIR)/gummi-importer.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='importer.c' object='gummi-importer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-importer.o `test -f 'importer.c' || echo '$(srcdir)/'`importer.c
-
-gummi-importer.obj: importer.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-importer.obj -MD -MP -MF $(DEPDIR)/gummi-importer.Tpo -c -o gummi-importer.obj `if test -f 'importer.c'; then $(CYGPATH_W) 'importer.c'; else $(CYGPATH_W) '$(srcdir)/importer.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-importer.Tpo $(DEPDIR)/gummi-importer.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='importer.c' object='gummi-importer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-importer.obj `if test -f 'importer.c'; then $(CYGPATH_W) 'importer.c'; else $(CYGPATH_W) '$(srcdir)/importer.c'; fi`
-
-gummi-iofunctions.o: iofunctions.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-iofunctions.o -MD -MP -MF $(DEPDIR)/gummi-iofunctions.Tpo -c -o gummi-iofunctions.o `test -f 'iofunctions.c' || echo '$(srcdir)/'`iofunctions.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-iofunctions.Tpo $(DEPDIR)/gummi-iofunctions.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='iofunctions.c' object='gummi-iofunctions.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-iofunctions.o `test -f 'iofunctions.c' || echo '$(srcdir)/'`iofunctions.c
-
-gummi-iofunctions.obj: iofunctions.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-iofunctions.obj -MD -MP -MF $(DEPDIR)/gummi-iofunctions.Tpo -c -o gummi-iofunctions.obj `if test -f 'iofunctions.c'; then $(CYGPATH_W) 'iofunctions.c'; else $(CYGPATH_W) '$(srcdir)/iofunctions.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-iofunctions.Tpo $(DEPDIR)/gummi-iofunctions.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='iofunctions.c' object='gummi-iofunctions.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-iofunctions.obj `if test -f 'iofunctions.c'; then $(CYGPATH_W) 'iofunctions.c'; else $(CYGPATH_W) '$(srcdir)/iofunctions.c'; fi`
-
-gummi-main.o: main.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-main.o -MD -MP -MF $(DEPDIR)/gummi-main.Tpo -c -o gummi-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-main.Tpo $(DEPDIR)/gummi-main.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='main.c' object='gummi-main.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
-
-gummi-main.obj: main.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-main.obj -MD -MP -MF $(DEPDIR)/gummi-main.Tpo -c -o gummi-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-main.Tpo $(DEPDIR)/gummi-main.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='main.c' object='gummi-main.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
-
-gummi-motion.o: motion.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-motion.o -MD -MP -MF $(DEPDIR)/gummi-motion.Tpo -c -o gummi-motion.o `test -f 'motion.c' || echo '$(srcdir)/'`motion.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-motion.Tpo $(DEPDIR)/gummi-motion.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='motion.c' object='gummi-motion.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-motion.o `test -f 'motion.c' || echo '$(srcdir)/'`motion.c
-
-gummi-motion.obj: motion.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-motion.obj -MD -MP -MF $(DEPDIR)/gummi-motion.Tpo -c -o gummi-motion.obj `if test -f 'motion.c'; then $(CYGPATH_W) 'motion.c'; else $(CYGPATH_W) '$(srcdir)/motion.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-motion.Tpo $(DEPDIR)/gummi-motion.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='motion.c' object='gummi-motion.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-motion.obj `if test -f 'motion.c'; then $(CYGPATH_W) 'motion.c'; else $(CYGPATH_W) '$(srcdir)/motion.c'; fi`
-
-gummi-preview.o: preview.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-preview.o -MD -MP -MF $(DEPDIR)/gummi-preview.Tpo -c -o gummi-preview.o `test -f 'preview.c' || echo '$(srcdir)/'`preview.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-preview.Tpo $(DEPDIR)/gummi-preview.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='preview.c' object='gummi-preview.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-preview.o `test -f 'preview.c' || echo '$(srcdir)/'`preview.c
-
-gummi-preview.obj: preview.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-preview.obj -MD -MP -MF $(DEPDIR)/gummi-preview.Tpo -c -o gummi-preview.obj `if test -f 'preview.c'; then $(CYGPATH_W) 'preview.c'; else $(CYGPATH_W) '$(srcdir)/preview.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-preview.Tpo $(DEPDIR)/gummi-preview.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='preview.c' object='gummi-preview.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-preview.obj `if test -f 'preview.c'; then $(CYGPATH_W) 'preview.c'; else $(CYGPATH_W) '$(srcdir)/preview.c'; fi`
-
-gummi-template.o: template.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-template.o -MD -MP -MF $(DEPDIR)/gummi-template.Tpo -c -o gummi-template.o `test -f 'template.c' || echo '$(srcdir)/'`template.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-template.Tpo $(DEPDIR)/gummi-template.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='template.c' object='gummi-template.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-template.o `test -f 'template.c' || echo '$(srcdir)/'`template.c
-
-gummi-template.obj: template.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-template.obj -MD -MP -MF $(DEPDIR)/gummi-template.Tpo -c -o gummi-template.obj `if test -f 'template.c'; then $(CYGPATH_W) 'template.c'; else $(CYGPATH_W) '$(srcdir)/template.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-template.Tpo $(DEPDIR)/gummi-template.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='template.c' object='gummi-template.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-template.obj `if test -f 'template.c'; then $(CYGPATH_W) 'template.c'; else $(CYGPATH_W) '$(srcdir)/template.c'; fi`
-
-gummi-updatecheck.o: updatecheck.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-updatecheck.o -MD -MP -MF $(DEPDIR)/gummi-updatecheck.Tpo -c -o gummi-updatecheck.o `test -f 'updatecheck.c' || echo '$(srcdir)/'`updatecheck.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-updatecheck.Tpo $(DEPDIR)/gummi-updatecheck.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='updatecheck.c' object='gummi-updatecheck.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-updatecheck.o `test -f 'updatecheck.c' || echo '$(srcdir)/'`updatecheck.c
-
-gummi-updatecheck.obj: updatecheck.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-updatecheck.obj -MD -MP -MF $(DEPDIR)/gummi-updatecheck.Tpo -c -o gummi-updatecheck.obj `if test -f 'updatecheck.c'; then $(CYGPATH_W) 'updatecheck.c'; else $(CYGPATH_W) '$(srcdir)/updatecheck.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-updatecheck.Tpo $(DEPDIR)/gummi-updatecheck.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='updatecheck.c' object='gummi-updatecheck.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-updatecheck.obj `if test -f 'updatecheck.c'; then $(CYGPATH_W) 'updatecheck.c'; else $(CYGPATH_W) '$(srcdir)/updatecheck.c'; fi`
-
-gummi-utils.o: utils.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-utils.o -MD -MP -MF $(DEPDIR)/gummi-utils.Tpo -c -o gummi-utils.o `test -f 'utils.c' || echo '$(srcdir)/'`utils.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-utils.Tpo $(DEPDIR)/gummi-utils.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='utils.c' object='gummi-utils.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-utils.o `test -f 'utils.c' || echo '$(srcdir)/'`utils.c
-
-gummi-utils.obj: utils.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -MT gummi-utils.obj -MD -MP -MF $(DEPDIR)/gummi-utils.Tpo -c -o gummi-utils.obj `if test -f 'utils.c'; then $(CYGPATH_W) 'utils.c'; else $(CYGPATH_W) '$(srcdir)/utils.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/gummi-utils.Tpo $(DEPDIR)/gummi-utils.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='utils.c' object='gummi-utils.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gummi_CFLAGS) $(CFLAGS) -c -o gummi-utils.obj `if test -f 'utils.c'; then $(CYGPATH_W) 'utils.c'; else $(CYGPATH_W) '$(srcdir)/utils.c'; fi`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \

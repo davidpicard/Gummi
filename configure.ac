@@ -64,7 +64,7 @@ AC_CHECK_FUNCS([gethostbyname memset setlocale socket strstr])
 
 AC_SUBST(GUI_LIBS)
 AC_SUBST(GUI_CFLAGS)
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile data/Makefile])
 AC_OUTPUT
 
 echo

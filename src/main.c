@@ -67,7 +67,7 @@ int main (int argc, char *argv[]) {
     GuBiblio* biblio;
 
     /* set up i18n */
-    bindtextdomain(PACKAGE, "/usr/share/locale");
+    bindtextdomain(PACKAGE, LOCALE_DIR);
     setlocale(LC_ALL, "");
     textdomain(PACKAGE);
 
@@ -82,7 +82,7 @@ int main (int argc, char *argv[]) {
     
     slog(L_DEBUG, PACKAGE_NAME" version: "PACKAGE_VERSION"\n");
     builder = gtk_builder_new();
-    gtk_builder_add_from_file(builder, "gui/gummi.glade", NULL);
+    gtk_builder_add_from_file(builder, DATA_DIR"/gummi.glade", NULL);
     gtk_builder_set_translation_domain(builder, PACKAGE);
 
     /* initialize classes */

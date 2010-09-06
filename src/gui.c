@@ -649,7 +649,7 @@ gboolean statusbar_del_message(void* user) {
 GuPrefsGui* prefsgui_init(GummiGui* gui) {
     GuPrefsGui* p = (GuPrefsGui*)g_malloc(sizeof(GuPrefsGui));
     GtkBuilder* builder = gtk_builder_new();
-    gtk_builder_add_from_file(builder, "gui/prefs.glade", NULL);
+    gtk_builder_add_from_file(builder, DATA_DIR"/prefs.glade", NULL);
     gtk_builder_set_translation_domain(builder, PACKAGE);
 
     p->prefwindow =

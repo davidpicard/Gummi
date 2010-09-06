@@ -1,5 +1,9 @@
 bin_PROGRAMS = gummi
-gummi_CFLAGS = -export-dynamic -Wall -O2 $(GUI_CFLAGS)
+AM_CFLAGS = $(GUI_CFLAGS) \
+	    -export-dynamic -Wall -O2 \
+	    -DDATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+	    -DLOCALE_DIR=\"$(datadir)/locale\"
+
 gummi_LDADD = $(GUI_LIBS)
 
 gummi_SOURCES = biblio.c  biblio.h \
