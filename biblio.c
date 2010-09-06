@@ -47,23 +47,6 @@ GuBiblio* biblio_init(GtkBuilder * builder) {
 }
 
 
-void on_bibcolumn_clicked(GtkWidget* widget, void* user) {
-    gint id = gtk_tree_view_column_get_sort_column_id
-        (GTK_TREE_VIEW_COLUMN(widget));
-    gtk_tree_view_column_set_sort_column_id
-        (GTK_TREE_VIEW_COLUMN(widget), id);
-}
-
-void on_bibcompile_clicked(GtkWidget* widget, void* user) {
-    g_timeout_add_seconds(10, on_bibprogressbar_update, NULL);
-    if (compile_bibliography() == TRUE) {
-        
-    }
-    
-    
-
-}
-
 /*
 		self.bibprogressval = 0
 		glib.timeout_add(10, self.on_bibprogressbar_update)
@@ -77,18 +60,11 @@ void on_bibcompile_clicked(GtkWidget* widget, void* user) {
 
 
 
-
-void on_bibrefresh_clicked(GtkWidget* widget, void* user) {
-}
-
-void on_bibreference_clicked(GtkWidget* widget, void* user) {
-}
-
-gboolean compile_bibliography() {
+gboolean compile_bibliography(GuMotion* mc) {
     gchar command[BUFSIZ];
     //motion_update_workfile();
-    motion_update_auxfile();
-    snprintf(command, sizeof command, "bibtex '%s'", gummi->workfile);
+    motion_update_auxfile(mc);
+    snprintf(command, sizeof command, "bibtex '%s'", mc->workfile);
     pdata res = utils_popen_r(command);
     gtk_widget_set_tooltip_text(progressbar, res.data);
     if(strstr(res.data, "Database file #1") == NULL) {
@@ -99,16 +75,3 @@ gboolean compile_bibliography() {
     }
 }
 
-
-gboolean on_bibprogressbar_update() {
-    return FALSE;
-}
-
-/*
-	def on_bibprogressbar_update(self):
-		self.bibprogressmon.set_value(self.bibprogressval)
-		self.bibprogressval = self.bibprogressval + 1
-		if self.bibprogressval > 60:
-			return False
-		else:
-			return True */

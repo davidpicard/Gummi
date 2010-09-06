@@ -39,6 +39,7 @@
 
 #include <glib.h>
 
+#include "biblio.h"
 #include "configfile.h"
 #include "editor.h"
 #include "environment.h"
@@ -395,6 +396,72 @@ void on_import_tabs_switch_page(GtkNotebook* notebook, GtkNotebookPage* page,
                     GTK_WIDGET(gummi->gui->importgui->matrix_pane));
             break;
     }
+}
+
+void on_bibcolumn_clicked(GtkWidget* widget, void* user) {
+    gint id = gtk_tree_view_column_get_sort_column_id
+        (GTK_TREE_VIEW_COLUMN(widget));
+    gtk_tree_view_column_set_sort_column_id
+        (GTK_TREE_VIEW_COLUMN(widget), id);
+}
+
+void on_bibcompile_clicked(GtkWidget* widget, void* user) {
+    g_timeout_add_seconds(10, on_bibprogressbar_update, NULL);
+    if (compile_bibliography(gummi->motion)) {
+        
+    }
+    
+    
+
+}
+
+void on_bibrefresh_clicked(GtkWidget* widget, void* user) {
+}
+
+void on_bibreference_clicked(GtkWidget* widget, void* user) {
+}
+
+gboolean on_bibprogressbar_update() {
+    return FALSE;
+}
+
+/*
+	def on_bibprogressbar_update(self):
+		self.bibprogressmon.set_value(self.bibprogressval)
+		self.bibprogressval = self.bibprogressval + 1
+		if self.bibprogressval > 60:
+			return False
+		else:
+			return True */
+
+void preview_next_page(GtkWidget* widget, void* user) {
+    preview_goto_page(gummi->preview, gummi->preview->page_current + 1);
+}
+    
+void preview_prev_page(GtkWidget* widget, void* user) {
+    preview_goto_page(gummi->preview, gummi->preview->page_current - 1);
+}
+
+void preview_zoom_change(GtkWidget* widget, void* user) {
+    gint index = gtk_combo_box_get_active(GTK_COMBO_BOX(widget));
+    double opts[9] = {0.50, 0.70, 0.85, 1.0, 1.25, 1.5, 2.0, 3.0, 4.0}; 
+
+    if (index < 0) slog(L_ERROR, "preview zoom level is < 0.\n");
+    
+    gummi->preview->fit_width = gummi->preview->best_fit = FALSE;
+    if (index < 2) {
+        if (index == 0) {
+            gummi->preview->best_fit = TRUE;
+        }
+        else if (index == 1) {
+            gummi->preview->fit_width = TRUE;
+        }
+    }
+    else {
+        gummi->preview->page_scale = opts[index-2];
+    }
+    
+    gtk_widget_queue_draw(gummi->preview->drawarea);
 }
 
 gboolean check_for_save() {
@@ -761,35 +828,3 @@ void on_GuSearchGuiext_changed(GtkEditable *editable, void* user) {
     gummi->editor->replace_activated = FALSE;
 }
 
-
-void preview_next_page(GtkWidget* widget, void* user) {
-    preview_goto_page(gummi->preview, gummi->preview->page_current + 1);
-}
-    
-void preview_prev_page(GtkWidget* widget, void* user) {
-    preview_goto_page(gummi->preview, gummi->preview->page_current - 1);
-}
-
-
-
-void preview_zoom_change(GtkWidget* widget, void* user) {
-    gint index = gtk_combo_box_get_active(GTK_COMBO_BOX(widget));
-    double opts[9] = {0.50, 0.70, 0.85, 1.0, 1.25, 1.5, 2.0, 3.0, 4.0}; 
-
-    if (index < 0) slog(L_ERROR, "preview zoom level is < 0.\n");
-    
-    gummi->preview->fit_width = gummi->preview->best_fit = FALSE;
-    if (index < 2) {
-        if (index == 0) {
-            gummi->preview->best_fit = TRUE;
-        }
-        else if (index == 1) {
-            gummi->preview->fit_width = TRUE;
-        }
-    }
-    else {
-        gummi->preview->page_scale = opts[index-2];
-    }
-    
-    gtk_widget_queue_draw(gummi->preview->drawarea);
-}

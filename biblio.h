@@ -31,14 +31,14 @@
 #define GUMMI_BIBLIO_H
 
 #include <gtk/gtk.h>
+
+#include "motion.h"
  
- typedef struct _GuBiblio {
+typedef struct _GuBiblio {
 } GuBiblio;
 
 GuBiblio* biblio_init(GtkBuilder* builder);
 
-gboolean on_bibprogressbar_update();
-
-gboolean compile_bibliography();
+gboolean compile_bibliography(GuMotion* mc);
 
 #endif /* GUMMI_BIBLIO_H */

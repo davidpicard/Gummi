@@ -182,5 +182,3 @@ gboolean motion_updatepreview(void) {
     }
     return TRUE;
 }
-
-
