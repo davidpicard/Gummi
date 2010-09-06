@@ -33,19 +33,28 @@
 #include <glib.h>
 
 #include "editor.h"
+#include "preview.h"
 
 typedef struct _GuMotion {
-    gint dummy; // you can add members along the way
+    gint workfd;
+    gchar* typesetter;
+    gchar* filename;
+    gchar* pdffile;
+    gchar* workfile;
+    const gchar* tmpdir;
+    guint update;
 } GuMotion;
 
 GuMotion* motion_init(gint dum);
-void motion_initial_preview(GuEditor* ec);
-void motion_update_workfile(GuEditor* ec);
-void motion_update_pdffile(GuEditor* ec);
-void motion_update_auxfile();
+void motion_create_environment(GuMotion* mc, const gchar* filename);
+void motion_set_filename(GuMotion* motion, const gchar* name);
+void motion_initial_preview(GuMotion* mo, GuEditor* ec, GuPreview* pr);
+void motion_update_workfile(GuMotion* mo, GuEditor* ec);
+void motion_update_pdffile(GuMotion* motion);
+void motion_update_auxfile(GuMotion* motion);
 
-void motion_start_updatepreview();
-void motion_stop_updatepreview();
+void motion_start_updatepreview(GuMotion* motion);
+void motion_stop_updatepreview(GuMotion* motion);
 gboolean motion_updatepreview();
 
 

@@ -37,7 +37,6 @@
 
 #define g_e_buffer GTK_TEXT_BUFFER(gummi->editor->sourcebuffer)
 #define g_e_view GTK_TEXT_VIEW(gummi->editor->sourceview)
-#define g_builder gummi->builder
 
 typedef struct _GuPrefsGui {
     GtkWidget* prefwindow;
@@ -97,7 +96,7 @@ typedef struct _GummiGui {
 
 /* Main GUI */
 GummiGui* gui_init(GtkBuilder* builder);
-void gui_main(void);
+void gui_main(GtkBuilder* builder);
 void gui_quit(void);
 void on_menu_new_activate(GtkWidget* widget, void* user);
 void on_menu_open_activate(GtkWidget* widget, void* user);
@@ -123,6 +122,10 @@ void on_button_searchwindow_replace_next_clicked(GtkWidget* widget, void* user);
 void on_button_searchwindow_replace_all_clicked(GtkWidget* widget, void* user);
 void on_import_tabs_switch_page(GtkNotebook* notebook, GtkNotebookPage* page,
         guint page_num, void* user);
+
+void preview_next_page(GtkWidget* widget, void* user);
+void preview_prev_page(GtkWidget* widget, void* user);
+void preview_zoom_change(GtkWidget* widget, void* user);
 
 gchar* get_open_filename(const gchar* name, const gchar* filter);
 gchar* get_save_filename(const gchar* name, const gchar* filter);

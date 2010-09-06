@@ -86,8 +86,8 @@ GummiGui* gui_init(GtkBuilder* builder) {
     return g;
 }
 
-void gui_main() {
-    gtk_builder_connect_signals(g_builder, NULL);       
+void gui_main(GtkBuilder* builder) {
+    gtk_builder_connect_signals(builder, NULL);       
     gtk_widget_show_all(gummi->gui->mainwindow);
     gtk_main();
 }
@@ -107,7 +107,7 @@ void on_menu_new_activate(GtkWidget *widget, void* user) {
     text = config_get_value("welcome");
     gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_e_buffer), text, -1);
     gtk_text_buffer_set_modified(g_e_buffer, FALSE);
-    gummi_create_environment(gummi, NULL);
+    motion_create_environment(gummi->motion, NULL);
 }
 
 void on_menu_template_activate(GtkWidget *widget, void * user) {
@@ -135,21 +135,21 @@ void on_menu_open_activate(GtkWidget *widget, void* user) {
 
 void on_menu_save_activate(GtkWidget *widget, void* user) {
     gchar* filename = NULL;
-    if (!gummi->filename)
+    if (!gummi->motion->filename)
         filename = get_save_filename("Tex files", "txt/*");
     if (filename) {
-        gummi_set_filename(gummi, filename);
+        motion_set_filename(gummi->motion, filename);
         iofunctions_write_file(gummi->iofunc, gummi->editor, filename); 
     }
 }
 
 void on_menu_saveas_activate(GtkWidget *widget, void* user) {
     gchar* filename = NULL;
-    if (!gummi->filename)
+    if (!gummi->motion->filename)
         filename = get_save_filename("Tex files", "txt/*");
     if (filename) {
         iofunctions_write_file(gummi->iofunc, gummi->editor, filename); 
-        gummi_create_environment(gummi, filename);
+        motion_create_environment(gummi->motion, filename);
     }
 }
 
@@ -277,7 +277,7 @@ void on_button_template_ok_clicked(GtkWidget* widget, void* user) {
     const gchar* text = template_get(gummi->templ);
     if (text) {
         editor_fill_buffer(gummi->editor, text);
-        gummi_create_environment(gummi, NULL);
+        motion_create_environment(gummi->motion, NULL);
         gtk_widget_hide(GTK_WIDGET(gummi->templ->templatewindow));
     }
 }
@@ -761,3 +761,35 @@ void on_GuSearchGuiext_changed(GtkEditable *editable, void* user) {
     gummi->editor->replace_activated = FALSE;
 }
 
+
+void preview_next_page(GtkWidget* widget, void* user) {
+    preview_goto_page(gummi->preview, gummi->preview->page_current + 1);
+}
+    
+void preview_prev_page(GtkWidget* widget, void* user) {
+    preview_goto_page(gummi->preview, gummi->preview->page_current - 1);
+}
+
+
+
+void preview_zoom_change(GtkWidget* widget, void* user) {
+    gint index = gtk_combo_box_get_active(GTK_COMBO_BOX(widget));
+    double opts[9] = {0.50, 0.70, 0.85, 1.0, 1.25, 1.5, 2.0, 3.0, 4.0}; 
+
+    if (index < 0) slog(L_ERROR, "preview zoom level is < 0.\n");
+    
+    gummi->preview->fit_width = gummi->preview->best_fit = FALSE;
+    if (index < 2) {
+        if (index == 0) {
+            gummi->preview->best_fit = TRUE;
+        }
+        else if (index == 1) {
+            gummi->preview->fit_width = TRUE;
+        }
+    }
+    else {
+        gummi->preview->page_scale = opts[index-2];
+    }
+    
+    gtk_widget_queue_draw(gummi->preview->drawarea);
+}

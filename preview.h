@@ -27,22 +27,40 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #ifndef GUMMI_PREVIEW_H
 #define GUMMI_PREVIEW_H
+
 #include <gtk/gtk.h>
+#include <poppler.h> 
 
 typedef struct _GuPreview {
-    gint dummy;
+    PopplerDocument* doc;
+    PopplerPage* page;
+    GtkWidget *drawarea;
+    GtkWidget *page_next;
+    GtkWidget *page_prev;
+    GtkWidget *page_label;
+    GtkWidget *page_input;
+    GtkWidget *scrollw;
+
+    gchar *uri;
+
+    gint page_total;
+    gint page_current;
+    gdouble page_scale;
+    gdouble page_width;
+    gdouble page_height;
+    gdouble page_ratio;
+    gboolean fit_width;
+    gboolean best_fit;
 } GuPreview;
 
 GuPreview* preview_init(GtkBuilder * builder);
-void preview_set_pdffile(gchar *pdffile);
-void preview_refresh();
+void preview_set_pdffile(GuPreview* prev, const gchar *pdffile);
+void preview_refresh(GuPreview* prev);
+void preview_set_pagedata(GuPreview* prev);
+void preview_goto_page(GuPreview* prev, int page_number);
 
-void preview_set_pagedata();
-void preview_goto_page(int page_number);
-
-gboolean on_expose(GtkWidget*, GdkEventExpose*, gpointer);
+gboolean on_expose(GtkWidget* w, GdkEventExpose* e, GuPreview* prev);
 
 #endif /* GUMMI_PREVIEW_H */

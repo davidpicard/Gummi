@@ -53,12 +53,6 @@
 #define _(T) gettext(T)
 
 typedef struct _Gummi {
-    gint workfd;
-    gchar* filename;
-    gchar* pdffile;
-    gchar* workfile;
-    const gchar* tmpdir;
-    GtkBuilder* builder;
     GummiGui* gui;
     GuEditor* editor;
     GuImporter* importer;
@@ -68,11 +62,7 @@ typedef struct _Gummi {
     GuTemplate* templ;
 } Gummi;
 
-Gummi* gummi_init(GtkBuilder* bd, GummiGui* gu, GuEditor* ed, GuImporter* im,
-        GuIOFunc* iof, GuMotion* mo, GuPreview* prev, GuTemplate* tpl);
-        
-void gummi_create_environment(Gummi* gummi, const gchar* filename);
-void gummi_set_filename(Gummi* gummi, const gchar* name);
-    
+Gummi* gummi_init(GummiGui* gu, GuEditor* ed, GuImporter* im, GuIOFunc* iof,
+        GuMotion* mo, GuPreview* prev, GuTemplate* tpl);
 
 #endif /* GUMMI_ENVIRONMENT_H */

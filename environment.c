@@ -29,21 +29,11 @@
 
 #include "environment.h"
 
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
 #include "utils.h"
 
-Gummi* gummi_init(GtkBuilder* bd, GummiGui *gu, GuEditor* ed, GuImporter* im,
-        GuIOFunc* iof, GuMotion* mo, GuPreview* prev, GuTemplate* tpl) {
+Gummi* gummi_init(GummiGui *gu, GuEditor* ed, GuImporter* im, GuIOFunc* iof,
+        GuMotion* mo, GuPreview* prev, GuTemplate* tpl) {
     Gummi* g = (Gummi*)g_malloc(sizeof(Gummi));
-    g->workfd = -1;
-    g->filename = NULL;   /* current opened file name in workspace */
-    g->pdffile = NULL;
-    g->workfile = NULL;
-    g->tmpdir = g_get_tmp_dir();
-    g->builder = bd;
     g->gui = gu;
     g->editor = ed;
     g->importer = im;
@@ -52,42 +42,4 @@ Gummi* gummi_init(GtkBuilder* bd, GummiGui *gu, GuEditor* ed, GuImporter* im,
     g->preview = prev;
     g->templ = tpl;
     return g;
-}
-
-void gummi_create_environment(Gummi* gummi, const gchar* filename) {
-    gchar tname[BUFSIZ];
-    snprintf(tname, BUFSIZ, "%s/gummi_XXXXXXX", gummi->tmpdir);
-    gint tname_len = strlen(tname) + 1;
-
-    if (gummi->workfd != -1) {
-        close(gummi->workfd);
-    } // close previous work file using its file descriptor
-
-    gummi_set_filename(gummi, filename);
-    
-    gummi->workfd = g_mkstemp(tname); 
-    if (gummi->workfile) g_free(gummi->workfile);
-    gummi->workfile = (gchar*)g_malloc(tname_len);
-    strcpy(gummi->workfile, tname);
-
-    if (gummi->pdffile) g_free(gummi->pdffile);
-    gummi->pdffile = (gchar*)g_malloc(tname_len + 4);    
-    strncpy(gummi->pdffile, tname, tname_len +4);
-    strncat(gummi->pdffile, ".pdf", tname_len - strlen(gummi->pdffile) +3);
-    
-    slog(L_INFO, "Environment created for:\n");
-    slog(L_INFO, "TEX: %s\n", gummi->filename);
-    slog(L_INFO, "TMP: %s\n", gummi->workfile);
-    slog(L_INFO, "PDF: %s\n\n", gummi->pdffile); 
-}
-
-void gummi_set_filename(Gummi* gummi, const gchar* name) {
-    if (gummi->filename)
-        g_free(gummi->filename);
-    if (name) {
-        gummi->filename = (gchar*)g_malloc(strlen(name) + 1);
-        strcpy(gummi->filename, name);
-    } else {
-        gummi->filename = NULL;
-    }
 }

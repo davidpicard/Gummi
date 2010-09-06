@@ -100,18 +100,17 @@ int main (int argc, char *argv[]) {
     templ = template_init(builder);
     biblio = biblio_init(builder);
 
-    gummi = gummi_init(builder, gui, editor, importer, iofunc, motion,
-            preview, templ);
+    gummi = gummi_init(gui, editor, importer, iofunc, motion, preview, templ);
 
     if ( argc != 2 ) {
         iofunctions_load_default_text(gummi->iofunc, editor);
-        gummi_create_environment(gummi, NULL);
+        motion_create_environment(motion, NULL);
     } else {
         iofunctions_load_file(gummi->iofunc, editor, argv[1]);
-        gummi_create_environment(gummi, argv[1]);
+        motion_create_environment(motion, argv[1]);
     }
 	
-    motion_initial_preview(editor);
-    gui_main();
+    motion_initial_preview(motion, editor, preview);
+    gui_main(builder);
     return 0;
 }
