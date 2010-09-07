@@ -275,7 +275,8 @@ gboolean motion_updatepreview(void* user) {
  * call 'motion_start_timer()' */
 void motion_start_timer(GuMotion* mc) {
     L_F_DEBUG;
-    if (0 == strcmp(config_get_value("compile_scheme"), "on_idle")) {
+    if (config_get_value("compile_status") &&
+            0 == strcmp(config_get_value("compile_scheme"), "on_idle")) {
         motion_stop_timer(mc);
         mc->timer = g_timeout_add_seconds(
                 atoi(config_get_value("compile_timer")),
