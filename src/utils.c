@@ -87,7 +87,7 @@ void slog(gint level, const gchar *fmt, ...) {
             strncat(message, "\nGummi has encountered a serious error and "
                     "require restart, your can find your file in the /tmp "
                     "directory\n", BUFSIZ - strlen(message) -1);
-        dialog = gtk_message_dialog_new (NULL, 
+        dialog = gtk_message_dialog_new (parent, 
                 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                 L_IS_TYPE(level,L_G_INFO)? GTK_MESSAGE_INFO: GTK_MESSAGE_ERROR,
                 GTK_BUTTONS_OK,
