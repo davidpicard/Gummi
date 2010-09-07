@@ -110,36 +110,20 @@ gboolean biblio_compile_bibliography(GuMotion* mc) {
 }
 
 gboolean biblio_setup_bibliography(GuEditor* ec, GuBiblio* b) {
-    gchar *bla;
-    printf("hoi\n");
-    bla = g_strconcat(b->bibdirname, b->bibbasename, NULL);
-    
-    printf("%s\n", bla);
-    
-    editor_insert_bib(ec, bla);
-    g_free(bla);
-    
+    gchar *bibpath;
+    // TODO: shutil.copy2 equivalent for C
+    //			shutil.copy2(self.bibdirname + self.bibbasename,
+	//				Environment.tempdir + "/" + self.bibbasename)
+    bibpath = g_strconcat(b->bibdirname, b->bibbasename, NULL);
+    editor_insert_bib(ec, bibpath);
+    g_free(bibpath);
     return TRUE;
     
 }
-    
-    /*
-	def setup_bibliography(self):
-		try:
-			# cite is not a standard package
-			# self.editorpane.insert_package("cite")
-			bibtitle = self.bibbasename[:-4]
-			shutil.copy2(self.bibdirname + self.bibbasename,
-					Environment.tempdir + "/" + self.bibbasename)
-			self.editorpane.insert_bib(self.bibdirname + self.bibbasename)
-		except:
-			print traceback.print_exc()
-		return self.bibbasename, "N/A"*/
+
 
 gboolean biblio_check_valid_file(GuBiblio* b, gchar *filename) {
-    struct stat fileattrib; 
-    // TODO: it should return 0 on file exist.. :/
-    if (stat(filename, &fileattrib) == -1 ) {
+    if (utils_path_exists(filename) == TRUE) {
         if (g_path_is_absolute(filename)) {
             b->bibbasename = g_path_get_basename(filename);
             b->bibdirname = g_path_get_dirname(filename);

@@ -319,9 +319,8 @@ void on_menu_bibload_activate(GtkWidget *widget, void * user) {
     gchar *filename;
     filename = get_open_filename(FILTER_BIBLIO);
     if (biblio_check_valid_file(gummi->biblio, filename)) {
-        //biblio_setup_bibliography();
-        // set bibfilenm label to filename
-
+        biblio_setup_bibliography(gummi->editor, gummi->biblio);
+        gtk_label_set_text(gummi->gui->bibfilenm, gummi->biblio->bibbasename);
     }
 }
 
