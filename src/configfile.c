@@ -134,7 +134,7 @@ const gchar* config_get_value(const gchar* term) {
     }
     fclose(fh);
 
-    if (!ret)
+    if (NULL == ret)
         slog(L_ERROR, "can't find configuration for %s\n", term);
 
     if (0 == strcmp(ret, "False"))

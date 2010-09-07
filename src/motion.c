@@ -121,16 +121,21 @@ void motion_initial_preview(GuMotion* mc) {
 
 void motion_update_workfile(GuMotion* mc) {
     L_F_DEBUG;
+    GtkTextIter start, end;
     gchar *text;
     FILE *fp;
 
     // TODO: the following line caused hangups in python, attention!
+    /* save selection */
+    gtk_text_buffer_get_selection_bounds(
+            GTK_TEXT_BUFFER(mc->b_editor->sourcebuffer), &start, &end);
     gtk_widget_set_sensitive(mc->b_editor->sourceview, FALSE);
     text = editor_grab_buffer(mc->b_editor);
     gtk_widget_set_sensitive(mc->b_editor->sourceview, TRUE);
     
-    // TODO: restore text iters to selection before compile
-    //gtk_text_buffer_select_range(ec->sourcebuffer, ec->
+    /* restore selection */
+    gtk_text_buffer_select_range(
+            GTK_TEXT_BUFFER(mc->b_editor->sourcebuffer), &start, &end);
     
     fp = fopen(mc->workfile, "w");
     
@@ -266,9 +271,12 @@ gboolean motion_updatepreview(void* user) {
 
 void motion_start_timer(GuMotion* mc) {
     L_F_DEBUG;
-    motion_stop_timer(mc);
-    mc->timer = g_timeout_add_seconds(atoi(config_get_value("compile_timer")),
-            motion_updatepreview, (void*)mc);
+    if (0 == strcmp(config_get_value("compile_scheme"), "on_idle")) {
+        motion_stop_timer(mc);
+        mc->timer = g_timeout_add_seconds(
+                atoi(config_get_value("compile_timer")),
+                motion_updatepreview, (void*)mc);
+    }
 }
 
 void motion_stop_timer(GuMotion* mc) {

@@ -175,7 +175,7 @@ void on_menu_template_activate(GtkWidget *widget, void * user) {
 }
 
 void on_menu_exportpdf_activate(GtkWidget *widget, void * user) {
-    gchar* filename = get_save_filename("PDF", "pdf/*");
+    gchar* filename = get_save_filename(FILTER_PDF);
     if (filename)
         motion_export_pdffile(gummi->motion, filename);
 }
@@ -190,7 +190,7 @@ void on_menu_open_activate(GtkWidget *widget, void* user) {
     if (check_for_save() == TRUE) {
         on_menu_save_activate(NULL, NULL);  
     }
-    filename = get_open_filename("Tex files", "txt/*");
+    filename = get_open_filename(FILTER_LATEX);
     if (filename != NULL) 
         iofunctions_load_file(gummi->editor, filename); 
 }
@@ -198,7 +198,7 @@ void on_menu_open_activate(GtkWidget *widget, void* user) {
 void on_menu_save_activate(GtkWidget *widget, void* user) {
     gchar* filename = NULL;
     if (!gummi->motion->filename)
-        filename = get_save_filename("Tex files", "txt/*");
+        filename = get_save_filename(FILTER_LATEX);
     if (filename) {
         motion_set_filename(gummi->motion, filename);
         iofunctions_write_file(gummi->editor, filename); 
@@ -208,7 +208,7 @@ void on_menu_save_activate(GtkWidget *widget, void* user) {
 void on_menu_saveas_activate(GtkWidget *widget, void* user) {
     gchar* filename = NULL;
     if (!gummi->motion->filename)
-        filename = get_save_filename("Tex files", "txt/*");
+        filename = get_save_filename(FILTER_LATEX);
     if (filename) {
         iofunctions_write_file(gummi->editor, filename); 
         motion_create_environment(gummi->motion, filename);
@@ -221,6 +221,7 @@ void on_menu_cut_activate(GtkWidget *widget, void* user) {
     clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
     gtk_text_buffer_cut_clipboard(g_e_buffer, clipboard, TRUE);
     gtk_text_buffer_set_modified(g_e_buffer, TRUE);
+    motion_start_timer(gummi->motion);
 }
 
 void on_menu_copy_activate(GtkWidget *widget, void* user) {
@@ -228,6 +229,7 @@ void on_menu_copy_activate(GtkWidget *widget, void* user) {
     
     clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
     gtk_text_buffer_copy_clipboard(g_e_buffer, clipboard);
+    motion_start_timer(gummi->motion);
 }
 void on_menu_paste_activate(GtkWidget *widget, void* user) {
     GtkClipboard     *clipboard;
@@ -235,18 +237,22 @@ void on_menu_paste_activate(GtkWidget *widget, void* user) {
     clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
     gtk_text_buffer_paste_clipboard(g_e_buffer, clipboard, NULL, TRUE);
     gtk_text_buffer_set_modified(g_e_buffer, TRUE);
+    motion_start_timer(gummi->motion);
 }
 
 void on_menu_undo_activate(GtkWidget *widget, void* user) {
     editor_undo_change(gummi->editor);
+    motion_start_timer(gummi->motion);
 }
 
 void on_menu_redo_activate(GtkWidget *widget, void* user) {
     editor_redo_change(gummi->editor);
+    motion_start_timer(gummi->motion);
 }
 
 void on_menu_delete_activate(GtkWidget *widget, void * user) {
     gtk_text_buffer_delete_selection(g_e_buffer, FALSE, TRUE);
+    motion_start_timer(gummi->motion);
 }
 
 void on_menu_selectall_activate(GtkWidget *widget, void * user) {
@@ -386,26 +392,32 @@ void on_tool_previewoff_toggled(GtkWidget *widget, void * user) {
 
 void on_tool_textstyle_bold_activate(GtkWidget* widget, void* user) {
     editor_set_selection_textstyle(gummi->editor, "tool_bold");
+    motion_start_timer(gummi->motion);
 }
 
 void on_tool_textstyle_italic_activate(GtkWidget* widget, void* user) {
     editor_set_selection_textstyle(gummi->editor, "tool_italic");
+    motion_start_timer(gummi->motion);
 }
 
 void on_tool_textstyle_underline_activate(GtkWidget* widget, void* user) {
     editor_set_selection_textstyle(gummi->editor, "tool_unline");
+    motion_start_timer(gummi->motion);
 }
 
 void on_tool_textstyle_left_activate(GtkWidget* widget, void* user) {
     editor_set_selection_textstyle(gummi->editor, "tool_left");
+    motion_start_timer(gummi->motion);
 }
 
 void on_tool_textstyle_center_activate(GtkWidget* widget, void* user) {
     editor_set_selection_textstyle(gummi->editor, "tool_center");
+    motion_start_timer(gummi->motion);
 }
 
 void on_tool_textstyle_right_activate(GtkWidget* widget, void* user) {
     editor_set_selection_textstyle(gummi->editor, "tool_right");
+    motion_start_timer(gummi->motion);
 }
 
 void on_button_template_ok_clicked(GtkWidget* widget, void* user) {
@@ -476,18 +488,21 @@ GuImportGui* importgui_init(GtkBuilder* builder) {
 
 void on_button_import_table_apply_clicked(GtkWidget* widget, void* user) {
     importer_insert_table(gummi->importer, gummi->editor);
+    motion_start_timer(gummi->motion);
 }
 
 void on_button_import_image_apply_clicked(GtkWidget* widget, void* user) {
     importer_insert_image(gummi->importer, gummi->editor);
+    motion_start_timer(gummi->motion);
 }
 
 void on_button_import_matrix_apply_clicked(GtkWidget* widget, void* user) {
     importer_insert_matrix(gummi->importer, gummi->editor);
+    motion_start_timer(gummi->motion);
 }
 
 void on_image_file_activate(void) {
-    const gchar* filename = get_open_filename("Image files", "image/*");
+    const gchar* filename = get_open_filename(FILTER_IMAGE);
     importer_imagegui_set_sensitive(gummi->importer, filename, TRUE);
 }
 
@@ -634,42 +649,110 @@ gboolean check_for_save() {
     return ret;
 }
 
-gchar* get_open_filename(const gchar* name, const gchar* filter) {
-    GtkWidget   *chooser;
-    gchar       *filename = NULL;
+gchar* get_open_filename(GuFilterType type) {
+    GtkFileChooser* chooser = NULL;
+    GtkFileFilter* filter = gtk_file_filter_new();
+    gchar* filename = NULL;
        
-    chooser = gtk_file_chooser_dialog_new ("Open File...",
-           GTK_WINDOW (gummi->gui->mainwindow),
-           GTK_FILE_CHOOSER_ACTION_OPEN,
-           GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-           GTK_STOCK_OPEN, GTK_RESPONSE_OK,
-           NULL);
-           
-    if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_OK) {
-        filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
+    chooser = GTK_FILE_CHOOSER(gtk_file_chooser_dialog_new(
+                "Open File...",
+                GTK_WINDOW (gummi->gui->mainwindow),
+                GTK_FILE_CHOOSER_ACTION_OPEN,
+                GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                GTK_STOCK_OPEN, GTK_RESPONSE_OK,
+                NULL));
+
+    switch (type) {
+        case FILTER_LATEX:
+            gtk_file_filter_set_name(filter, "LaTeX files");
+            gtk_file_filter_add_pattern(filter, "*.tex");
+            gtk_file_chooser_add_filter(chooser, filter);
+            gtk_file_chooser_set_filter(chooser, filter);
+            gtk_file_filter_set_name(filter, "Text files");
+            gtk_file_filter_add_mime_type(filter, "text/plain");
+            gtk_file_chooser_add_filter(chooser, filter);
+            break;
+
+        case FILTER_PDF:
+            gtk_file_filter_set_name(filter, "PDF files");
+            gtk_file_filter_add_pattern(filter, "*.pdf");
+            gtk_file_chooser_add_filter(chooser, filter);
+            gtk_file_chooser_set_filter(chooser, filter);
+            break;
+
+        case FILTER_IMAGE:
+            gtk_file_filter_set_name(filter, "Image files");
+            gtk_file_filter_add_mime_type(filter, "image/*");
+            gtk_file_chooser_add_filter(chooser, filter);
+            gtk_file_chooser_set_filter(chooser, filter);
+            break;
+
+        case FILTER_BIBLIO:
+            gtk_file_filter_set_name(filter, "Bibtex files");
+            gtk_file_filter_add_pattern(filter, "*.bib");
+            gtk_file_chooser_add_filter(chooser, filter);
+            gtk_file_chooser_set_filter(chooser, filter);
+            break;
     }
+           
+    if (gtk_dialog_run(GTK_DIALOG (chooser)) == GTK_RESPONSE_OK)
+        filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
     
-    gtk_widget_destroy (chooser);
+    gtk_widget_destroy(GTK_WIDGET(chooser));
     return filename;
 }
 
-gchar* get_save_filename(const gchar* name, const gchar* filter) {
-    GtkWidget       *chooser;
-    gchar           *filename = NULL;
+gchar* get_save_filename(GuFilterType type) {
+    GtkFileChooser* chooser = NULL;
+    GtkFileFilter* filter = gtk_file_filter_new();
+    gchar* filename = NULL;
         
-    chooser = gtk_file_chooser_dialog_new ("Save File...",
-                           GTK_WINDOW (gummi->gui->mainwindow),
-                           GTK_FILE_CHOOSER_ACTION_SAVE,
-                           GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                           GTK_STOCK_SAVE, GTK_RESPONSE_OK,
-                           NULL);
+    chooser = GTK_FILE_CHOOSER(gtk_file_chooser_dialog_new(
+                "Save File...",
+                GTK_WINDOW (gummi->gui->mainwindow),
+                GTK_FILE_CHOOSER_ACTION_SAVE,
+                GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                GTK_STOCK_SAVE, GTK_RESPONSE_OK,
+                NULL));
+
+    switch (type) {
+        case FILTER_LATEX:
+            gtk_file_filter_set_name(filter, "LaTeX files");
+            gtk_file_filter_add_pattern(filter, "*.tex");
+            gtk_file_chooser_add_filter(chooser, filter);
+            gtk_file_chooser_set_filter(chooser, filter);
+            filter = gtk_file_filter_new();
+            gtk_file_filter_set_name(filter, "Text files");
+            gtk_file_filter_add_mime_type(filter, "text/plain");
+            gtk_file_chooser_add_filter(chooser, filter);
+            break;
+
+        case FILTER_PDF:
+            gtk_file_filter_set_name(filter, "PDF files");
+            gtk_file_filter_add_pattern(filter, "*.pdf");
+            gtk_file_chooser_add_filter(chooser, filter);
+            gtk_file_chooser_set_filter(chooser, filter);
+            break;
+
+        case FILTER_IMAGE:
+            gtk_file_filter_set_name(filter, "Image files");
+            gtk_file_filter_add_mime_type(filter, "image/*");
+            gtk_file_chooser_add_filter(chooser, filter);
+            gtk_file_chooser_set_filter(chooser, filter);
+            break;
+
+        case FILTER_BIBLIO:
+            gtk_file_filter_set_name(filter, "Bibtex files");
+            gtk_file_filter_add_pattern(filter, "*.bib");
+            gtk_file_chooser_add_filter(chooser, filter);
+            gtk_file_chooser_set_filter(chooser, filter);
+            break;
+    }
                            
     if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_OK)
-    {
         filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
-    }
     
-    gtk_widget_destroy (chooser);
+    gtk_widget_destroy(GTK_WIDGET(chooser));
     return filename;
 }
 

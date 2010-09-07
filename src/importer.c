@@ -116,17 +116,20 @@ void importer_insert_image(GuImporter* ic, GuEditor* ec) {
     GtkTextIter current;
     const gchar* text = importer_generate_image(ic);
     const gchar* imagefile = gtk_entry_get_text(ic->image_file);
-    if (!utils_validate_path(imagefile)) {
-        slog(L_G_ERROR, "%s: No such file or directory\n", imagefile);
-        return;
+
+    if (0 != strlen(imagefile)) {
+        if (!utils_validate_path(imagefile)) {
+            slog(L_G_ERROR, "%s: No such file or directory\n", imagefile);
+        } else {
+            editor_insert_package(ec, "graphicx");
+            editor_get_current_iter(ec, &current);
+            gtk_text_buffer_begin_user_action(ec_sourcebuffer);
+            gtk_text_buffer_insert(ec_sourcebuffer, &current,text,strlen(text));
+            gtk_text_buffer_end_user_action(ec_sourcebuffer);
+            gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
+            importer_imagegui_set_sensitive(ic, "", FALSE);
+        }
     }
-    editor_insert_package(ec, "graphicx");
-    editor_get_current_iter(ec, &current);
-    gtk_text_buffer_begin_user_action(ec_sourcebuffer);
-    gtk_text_buffer_insert(ec_sourcebuffer, &current, text, strlen(text));
-    gtk_text_buffer_end_user_action(ec_sourcebuffer);
-    gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
-    importer_imagegui_set_sensitive(ic, "", FALSE);
     gtk_notebook_set_current_page(ic->import_tabs, 0);
 }
 
@@ -226,14 +229,14 @@ const gchar* importer_generate_image(GuImporter* ic) {
     const gchar* image_file = gtk_entry_get_text(ic->image_file);
     const gchar* caption = gtk_entry_get_text(ic->image_caption);
     const gchar* label = gtk_entry_get_text(ic->image_label);
-    gint scale = gtk_adjustment_get_value(ic->scaler);
+    gdouble scale = gtk_adjustment_get_value(ic->scaler);
     static gchar result[BUFSIZ] = { 0 };
 
     /* clear previous data */
     result[0] = 0;
 
     snprintf(result, BUFSIZ, "\\begin{figure}[htp]\n\\centering\n"
-        "\\includegraphics[scale=%d]{%s}\n\\caption{%s}\n\\label{%s}\n",
-        scale, image_file, caption, label);
+        "\\includegraphics[scale=%.2f]{%s}\n\\caption{%s}\n\\label{%s}\n"
+        "\\end{figure}", scale, image_file, caption, label);
     return result;
 }
