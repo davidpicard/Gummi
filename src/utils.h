@@ -50,20 +50,9 @@ typedef struct _pdata {
     gchar* data;
 } pdata;
 
-/**
- * @brief slog initlization
- * @param debug boolean value for whether output debug message or not
- */
 void slog_init(gint debug);
-
-/**
- * @brief debug interface for gummi
- * @param level levels or listed above
- * @param fmt just like the printf function
- * @param ... parameters for fmt
- */
+void slog_set_gui_parent(GtkWidget* p);
 void slog(gint level, const gchar *fmt, ...);
-
 gboolean utils_yes_no_dialog(const gchar* message);
 gboolean utils_validate_path(const gchar* path);
 

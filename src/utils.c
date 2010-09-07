@@ -50,9 +50,14 @@
 #include "utils.h"
 
 static gint slog_debug = 0;
+static GtkWidget* parent = 0;
 
 void slog_init(gint debug) {
     slog_debug = debug;
+}
+
+void slog_set_gui_parent(GtkWidget* p) {
+    parent = p;
 }
 
 void slog(gint level, const gchar *fmt, ...) {
@@ -110,11 +115,11 @@ void slog(gint level, const gchar *fmt, ...) {
 gboolean utils_yes_no_dialog(const gchar* message) {
     GtkWidget* dialog;
     gint ret = 0;
-    dialog = gtk_message_dialog_new (NULL, 
-            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-            GTK_MESSAGE_QUESTION,
-            GTK_BUTTONS_YES_NO,
-            "%s", message);
+    dialog = gtk_message_dialog_new (parent, 
+                 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                 GTK_MESSAGE_QUESTION,
+                 GTK_BUTTONS_YES_NO,
+                 "%s", message);
 
     ret = gtk_dialog_run(GTK_DIALOG(dialog));      
     gtk_widget_destroy(dialog);

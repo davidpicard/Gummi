@@ -269,6 +269,8 @@ gboolean motion_updatepreview(void* user) {
     return 0 != strcmp(config_get_value("compile_scheme"), "on_idle");
 }
 
+/* XXX: All actions that calls 'gtk_text_buffer_set_modified(*, TRUE)' need to
+ * call 'motion_start_timer()' */
 void motion_start_timer(GuMotion* mc) {
     L_F_DEBUG;
     if (0 == strcmp(config_get_value("compile_scheme"), "on_idle")) {

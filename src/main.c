@@ -80,9 +80,8 @@ int main (int argc, char *argv[]) {
     g_option_context_add_main_entries(context, entries, PACKAGE);
     g_option_context_parse(context, &argc, &argv, &error);
 
-    slog(L_INFO, PACKAGE_NAME" version: "PACKAGE_VERSION"\n");
-
     slog_init(debug);
+    slog(L_INFO, PACKAGE_NAME" version: "PACKAGE_VERSION"\n");
 
     /* set up configuration file */
     snprintf(configname, 128, "%s%cgummi", g_get_user_config_dir(),
@@ -111,6 +110,8 @@ int main (int argc, char *argv[]) {
     biblio = biblio_init(builder);
 
     gummi = gummi_init(gui, editor, importer, motion, preview, templ);
+
+    slog_set_gui_parent(gui->mainwindow);
 
     if ( argc != 2 ) {
         iofunctions_load_default_text(editor);
