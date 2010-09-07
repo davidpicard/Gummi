@@ -61,6 +61,8 @@ GuPreview* preview_init(GtkBuilder * builder) {
 
     g_signal_connect(GTK_OBJECT(p->drawarea), "expose-event",
             G_CALLBACK(on_expose), p); 
+
+    slog(L_INFO, "using libpoppler %s ...\n", poppler_get_version());
     return p;
 }
 
