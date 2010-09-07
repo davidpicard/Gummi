@@ -637,11 +637,12 @@ gboolean check_for_save() {
 
         const gchar *msg  = "Do you want to save the changes you have made?";
 
-        dialog = gtk_message_dialog_new (NULL, 
-                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-                GTK_MESSAGE_QUESTION,
-                GTK_BUTTONS_YES_NO,
-                "%s", msg);
+        dialog = gtk_message_dialog_new(
+                     GTK_WINDOW(gummi->gui->mainwindow), 
+                     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                     GTK_MESSAGE_QUESTION,
+                     GTK_BUTTONS_YES_NO,
+                     "%s", msg);
 
         gtk_window_set_title (GTK_WINDOW (dialog), "Save?");
         if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_NO) {
@@ -871,7 +872,13 @@ void prefsgui_main(void) {
 
 void prefsgui_set_current_settings(GuPrefsGui* prefs) {
     /* set font */
+    GtkTreeModel* combo_lang = 0;
+    GtkTreeIter iter;
+    const gchar* lang = 0;
+    gint count = 0;
+    gboolean valid = FALSE;
     const gchar* font = config_get_value("font");
+
     PangoFontDescription* font_desc = pango_font_description_from_string(font);
     gtk_widget_modify_font(GTK_WIDGET(prefs->default_text), font_desc);
     pango_font_description_free(font_desc);
@@ -890,6 +897,13 @@ void prefsgui_set_current_settings(GuPrefsGui* prefs) {
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs->compile_status),
             (gboolean)config_get_value("compile_status"));
 
+    if (!config_get_value("autosaving"))
+        gtk_widget_set_sensitive(GTK_WIDGET(prefs->autosave_timer), FALSE);
+
+    if (!config_get_value("compile_status"))
+        gtk_widget_set_sensitive(GTK_WIDGET(prefs->compile_timer), FALSE);
+
+    /* set spin button */
     gtk_spin_button_set_value(prefs->autosave_timer,
             atoi(config_get_value("autosave_timer"))/60);
     gtk_spin_button_set_value(prefs->compile_timer,
@@ -899,17 +913,27 @@ void prefsgui_set_current_settings(GuPrefsGui* prefs) {
     gtk_text_buffer_set_text(prefs->default_buffer,
             config_get_value("welcome"), strlen(config_get_value("welcome")));
 
+    /* set combo boxes */
     if (0 == strcmp(config_get_value("typesetter"), "xelatex"))
         gtk_combo_box_set_active(prefs->typesetter, 1);
 
     if (0 == strcmp(config_get_value("compile_scheme"), "real_time"))
         gtk_combo_box_set_active(prefs->compile_scheme, 1);
 
-    if (!config_get_value("autosaving"))
-        gtk_widget_set_sensitive(GTK_WIDGET(prefs->autosave_timer), FALSE);
-
-    if (!config_get_value("compile_status"))
-        gtk_widget_set_sensitive(GTK_WIDGET(prefs->compile_timer), FALSE);
+    combo_lang = gtk_combo_box_get_model(prefs->combo_languages);
+    
+    lang = config_get_value("spell_language");
+    valid = gtk_tree_model_get_iter_first(combo_lang, &iter);
+    while (valid) {
+        const gchar* str_value;
+        gtk_tree_model_get(combo_lang, &iter, 0, &str_value, -1);
+        if (0 == strcmp(lang, str_value)) {
+            gtk_combo_box_set_active(prefs->combo_languages, count);
+            break;
+        }
+        ++count;
+        valid = gtk_tree_model_iter_next(combo_lang, &iter);
+    }
 }
 
 void toggle_linenumbers(GtkWidget* widget, void* user) {

@@ -104,7 +104,8 @@ void iofunctions_start_autosave(gint time, gchar* name) {
 
 void iofunctions_stop_autosave(void) {
     L_F_DEBUG;
-    g_source_remove(sid);
+    if (sid > 0)
+        g_source_remove(sid);
 }
 
 void iofunctions_reset_autosave(gchar* name) {
