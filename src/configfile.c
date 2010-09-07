@@ -42,6 +42,9 @@
 static const gchar* config_filename = 0;
 
 const gchar config_str[] =
+"[Global]\n"
+"config_version = "PACKAGE_VERSION"\n"
+"\n"
 "[Editor]\n"
 "line_numbers = True\n"
 "highlighting = True\n"
@@ -81,7 +84,14 @@ const gchar config_str[] =
 
 void config_init(const gchar* filename) {
     L_F_DEBUG;
+    const gchar* config_version = 0;
     config_filename = filename;
+    config_version = config_get_value("config_version");
+    if (!config_version || 0 != strcmp(config_version, PACKAGE_VERSION)) {
+        slog(L_INFO, "found old configuration file, replacing it with new "
+                "one ...\n");
+        config_set_default();
+    }
 }
 
 const gchar* config_get_value(const gchar* term) {
@@ -91,14 +101,16 @@ const gchar* config_get_value(const gchar* term) {
     static gchar ret[BUF_MAX];
     gchar* pstr;
 
+    /* reset ret */
+    ret[0] = 0;
+
     if (!(fh = fopen(config_filename, "r"))) {
         slog(L_ERROR, "can't find configuration file, reseting to default\n");
         config_set_default();
         return config_get_value(term);
     }
 
-    while (!feof(fh)) {
-        fgets(buf, BUF_MAX, fh);
+    while (fgets(buf, BUF_MAX, fh)) {
         buf[strlen(buf) -1] = 0;
         if (NULL == (pstr = strtok(buf, "[=] ")))
             continue;
@@ -121,6 +133,10 @@ const gchar* config_get_value(const gchar* term) {
         }
     }
     fclose(fh);
+
+    if (!ret)
+        slog(L_ERROR, "can't find configuration for %s\n", term);
+
     if (0 == strcmp(ret, "False"))
         return NULL;
     return ret;

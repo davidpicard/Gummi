@@ -27,12 +27,15 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#include <fcntl.h>
 #include <glib.h>
+#include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include "configfile.h"
 #include "environment.h"
@@ -81,11 +84,18 @@ int main (int argc, char *argv[]) {
 
     slog_init(debug);
 
-    snprintf(configname, 128, "%s%cgummi.cfg", g_get_user_config_dir(),
+    /* set up configuration file */
+    snprintf(configname, 128, "%s%cgummi", g_get_user_config_dir(),
             G_DIR_SEPARATOR);
+    g_mkdir_with_parents(configname,
+            S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+    strncat(configname, G_DIR_SEPARATOR_S, 128 - strlen(configname) -1);
+    strncat(configname, "gummi.cfg", 128 - strlen(configname) -1);
     config_init(configname);
     slog(L_INFO, "configuration file: %s\n", configname);
+    config_get_value("wtf");
 
+    /* initialize gtk */
     gtk_init (&argc, &argv);
     builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, DATA_DIR"/gummi.glade", NULL);

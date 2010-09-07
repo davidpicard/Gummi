@@ -158,6 +158,7 @@ void motion_update_pdffile(GuMotion* mc) {
 
     pdata cresult = utils_popen_r(command);
     errorbuffer_set_text(cresult.data);
+    mc->errorline = 0;
 
     /* find error line */
     if (cresult.ret == 1 && strstr(cresult.data, "Fatal error")) {
@@ -171,13 +172,11 @@ void motion_update_pdffile(GuMotion* mc) {
             result = g_match_info_fetch_all(match_info);
             if (result[1])
                 mc->errorline = atoi(result[1]);
-        } else
-            mc->errorline = 0;
+        }
         g_strfreev(result);
         g_match_info_free(match_info);
         g_regex_unref(match_str);
-    } else
-        mc->errorline = 0;
+    }
 }
 
 
