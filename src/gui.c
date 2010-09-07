@@ -668,6 +668,7 @@ gchar* get_open_filename(GuFilterType type) {
             gtk_file_filter_add_pattern(filter, "*.tex");
             gtk_file_chooser_add_filter(chooser, filter);
             gtk_file_chooser_set_filter(chooser, filter);
+            filter = gtk_file_filter_new();
             gtk_file_filter_set_name(filter, "Text files");
             gtk_file_filter_add_mime_type(filter, "text/plain");
             gtk_file_chooser_add_filter(chooser, filter);

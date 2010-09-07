@@ -233,6 +233,8 @@ void motion_export_pdffile(GuMotion* mc, const gchar* path) {
     FILE *in, *out;
     gchar savepath[PATH_MAX];
     gchar buf[BUFSIZ];
+    gint size = 0;
+
     if (0 != strcmp(path + strlen(path) -4, ".pdf"))
         snprintf(savepath, PATH_MAX, "%s.pdf", path);
     else
@@ -244,8 +246,8 @@ void motion_export_pdffile(GuMotion* mc, const gchar* path) {
     if (NULL == (out = fopen(savepath, "wb")))
         slog(L_G_ERROR, "Failed to save %s\n", savepath);
 
-    while (fread(buf, BUFSIZ, 1, in))
-        fwrite(buf, BUFSIZ, 1, out);
+    while (size = fread(buf, 1, BUFSIZ, in))
+        fwrite(buf, 1, size, out);
     fclose(in);
     fclose(out);
 }
