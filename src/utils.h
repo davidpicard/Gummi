@@ -55,7 +55,7 @@ void slog_set_gui_parent(GtkWidget* p);
 void slog(gint level, const gchar *fmt, ...);
 gboolean utils_yes_no_dialog(const gchar* message);
 gboolean utils_path_exists(const gchar* path);
-
+void utils_copy_file(const gchar* source, const gchar* dest);
 pdata utils_popen_r(const gchar* cmd);
 
 #endif /* GUMMI_UTILS */

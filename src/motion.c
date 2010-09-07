@@ -230,26 +230,13 @@ void motion_update_auxfile(GuMotion* mc) {
 
 void motion_export_pdffile(GuMotion* mc, const gchar* path) {
     L_F_DEBUG;
-    FILE *in, *out;
     gchar savepath[PATH_MAX];
-    gchar buf[BUFSIZ];
-    gint size = 0;
 
     if (0 != strcmp(path + strlen(path) -4, ".pdf"))
         snprintf(savepath, PATH_MAX, "%s.pdf", path);
     else
         strncpy(savepath, path, PATH_MAX);
-    /* I use this to copy file instead of g_file_copy or other OS dependent
-     * functions */
-    if (NULL == (in = fopen(mc->pdffile, "rb")))
-        slog(L_G_ERROR, "Failed to export PDF\n");
-    if (NULL == (out = fopen(savepath, "wb")))
-        slog(L_G_ERROR, "Failed to save %s\n", savepath);
-
-    while ((size = fread(buf, 1, BUFSIZ, in)) > 0)
-        fwrite(buf, 1, size, out);
-    fclose(in);
-    fclose(out);
+    utils_copy_file(mc->pdffile, savepath);
 }
 
 void motion_update_errortags(GuMotion* mc) {

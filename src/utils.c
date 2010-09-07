@@ -84,9 +84,9 @@ void slog(gint level, const gchar *fmt, ...) {
         GtkWidget* dialog;
         // TODO: display the tmp file name
         if (L_IS_TYPE(level, L_G_FATAL))
-            strncat(message, "\nGummi has encountered a serious error and "
+            strncat(message, _("\nGummi has encountered a serious error and "
                     "require restart, your can find your file in the /tmp "
-                    "directory\n", BUFSIZ - strlen(message) -1);
+                    "directory\n"), BUFSIZ - strlen(message) -1);
         dialog = gtk_message_dialog_new (parent, 
                 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                 L_IS_TYPE(level,L_G_INFO)? GTK_MESSAGE_INFO: GTK_MESSAGE_ERROR,
@@ -135,6 +135,24 @@ gboolean utils_path_exists(const gchar* path) {
     result = g_file_query_exists(file, NULL);
     g_object_unref(file);
     return result;
+}
+
+void utils_copy_file(const gchar* source, const gchar* dest) {
+    /* I use this to copy file instead of g_file_copy or other OS dependent
+     * functions */
+    FILE *in, *out;
+    gchar buf[BUFSIZ];
+    gint size = 0;
+
+    if (NULL == (in = fopen(source, "rb")))
+        slog(L_G_ERROR, "failed to export PDF\n");
+    if (NULL == (out = fopen(dest, "wb")))
+        slog(L_G_ERROR, "failed to save %s\n", dest);
+
+    while ((size = fread(buf, 1, BUFSIZ, in)) > 0)
+        fwrite(buf, 1, size, out);
+    fclose(in);
+    fclose(out);
 }
 
 pdata utils_popen_r(const gchar* cmd) {

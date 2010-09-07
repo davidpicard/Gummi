@@ -575,12 +575,14 @@ void on_bibrefresh_clicked(GtkWidget* widget, void* user) {
         // parse entries(argument list_biblios)
         gtk_label_set_text(gummi->gui->bibfilenm, "return setup");
         gtk_label_set_text(gummi->gui->bibrefnr, "return setup");
-        gtk_progress_bar_set_text(gummi->gui->bibprogressbar, "return filename loaded");
+        gtk_progress_bar_set_text(gummi->gui->bibprogressbar,
+                _("return filename loaded"));
     }
     else {
-        gtk_progress_bar_set_text(gummi->gui->bibprogressbar, "no bibliography file detected");
-        gtk_label_set_text(gummi->gui->bibfilenm, "None");
-        gtk_label_set_text(gummi->gui->bibrefnr, "N/A");
+        gtk_progress_bar_set_text(gummi->gui->bibprogressbar,
+                _("no bibliography file detected"));
+        gtk_label_set_text(gummi->gui->bibfilenm, _("None"));
+        gtk_label_set_text(gummi->gui->bibrefnr, _("N/A"));
     }
 }
 
@@ -634,7 +636,7 @@ gboolean check_for_save() {
         /* we need to prompt for save */    
         GtkWidget       *dialog;
 
-        const gchar *msg  = "Do you want to save the changes you have made?";
+        const gchar *msg  = _("Do you want to save the changes you have made?");
 
         dialog = gtk_message_dialog_new(
                      GTK_WINDOW(gummi->gui->mainwindow), 
@@ -643,7 +645,7 @@ gboolean check_for_save() {
                      GTK_BUTTONS_YES_NO,
                      "%s", msg);
 
-        gtk_window_set_title (GTK_WINDOW (dialog), "Save?");
+        gtk_window_set_title (GTK_WINDOW (dialog), _("Save?"));
         if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_NO) {
             ret = FALSE;
         }      
@@ -660,7 +662,7 @@ gchar* get_open_filename(GuFilterType type) {
     gchar* filename = NULL;
        
     chooser = GTK_FILE_CHOOSER(gtk_file_chooser_dialog_new(
-                "Open File...",
+                _("Open File..."),
                 GTK_WINDOW (gummi->gui->mainwindow),
                 GTK_FILE_CHOOSER_ACTION_OPEN,
                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -714,7 +716,7 @@ gchar* get_save_filename(GuFilterType type) {
     gchar* filename = NULL;
         
     chooser = GTK_FILE_CHOOSER(gtk_file_chooser_dialog_new(
-                "Save File...",
+                _("Save File..."),
                 GTK_WINDOW (gummi->gui->mainwindow),
                 GTK_FILE_CHOOSER_ACTION_SAVE,
                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,

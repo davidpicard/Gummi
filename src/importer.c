@@ -119,7 +119,7 @@ void importer_insert_image(GuImporter* ic, GuEditor* ec) {
 
     if (0 != strlen(imagefile)) {
         if (!utils_path_exists(imagefile)) {
-            slog(L_G_ERROR, "%s: No such file or directory\n", imagefile);
+            slog(L_G_ERROR, _("%s: No such file or directory\n"), imagefile);
         } else {
             editor_insert_package(ec, "graphicx");
             editor_get_current_iter(ec, &current);

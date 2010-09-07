@@ -79,7 +79,7 @@ void iofunctions_write_file(GuEditor* ec, gchar *filename) {
     gchar           *text;
     gboolean         result;
 
-    status = g_strdup_printf ("Saving %s...", filename);
+    status = g_strdup_printf(_("Saving %s..."), filename);
     statusbar_set_message(status);    
     g_free (status);
     while (gtk_events_pending()) gtk_main_iteration();
@@ -91,7 +91,7 @@ void iofunctions_write_file(GuEditor* ec, gchar *filename) {
         result = g_file_set_contents (filename, text, -1, &err);
         
     if (result == FALSE) {
-        slog(L_G_ERROR, "%s\nPlease try again later.", err->message);
+        slog(L_G_ERROR, _("%s\nPlease try again later."), err->message);
         g_error_free(err);
     }    
     g_free(text); 
@@ -120,7 +120,7 @@ gboolean iofunctions_autosave_cb(void* name) {
     char buf[BUFSIZ];
     if (fname) {
         iofunctions_write_file(gummi->editor, fname);
-        snprintf(buf, BUFSIZ, "Autosaving file %s", fname);
+        snprintf(buf, BUFSIZ, _("Autosaving file %s"), fname);
         statusbar_set_message(buf);
     }
     return TRUE;
