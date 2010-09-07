@@ -38,7 +38,8 @@
 #include "gui.h"
 #include "utils.h"
 
-// maybe create an environment struct with filename, statusbar, etc?
+extern Gummi* gummi;
+static guint sid = 0;
 
 void iofunctions_load_default_text(GuEditor* ec) {
     slog(L_DEBUG, "loading default text\n");
@@ -93,4 +94,28 @@ void iofunctions_write_file(GuEditor* ec, gchar *filename) {
         g_error_free(err);
     }    
     g_free(text); 
+}
+
+void iofunctions_start_autosave(gint time, gchar* name) {
+    sid = g_timeout_add_seconds(time, iofunctions_autosave_cb, name);
+}
+
+void iofunctions_stop_autosave(void) {
+    g_source_remove(sid);
+}
+
+void iofunctions_reset_autosave(gchar* name) {
+    iofunctions_stop_autosave();
+    iofunctions_start_autosave(atoi(config_get_value("autosave_timer")), name);
+}
+
+gboolean iofunctions_autosave_cb(void* name) {
+    gchar* fname = (gchar*)name;
+    char buf[BUFSIZ];
+    if (fname) {
+        iofunctions_write_file(gummi->editor, fname);
+        snprintf(buf, BUFSIZ, "Autosaving file %s", fname);
+        statusbar_set_message(buf);
+    }
+    return TRUE;
 }

@@ -57,6 +57,7 @@ void on_window_destroy (GtkObject *object, gpointer user_data) {
 }
 
 int main (int argc, char *argv[]) {
+    gchar configname[128];
     GtkBuilder* builder;
     GummiGui* gui;
     GuEditor* editor;
@@ -76,11 +77,16 @@ int main (int argc, char *argv[]) {
     g_option_context_add_main_entries(context, entries, PACKAGE);
     g_option_context_parse(context, &argc, &argv, &error);
 
+    slog(L_INFO, PACKAGE_NAME" version: "PACKAGE_VERSION"\n");
+
     slog_init(debug);
-    config_init("gummi.cfg");
+
+    snprintf(configname, 128, "%s%cgummi.cfg", g_get_user_config_dir(),
+            G_DIR_SEPARATOR);
+    config_init(configname);
+    slog(L_INFO, "configuration file: %s\n", configname);
+
     gtk_init (&argc, &argv);
-    
-    slog(L_DEBUG, PACKAGE_NAME" version: "PACKAGE_VERSION"\n");
     builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, DATA_DIR"/gummi.glade", NULL);
     gtk_builder_set_translation_domain(builder, PACKAGE);

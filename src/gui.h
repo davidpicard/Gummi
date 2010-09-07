@@ -149,7 +149,7 @@ void on_import_tabs_switch_page(GtkNotebook* notebook, GtkNotebookPage* page,
 void on_bibcompile_clicked(GtkWidget* widget, void* user);
 void on_bibrefresh_clicked(GtkWidget* widget, void* user);
 void on_bibreference_clicked(GtkWidget* widget, void* user);
-gboolean on_bibprogressbar_update(void);
+gboolean on_bibprogressbar_update(void* user);
 
 void preview_next_page(GtkWidget* widget, void* user);
 void preview_prev_page(GtkWidget* widget, void* user);

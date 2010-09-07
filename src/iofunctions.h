@@ -33,10 +33,13 @@
 
 #include "editor.h"
 
-void iofunctions_error_message (const gchar *message);
 void iofunctions_load_default_text(GuEditor* ec);
 void iofunctions_load_file(GuEditor* ec, gchar*);
 void iofunctions_write_file(GuEditor* ec, gchar *filename);
+void iofunctions_start_autosave(gint time, gchar* name);
+void iofunctions_stop_autosave(void);
+void iofunctions_reset_autosave(gchar* name);
+gboolean iofunctions_autosave_cb(void* name);
 
 #endif /* GUMMI_IOFUNCTIONS_H */
 

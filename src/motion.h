@@ -52,9 +52,9 @@ void motion_initial_preview(GuMotion* mo, GuEditor* ec, GuPreview* pr);
 void motion_update_workfile(GuMotion* mo, GuEditor* ec);
 void motion_update_pdffile(GuMotion* motion);
 void motion_update_auxfile(GuMotion* motion);
-
 void motion_start_updatepreview(GuMotion* motion);
 void motion_stop_updatepreview(GuMotion* motion);
+void motion_export_pdffile(GuMotion* motion, const gchar* path);
 gboolean motion_updatepreview();
 
 

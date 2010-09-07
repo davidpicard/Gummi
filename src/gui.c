@@ -32,12 +32,12 @@
 
 #include <stdlib.h>
 #include <string.h>
-
 #ifndef WIN32
 #   include <unistd.h>
 #endif
 
 #include <glib.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include "biblio.h"
 #include "configfile.h"
@@ -149,7 +149,9 @@ void on_menu_template_activate(GtkWidget *widget, void * user) {
 }
 
 void on_menu_exportpdf_activate(GtkWidget *widget, void * user) {
-    // insert contents
+    gchar* filename = get_save_filename("PDF", "pdf/*");
+    if (filename)
+        motion_export_pdffile(gummi->motion, filename);
 }
 
 void on_menu_recent_activate(GtkWidget *widget, void * user) {
@@ -314,6 +316,8 @@ void on_menu_update_activate(GtkWidget *widget, void * user) {
 }
 
 void on_menu_about_activate(GtkWidget *widget, void * user) {
+    GError* err = NULL;
+    GdkPixbuf* icon = gdk_pixbuf_new_from_file(DATA_DIR"/gummi.png", &err);
     const gchar* authors[] = { "Alexander van der Mey\n"
         "<alexvandermey@gmail.com>",
         "Wei-Ning Huang\n"
@@ -336,7 +340,7 @@ void on_menu_about_activate(GtkWidget *widget, void * user) {
     gtk_about_dialog_set_website(dialog, PACKAGE_URL);
     gtk_about_dialog_set_copyright(dialog, PACKAGE_COPYRIGHT);
     gtk_about_dialog_set_license(dialog, PACKAGE_LICENSE);
-    //gtk_about_dialog_set_logo_icon_name(dialog, GUMMI_ICON)
+    gtk_about_dialog_set_logo(dialog, icon);
     gtk_about_dialog_set_comments(dialog, PACKAGE_COMMENTS);
     gtk_about_dialog_set_artists(dialog, artists);
     gtk_dialog_run(GTK_DIALOG(dialog));
@@ -522,7 +526,7 @@ void on_bibrefresh_clicked(GtkWidget* widget, void* user) {
 void on_bibreference_clicked(GtkWidget* widget, void* user) {
 }
 
-gboolean on_bibprogressbar_update() {
+gboolean on_bibprogressbar_update(void* user) {
     return FALSE;
 }
 
@@ -612,7 +616,7 @@ gchar* get_open_filename(const gchar* name, const gchar* filter) {
 
 gchar* get_save_filename(const gchar* name, const gchar* filter) {
     GtkWidget       *chooser;
-    gchar           *filename=NULL;
+    gchar           *filename = NULL;
         
     chooser = gtk_file_chooser_dialog_new ("Save File...",
                            GTK_WINDOW (gummi->gui->mainwindow),
@@ -845,7 +849,7 @@ void on_autosave_value_changed(GtkWidget* widget, void* user) {
 
     snprintf(val_str, 16, "%d", newval);
     config_set_value("autosave_timer", val_str);
-    //iofunction_reset_autosave();
+    iofunctions_reset_autosave(gummi->motion->filename);
 }
 
 void on_compile_value_changed(GtkWidget* widget, void* user) {

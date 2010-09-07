@@ -173,6 +173,26 @@ void motion_update_auxfile(GuMotion* motion) {
     utils_popen_r(command);
 }
 
+void motion_export_pdffile(GuMotion* motion, const gchar* path) {
+    FILE *in, *out;
+    gchar savepath[PATH_MAX];
+    gchar buf[BUFSIZ];
+    if (0 != strcmp(path + strlen(path) -4, ".pdf"))
+        snprintf(savepath, PATH_MAX, "%s.pdf", path);
+    else
+        strncpy(savepath, path, PATH_MAX);
+    /* I use this to copy file instead of g_file_copy or other OS dependent
+     * functions */
+    if (NULL == (in = fopen(motion->pdffile, "rb")))
+        slog(L_G_ERROR, "Failed to export PDF\n");
+    if (NULL == (out = fopen(savepath, "wb")))
+        slog(L_G_ERROR, "Failed to save %s\n", savepath);
+
+    while (fread(buf, BUFSIZ, 1, in))
+        fwrite(buf, BUFSIZ, 1, out);
+    fclose(in);
+    fclose(out);
+}
 
 gboolean motion_updatepreview(void) {
     if (gtk_text_buffer_get_modified(g_e_buffer)) {
