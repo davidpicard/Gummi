@@ -112,10 +112,8 @@ GummiGui* gui_init(GtkBuilder* builder) {
 #ifndef USE_GTKSPELL
     gtk_widget_set_sensitive(GTK_WIDGET(g->menu_spelling), FALSE);
 #else
-    if (config_get_value("spelling")) {
+    if (config_get_value("spelling"))
         gtk_check_menu_item_set_active(g->menu_spelling, TRUE);
-        editor_activate_spellchecking(gummi->editor, TRUE);
-    }
 #endif
     if (config_get_value("toolbar")) {
         gtk_check_menu_item_set_active(g->menu_toolbar, TRUE);
