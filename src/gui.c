@@ -99,6 +99,11 @@ GummiGui* gui_init(GtkBuilder* builder) {
 
 #ifndef USE_GTKSPELL
     gtk_widget_set_sensitive(GTK_WIDGET(g->menu_spelling), FALSE);
+#else
+    if (config_get_value("spelling")) {
+        gtk_check_menu_item_set_active(g->menu_spelling, TRUE);
+        editor_activate_spellchecking(gummi->editor, TRUE);
+    }
 #endif
     if (config_get_value("toolbar")) {
         gtk_check_menu_item_set_active(g->menu_toolbar, TRUE);
@@ -114,8 +119,12 @@ GummiGui* gui_init(GtkBuilder* builder) {
         gtk_check_menu_item_set_active(g->menu_rightpane, TRUE);
         gtk_widget_show(GTK_WIDGET(g->rightpane));
     } else {
+        config_set_value("compile_status", "False");
         gtk_toggle_tool_button_set_active(g->previewoff, TRUE);
     }
+
+    if (!config_get_value("compile_status"))
+        gtk_toggle_tool_button_set_active(g->previewoff, TRUE);
 
     return g;
 }
@@ -297,8 +306,8 @@ void on_menu_docstat_activate(GtkWidget *widget, void * user) {
     // insert contents
 }
 
-#ifdef USE_GTKSPELL
 void on_menu_spelling_toggled(GtkWidget *widget, void * user) {
+#ifdef USE_GTKSPELL
     if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget))) {
         editor_activate_spellchecking(gummi->editor, TRUE);
         config_set_value("spelling", "True");
@@ -306,8 +315,8 @@ void on_menu_spelling_toggled(GtkWidget *widget, void * user) {
         editor_activate_spellchecking(gummi->editor, FALSE);
         config_set_value("spelling", "False");
     }
-}
 #endif
+}
 
 void on_menu_update_activate(GtkWidget *widget, void * user) {
     gboolean ret = updatecheck();
@@ -317,7 +326,8 @@ void on_menu_update_activate(GtkWidget *widget, void * user) {
 
 void on_menu_about_activate(GtkWidget *widget, void * user) {
     GError* err = NULL;
-    GdkPixbuf* icon = gdk_pixbuf_new_from_file(DATA_DIR"/gummi.png", &err);
+    GdkPixbuf* icon = gdk_pixbuf_new_from_file_at_size
+        (DATA_DIR"/gummi.png", 60, 60, &err);
     const gchar* authors[] = { "Alexander van der Mey\n"
         "<alexvandermey@gmail.com>",
         "Wei-Ning Huang\n"
@@ -335,7 +345,7 @@ void on_menu_about_activate(GtkWidget *widget, void * user) {
                                  GTK_WINDOW(gummi->gui->mainwindow));
     gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
     gtk_about_dialog_set_authors(dialog, authors);
-    gtk_about_dialog_set_program_name(dialog, PACKAGE_NAME);
+    gtk_about_dialog_set_program_name(dialog, "Gummi");
     gtk_about_dialog_set_version(dialog, PACKAGE_VERSION);
     gtk_about_dialog_set_website(dialog, PACKAGE_URL);
     gtk_about_dialog_set_copyright(dialog, PACKAGE_COPYRIGHT);
@@ -762,6 +772,12 @@ void prefsgui_set_current_settings(GuPrefsGui* prefs) {
     if (0 == strcmp(config_get_value("compile_scheme"), "real_time"))
         gtk_combo_box_set_active(prefs->compile_scheme, 1);
 
+    if (!config_get_value("autosaving"))
+        gtk_widget_set_sensitive(GTK_WIDGET(prefs->autosave_timer), FALSE);
+
+    if (!config_get_value("compile_status"))
+        gtk_widget_set_sensitive(GTK_WIDGET(prefs->compile_timer), FALSE);
+
 #ifdef USE_GTKSPELL
     /* list available languages */
     gchar* ptr = 0;
@@ -825,6 +841,38 @@ void toggle_wordwrapping(GtkWidget* widget, void* user) {
         gtk_text_view_set_wrap_mode(g_e_view, GTK_WRAP_CHAR);
 }
 
+void toggle_compilestatus(GtkWidget* widget, void* user) {
+    gint newval = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+    config_set_value("compile_status", newval? "True": "False");
+    if (newval) {
+        gtk_widget_set_sensitive(
+                GTK_WIDGET(gummi->gui->prefsgui->compile_timer), TRUE);
+        gtk_toggle_tool_button_set_active(gummi->gui->previewoff, FALSE);
+    } else {
+        gtk_widget_set_sensitive(
+                GTK_WIDGET(gummi->gui->prefsgui->compile_timer), FALSE);
+        gtk_toggle_tool_button_set_active(gummi->gui->previewoff, TRUE);
+    }
+}
+
+void toggle_autosaving(GtkWidget* widget, void* user) {
+    gint newval = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+    config_set_value("autosaving", newval? "True": "False");
+    if (newval) {
+        gtk_widget_set_sensitive(
+                GTK_WIDGET(gummi->gui->prefsgui->autosave_timer), TRUE);
+        gint time = atoi(config_get_value("autosave_timer"));
+        gtk_spin_button_set_value(gummi->gui->prefsgui->autosave_timer,
+                time / 60);
+        iofunctions_start_autosave(time, gummi->motion->filename);
+    } else {
+        gtk_widget_set_sensitive(
+                GTK_WIDGET(gummi->gui->prefsgui->autosave_timer), FALSE);
+        iofunctions_stop_autosave();
+    }
+    
+}
+
 void on_prefs_close_clicked(GtkWidget* widget, void* user) {
     GtkTextIter start, end;
     if (2 == gtk_notebook_get_current_page(gummi->gui->prefsgui->notebook)) {
@@ -880,14 +928,14 @@ void on_combo_typesetter_changed(GtkWidget* widget, void* user) {
     gtk_widget_show(GTK_WIDGET(gummi->gui->prefsgui->changelabel));
 }
 
-#ifdef USE_GTKSPELL
 void on_combo_language_changed(GtkWidget* widget, void* user) {
+#ifdef USE_GTKSPELL
     gchar* selected = gtk_combo_box_get_active_text(GTK_COMBO_BOX(widget));
     config_set_value("spell_language", selected);
     editor_activate_spellchecking(gummi->editor, FALSE);
     editor_activate_spellchecking(gummi->editor, TRUE);
-}
 #endif
+}
 
 void on_combo_compilescheme_changed(GtkWidget* widget, void* user) {
     gint selected = gtk_combo_box_get_active(GTK_COMBO_BOX(widget));

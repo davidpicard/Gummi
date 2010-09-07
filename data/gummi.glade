@@ -47,7 +47,7 @@
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
-    <property name="icon">gummi.png</property>
+    <property name="icon">icon.png</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="transient_for">mainwindow</property>
     <accelerator key="Escape" signal="activate-default"/>
@@ -608,7 +608,7 @@ cells have line borders. </property>
     <property name="default_width">360</property>
     <property name="default_height">180</property>
     <property name="destroy_with_parent">True</property>
-    <property name="icon">gummi.png</property>
+    <property name="icon">icon.png</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
     <property name="transient_for">mainwindow</property>
@@ -942,7 +942,7 @@ cells have line borders. </property>
     <property name="window_position">center</property>
     <property name="default_width">792</property>
     <property name="default_height">558</property>
-    <property name="icon">gummi.png</property>
+    <property name="icon">icon.png</property>
     <signal name="delete_event" handler="gui_quit"/>
     <child>
       <object class="GtkVBox" id="mainbox">

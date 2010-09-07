@@ -159,7 +159,10 @@ void motion_start_updatepreview(GuMotion* motion) {
 }
 
 void motion_stop_updatepreview(GuMotion* motion) {
-    g_source_remove(motion->update);
+    if (motion->update != 0) {
+        g_source_remove(motion->update);
+        motion->update = 0;
+    }
 }
 
 void motion_update_auxfile(GuMotion* motion) {

@@ -167,11 +167,17 @@ gboolean statusbar_del_message(void* user);
 GuPrefsGui* prefsgui_init(GummiGui* gui);
 void prefsgui_main(void);
 void prefsgui_set_current_settings(GuPrefsGui* prefs);
+void toggle_linenumbers(GtkWidget* widget, void* user);
+void toggle_highlighting(GtkWidget* widget, void* user);
+void toggle_textwrapping(GtkWidget* widget, void* user);
+void toggle_wordwrapping(GtkWidget* widget, void* user);
+void toggle_compilestatus(GtkWidget* widget, void* user);
+void toggle_autosaving(GtkWidget* widget, void* user);
+void on_prefs_close_clicked(GtkWidget* widget, void* user);
+void on_prefs_reset_clicked(GtkWidget* widget, void* user);
 
 /* Search Window */
 GuSearchGui* searchgui_init(GtkBuilder* builder);
-void on_prefs_close_clicked(GtkWidget* widget, void* user);
-void on_prefs_reset_clicked(GtkWidget* widget, void* user);
 void on_toggle_matchcase_toggled(GtkWidget* widget, void* user);
 void on_toggle_wholeword_toggled(GtkWidget* widget, void* user);
 void on_toggle_backwards_toggled(GtkWidget* widget, void* user);
