@@ -44,6 +44,7 @@ GuBiblio* biblio_init(GtkBuilder* builder);
 gboolean biblio_detect_bibliography();
 gboolean biblio_compile_bibliography(GuMotion* mc);
 gboolean biblio_setup_bibliography();
+gboolean biblio_check_valid_file(GuBiblio* b, gchar *filename);
 
 
 

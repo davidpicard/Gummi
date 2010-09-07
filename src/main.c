@@ -109,7 +109,7 @@ int main (int argc, char *argv[]) {
     templ = template_init(builder);
     biblio = biblio_init(builder);
 
-    gummi = gummi_init(gui, editor, importer, motion, preview, templ);
+    gummi = gummi_init(gui, editor, importer, motion, preview, biblio, templ);
 
     slog_set_gui_parent(gui->mainwindow);
 

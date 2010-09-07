@@ -54,7 +54,7 @@ void slog_init(gint debug);
 void slog_set_gui_parent(GtkWidget* p);
 void slog(gint level, const gchar *fmt, ...);
 gboolean utils_yes_no_dialog(const gchar* message);
-gboolean utils_validate_path(const gchar* path);
+gboolean utils_path_exists(const gchar* path);
 
 pdata utils_popen_r(const gchar* cmd);
 

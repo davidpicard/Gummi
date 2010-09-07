@@ -69,6 +69,7 @@
 
 #include <libintl.h>
 
+#include "biblio.h"
 #include "gui.h"
 #include "editor.h"
 #include "importer.h"
@@ -96,10 +97,11 @@ typedef struct _Gummi {
     GuImporter* importer;
     GuMotion* motion;
     GuPreview* preview;
+    GuBiblio* biblio;
     GuTemplate* templ;
 } Gummi;
 
 Gummi* gummi_init(GummiGui* gu, GuEditor* ed, GuImporter* im, GuMotion* mo,
-        GuPreview* prev, GuTemplate* tpl);
+        GuPreview* prev, GuBiblio* bib, GuTemplate* tpl);
 
 #endif /* GUMMI_ENVIRONMENT_H */

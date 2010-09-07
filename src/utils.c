@@ -129,7 +129,7 @@ gboolean utils_yes_no_dialog(const gchar* message) {
         return FALSE;
 }
 
-gboolean utils_validate_path(const gchar* path) {
+gboolean utils_path_exists(const gchar* path) {
     gboolean result = FALSE;
     GFile* file = g_file_new_for_path(path);
     result = g_file_query_exists(file, NULL);

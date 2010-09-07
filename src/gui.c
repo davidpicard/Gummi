@@ -319,8 +319,8 @@ void on_menu_findprev_activate(GtkWidget *widget, void * user) {
 
 void on_menu_bibload_activate(GtkWidget *widget, void * user) {
     gchar *filename;
-    filename = get_open_filename("Bibtex files", "bib/*");
-    if (biblio_check_valid_file(filename)) {
+    filename = get_open_filename(FILTER_BIBLIO);
+    if (biblio_check_valid_file(gummi->biblio, filename)) {
         //biblio_setup_bibliography();
         // set bibfilenm label to filename
 

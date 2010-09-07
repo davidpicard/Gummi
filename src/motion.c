@@ -246,7 +246,7 @@ void motion_export_pdffile(GuMotion* mc, const gchar* path) {
     if (NULL == (out = fopen(savepath, "wb")))
         slog(L_G_ERROR, "Failed to save %s\n", savepath);
 
-    while (size = fread(buf, 1, BUFSIZ, in))
+    while ((size = fread(buf, 1, BUFSIZ, in)) > 0)
         fwrite(buf, 1, size, out);
     fclose(in);
     fclose(out);

@@ -118,7 +118,7 @@ void importer_insert_image(GuImporter* ic, GuEditor* ec) {
     const gchar* imagefile = gtk_entry_get_text(ic->image_file);
 
     if (0 != strlen(imagefile)) {
-        if (!utils_validate_path(imagefile)) {
+        if (!utils_path_exists(imagefile)) {
             slog(L_G_ERROR, "%s: No such file or directory\n", imagefile);
         } else {
             editor_insert_package(ec, "graphicx");
