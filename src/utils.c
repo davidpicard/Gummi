@@ -135,11 +135,12 @@ gboolean utils_validate_path(const gchar* path) {
 pdata utils_popen_r(const gchar* cmd) {
     FILE* fp = popen(cmd, "r");
     static gchar buf[BUFSIZ];
-    gint status = 0;
+    gint status = 0, len = 0;
 
     if (!fp)
         slog(L_FATAL, "popen error");
-    fread(buf, BUFSIZ, 1, fp);
+    len = fread(buf, 1, BUFSIZ, fp);
+    buf[len] = 0;
     status = WEXITSTATUS(pclose(fp));
     return (pdata){status, buf};
 }

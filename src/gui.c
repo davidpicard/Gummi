@@ -716,7 +716,23 @@ GuPrefsGui* prefsgui_init(GummiGui* gui) {
     gtk_window_set_transient_for(GTK_WINDOW(p->prefwindow), 
                                  GTK_WINDOW(gui->mainwindow));
 
-#ifndef USE_GTKSPELL
+#ifdef USE_GTKSPELL
+    /* list available languages */
+    gchar* ptr = 0;
+
+    pdata pret = utils_popen_r("enchant-lsmod -list-dicts");
+
+    ptr = strtok(pret.data, " \n");
+    while (ptr) {
+        GtkTreeIter iter;
+        if (ptr[0] != '(') {
+            gtk_list_store_append(p->list_languages, &iter);
+            gtk_list_store_set(p->list_languages, &iter, 0, ptr, -1);
+        }
+        ptr = strtok(NULL, " \n");
+    }
+    gtk_combo_box_set_active(p->combo_languages, 0);
+#else
     /* remove gtkspell related GUIs if not used */
     GtkHBox* hbox11 = GTK_HBOX(gtk_builder_get_object(builder, "hbox11"));
     GtkHBox* hbox10 = GTK_HBOX(gtk_builder_get_object(builder, "hbox10"));
@@ -725,13 +741,13 @@ GuPrefsGui* prefsgui_init(GummiGui* gui) {
     gtk_container_remove(GTK_CONTAINER(hbox10), GTK_WIDGET(p->combo_languages));
 #endif
 
-    prefsgui_set_current_settings(p);
     gtk_builder_connect_signals(builder, NULL);
 
     return p;
 }
 
 void prefsgui_main(void) {
+    prefsgui_set_current_settings(gummi->gui->prefsgui);
     gtk_widget_show_all(GTK_WIDGET(gummi->gui->prefsgui->prefwindow));
 }
 
@@ -777,24 +793,6 @@ void prefsgui_set_current_settings(GuPrefsGui* prefs) {
 
     if (!config_get_value("compile_status"))
         gtk_widget_set_sensitive(GTK_WIDGET(prefs->compile_timer), FALSE);
-
-#ifdef USE_GTKSPELL
-    /* list available languages */
-    gchar* ptr = 0;
-
-    pdata pret = utils_popen_r("enchant-lsmod -list-dicts");
-
-    ptr = strtok(pret.data, " \n");
-    while (ptr) {
-        GtkTreeIter iter;
-        if (ptr[0] != '(') {
-            gtk_list_store_append(prefs->list_languages, &iter);
-            gtk_list_store_set(prefs->list_languages, &iter, 0, ptr, -1);
-        }
-        ptr = strtok(NULL, " \n");
-    }
-    gtk_combo_box_set_active(prefs->combo_languages, 0);
-#endif
 }
 
 void toggle_linenumbers(GtkWidget* widget, void* user) {
@@ -915,6 +913,7 @@ void on_compile_value_changed(GtkWidget* widget, void* user) {
 void on_editor_font_set(GtkWidget* widget, void* user) {
     const gchar* font = gtk_font_button_get_font_name(GTK_FONT_BUTTON(widget));
     slog(L_DEBUG, "setting font to %s\n", font);
+    config_set_value("font", font);
     PangoFontDescription* font_desc = pango_font_description_from_string(font);
     gtk_widget_modify_font(GTK_WIDGET(gummi->editor->sourceview), font_desc);
     pango_font_description_free(font_desc);
@@ -932,8 +931,10 @@ void on_combo_language_changed(GtkWidget* widget, void* user) {
 #ifdef USE_GTKSPELL
     gchar* selected = gtk_combo_box_get_active_text(GTK_COMBO_BOX(widget));
     config_set_value("spell_language", selected);
-    editor_activate_spellchecking(gummi->editor, FALSE);
-    editor_activate_spellchecking(gummi->editor, TRUE);
+    if (config_get_value("spelling")) {
+        editor_activate_spellchecking(gummi->editor, FALSE);
+        editor_activate_spellchecking(gummi->editor, TRUE);
+    }
 #endif
 }
 
