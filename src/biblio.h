@@ -39,6 +39,7 @@ typedef struct _GuBiblio {
 
 GuBiblio* biblio_init(GtkBuilder* builder);
 
-gboolean compile_bibliography(GuMotion* mc);
+gboolean biblio_detect_bibliography();
+gboolean biblio_compile_bibliography(GuMotion* mc);
 
 #endif /* GUMMI_BIBLIO_H */

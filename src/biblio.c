@@ -59,10 +59,13 @@ GuBiblio* biblio_init(GtkBuilder * builder) {
 */
 
 
+gboolean biblio_detect_bibliography() {
+    return TRUE;
+}
 
-gboolean compile_bibliography(GuMotion* mc) {
+gboolean biblio_compile_bibliography(GuMotion* mc) {
     gchar command[BUFSIZ];
-    //motion_update_workfile();
+    motion_update_workfile(mc);
     motion_update_auxfile(mc);
     snprintf(command, sizeof command, "bibtex '%s'", mc->workfile);
     pdata res = utils_popen_r(command);

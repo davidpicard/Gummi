@@ -83,6 +83,17 @@ GummiGui* gui_init(GtkBuilder* builder) {
         GTK_CHECK_MENU_ITEM(gtk_builder_get_object(builder, "menu_rightpane"));
     g->statusid =
         gtk_statusbar_get_context_id(GTK_STATUSBAR(g->statusbar), "Gummi");
+    g->bibprogressbar =
+        GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "bibprogressbar"));
+    g->bibprogressmon =
+        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "bibprogressmon"));
+    g->list_biblios = 
+        GTK_LIST_STORE(gtk_builder_get_object(builder, "list_biblios"));
+    g->bibfilenm = 
+        GTK_LABEL(gtk_builder_get_object(builder, "bibfilenm"));
+    g->bibrefnr = 
+        GTK_LABEL(gtk_builder_get_object(builder, "bibrefnr"));
+    g->bibprogressval = 0.0;
 
     g->prefsgui = prefsgui_init(g);
     g->searchgui = searchgui_init(builder);
@@ -524,30 +535,42 @@ void on_bibcolumn_clicked(GtkWidget* widget, void* user) {
 
 void on_bibcompile_clicked(GtkWidget* widget, void* user) {
     g_timeout_add_seconds(10, on_bibprogressbar_update, NULL);
-    if (compile_bibliography(gummi->motion)) {
+    if (biblio_compile_bibliography(gummi->motion)) {
         
     }
 
 }
 
 void on_bibrefresh_clicked(GtkWidget* widget, void* user) {
+    gummi->gui->bibprogressval = 0.0;
+    g_timeout_add(2, on_bibprogressbar_update, NULL);
+    gtk_list_store_clear(gummi->gui->list_biblios);
+    if (biblio_detect_bibliography) {
+        // setup_bibliopgrahy, return filenm and number of entries
+        // parse entries(argument list_biblios)
+        gtk_label_set_text(gummi->gui->bibfilenm, "return setup");
+        gtk_label_set_text(gummi->gui->bibrefnr, "return setup");
+        gtk_progress_bar_set_text(gummi->gui->bibprogressbar, "return filename loaded");
+    }
+    else {
+        gtk_progress_bar_set_text(gummi->gui->bibprogressbar, "no bibliography file detected");
+        gtk_label_set_text(gummi->gui->bibfilenm, "None");
+        gtk_label_set_text(gummi->gui->bibrefnr, "N/A");
+    }
 }
+
 
 void on_bibreference_clicked(GtkWidget* widget, void* user) {
 }
 
 gboolean on_bibprogressbar_update(void* user) {
-    return FALSE;
+    gtk_adjustment_set_value
+        (gummi->gui->bibprogressmon, gummi->gui->bibprogressval);
+    gummi->gui->bibprogressval += 1.0;
+    if (gummi->gui->bibprogressval > 60) return FALSE;
+    else return TRUE;
 }
 
-/*
-	def on_bibprogressbar_update(self):
-		self.bibprogressmon.set_value(self.bibprogressval)
-		self.bibprogressval = self.bibprogressval + 1
-		if self.bibprogressval > 60:
-			return False
-		else:
-			return True */
 
 void preview_next_page(GtkWidget* widget, void* user) {
     preview_goto_page(gummi->preview, gummi->preview->page_current + 1);
