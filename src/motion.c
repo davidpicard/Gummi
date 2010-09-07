@@ -59,6 +59,8 @@ GuMotion* motion_init(GuEditor* ec, GuPreview* pc) {
     m->pdffile = NULL;
     m->workfile = NULL;
     m->tmpdir = g_get_tmp_dir();
+    m->errorline = 0;
+    m->last_errorline = 0;
     m->update = 0;
     m->timer = 0;
     return m;
@@ -143,7 +145,7 @@ void motion_update_workfile(GuMotion* mc) {
     gtk_widget_grab_focus(mc->b_editor->sourceview);
 }
 
-void motion_update_pdffile(GuMotion* motion) {
+void motion_update_pdffile(GuMotion* mc) {
     L_F_DEBUG;
     gchar command[BUFSIZ];
     snprintf(command, sizeof command, "%s "
@@ -151,11 +153,31 @@ void motion_update_pdffile(GuMotion* motion) {
                                       "-file-line-error "
                                       "-halt-on-error "
                                       "-output-directory='%s' '%s'", \
-                                      motion->typesetter,
-                                      motion->tmpdir, motion->workfile);
+                                      mc->typesetter,
+                                      mc->tmpdir, mc->workfile);
 
     pdata cresult = utils_popen_r(command);
     errorbuffer_set_text(cresult.data);
+
+    /* find error line */
+    if (cresult.ret == 1 && strstr(cresult.data, "Fatal error")) {
+        gchar** result = 0;
+        GError* error = NULL;
+        GRegex* match_str = 0;
+        GMatchInfo* match_info;
+        match_str = g_regex_new(":([\\d+]+):", G_REGEX_DOTALL, 0, &error);
+
+        if (g_regex_match(match_str, cresult.data, 0, &match_info)) {
+            result = g_match_info_fetch_all(match_info);
+            if (result[1])
+                mc->errorline = atoi(result[1]);
+        } else
+            mc->errorline = 0;
+        g_strfreev(result);
+        g_match_info_free(match_info);
+        g_regex_unref(match_str);
+    } else
+        mc->errorline = 0;
 }
 
 
@@ -224,12 +246,22 @@ void motion_export_pdffile(GuMotion* mc, const gchar* path) {
     fclose(out);
 }
 
+void motion_update_errortags(GuMotion* mc) {
+    if (mc->errorline)
+        editor_apply_errortags(mc->b_editor, mc->errorline);
+    if (mc->last_errorline && !mc->errorline)
+        editor_apply_errortags(mc->b_editor, 0);
+    mc->last_errorline = mc->errorline;
+}
+
 gboolean motion_updatepreview(void* user) {
     L_F_DEBUG;
     GuMotion* mc = (GuMotion*)user;
     motion_update_workfile(mc);
     motion_update_pdffile(mc);
+    motion_update_errortags(mc);
     preview_refresh(mc->b_preview);
+    motion_update_errortags(mc);
     return 0 != strcmp(config_get_value("compile_scheme"), "on_idle");
 }
 

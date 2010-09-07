@@ -44,6 +44,8 @@ typedef struct _GuMotion {
     gchar* pdffile;
     gchar* workfile;
     const gchar* tmpdir;
+    gint errorline;
+    gint last_errorline;
     guint update;
     guint timer;
     guint shandlers[2];

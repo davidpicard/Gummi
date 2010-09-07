@@ -256,6 +256,11 @@ void editor_set_selection_textstyle(GuEditor* ec, const gchar* type) {
                 style[selected][1], selected_text, style[selected][2]);
     }
 
+    /* free memory */
+    g_strfreev(result);
+    g_match_info_free(match_info);
+    g_regex_unref(match_str);
+
     gtk_text_buffer_begin_user_action(ec_sourcebuffer);
     gtk_text_buffer_delete(ec_sourcebuffer, &start, &end);
     gtk_text_buffer_insert(ec_sourcebuffer, &start, outtext, strlen(outtext));
