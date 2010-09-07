@@ -111,9 +111,13 @@ gboolean biblio_compile_bibliography(GuMotion* mc) {
 
 gboolean biblio_setup_bibliography(GuEditor* ec, GuBiblio* b) {
     gchar *bibpath;
-    // TODO: shutil.copy2 equivalent for C
-    //			shutil.copy2(self.bibdirname + self.bibbasename,
-	//				Environment.tempdir + "/" + self.bibbasename)
+    gchar *source;
+    gchar *dest;
+    
+    source = g_strconcat(b->bibdirname, b->bibbasename, NULL);
+    dest = g_strconcat("/tmp", b->bibbasename, NULL);
+    
+    utils_copy_file(source, dest);
     bibpath = g_strconcat(b->bibdirname, b->bibbasename, NULL);
     editor_insert_bib(ec, bibpath);
     g_free(bibpath);
@@ -141,39 +145,58 @@ gboolean biblio_check_valid_file(GuBiblio* b, gchar *filename) {
 }
 
 int biblio_parse_entries(GtkListStore *biblio_store, gchar *bib_content) {
-    int refs_number = 0;
-    GRegex* bib_entry;
-    GRegex* entry_ident;
-    GRegex* entry_title;
-    GRegex* entry_author;
-    GRegex* entry_year;
-
-    GMatchInfo *match_info;
+    int entry_total = 0;
     
-    bib_entry = g_regex_new(
+    GRegex* regex_entry;
+    GRegex* subregex_ident;
+    GRegex* subregex_title;
+    GRegex* subregex_author;
+    GRegex* subregex_year;
+
+    GMatchInfo *match_entry; 
+    /*   
+    GMatchInfo *match_ident;
+    GMatchInfo *match_title;
+    GMatchInfo *match_author;
+    GMatchInfo *match_year;
+    */
+    
+    regex_entry = g_regex_new(
         "(@article|@book|@booklet|@conference|@inbook|@incollection|"
         "@inproceedings|@manual|@mastersthesis|@misc|@phdthesis|"
         "@proceedings|@techreport|@unpublished)([^@]*)", 
         (G_REGEX_CASELESS | G_REGEX_DOTALL), 0, NULL);
       
-    /*
-    entry_ident = g_regex_new("{([^,]*)", 0, 0, NULL);
-    entry_title = g_regex_new('author\s*=\s*(.*)', 0, 0, NULL);
-    entry_author = g_regex_new("[^book]title\s*=\s*(.*)", 0, 0, NULL);
-    entry_year = g_regex_new('year\s*=\s*{?"?([1|2][0-9][0-9][0-9])}?"?', 0, 0, NULL);
-    */
+    subregex_ident = g_regex_new("@.+{([^,]+,)", 0, 0, NULL);
+    subregex_title = g_regex_new("[^book]title[\\s]*=[\\s]*(.*)", 0, 0, NULL);
+    subregex_author = g_regex_new("author[\\s]*=[\\s]*(.*)", 0, 0, NULL);
+    subregex_year = g_regex_new("year[\\s]*=[\\s]*[{|\"]?([1|2][0-9]{3})", 0, 0, NULL);
+    
+    
+    g_regex_match (regex_entry, bib_content, 0, &match_entry);
+    
+    while (g_match_info_matches (match_entry)) {
         
-    g_regex_match (bib_entry, bib_content, 0, &match_info);
-    while (g_match_info_matches (match_info)) {
-        gchar *entry = g_match_info_fetch (match_info, 0);
+        gchar *entry = g_match_info_fetch (match_entry, 0);
 
-        // split the entry up in its pieces and feed it to the list_store
-        refs_number += 1;
+        gchar **ident_res = g_regex_split(subregex_ident, entry, 0);
+        gchar **title_res = g_regex_split(subregex_title, entry, 0);
+        gchar **author_res = g_regex_split(subregex_author, entry, 0);
+        gchar **year_res = g_regex_split(subregex_year, entry, 0);
+        
+        printf("%s\n%s\n%s\n%s\n\n", ident_res[1], title_res[1], author_res[1], year_res[1]);
+        //TODO: split the entry up in its pieces and feed it to the list_store
+        
+        g_strfreev(ident_res); g_strfreev(title_res);
+        g_strfreev(author_res); g_strfreev(year_res);
+        
+        
+        entry_total += 1;
         g_free (entry);
-        g_match_info_next (match_info, NULL);
+        g_match_info_next (match_entry, NULL);
     }
     
-    return refs_number;
+    return entry_total;
 }
     
     /*
