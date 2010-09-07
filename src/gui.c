@@ -355,7 +355,7 @@ void on_menu_update_activate(GtkWidget *widget, void * user) {
 void on_menu_about_activate(GtkWidget *widget, void * user) {
     GError* err = NULL;
     GdkPixbuf* icon = gdk_pixbuf_new_from_file_at_size
-        (DATA_DIR"/gummi.png", 60, 60, &err);
+        (DATADIR"/gummi.png", 60, 60, &err);
     const gchar* authors[] = { "Alexander van der Mey\n"
         "<alexvandermey@gmail.com>",
         "Wei-Ning Huang\n"
@@ -792,7 +792,7 @@ gboolean statusbar_del_message(void* user) {
 GuPrefsGui* prefsgui_init(GummiGui* gui) {
     GuPrefsGui* p = (GuPrefsGui*)g_malloc(sizeof(GuPrefsGui));
     GtkBuilder* builder = gtk_builder_new();
-    gtk_builder_add_from_file(builder, DATA_DIR"/prefs.glade", NULL);
+    gtk_builder_add_from_file(builder, DATADIR"/prefs.glade", NULL);
     gtk_builder_set_translation_domain(builder, PACKAGE);
 
     p->prefwindow =

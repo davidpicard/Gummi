@@ -4,6 +4,8 @@
 AC_PREREQ([2.65])
 AC_INIT([gummi], [svn], [alexvandermey@gmail.com])
 AM_INIT_AUTOMAKE
+AM_GNU_GETTEXT_VERSION([0.17])
+AM_GNU_GETTEXT([external])
 
 AC_CONFIG_SRCDIR([src/environment.h])
 AC_CONFIG_HEADERS([config.h])
@@ -64,7 +66,7 @@ AC_CHECK_FUNCS([gethostbyname memset setlocale socket strstr])
 
 AC_SUBST(GUI_LIBS)
 AC_SUBST(GUI_CFLAGS)
-AC_CONFIG_FILES([Makefile src/Makefile data/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile data/Makefile po/Makefile.in])
 AC_OUTPUT
 
 echo

@@ -37,6 +37,8 @@
 #include <string.h>
 #include <sys/stat.h>
 
+//#include "gettext.h"
+
 #include "configfile.h"
 #include "environment.h"
 #include "gui.h"
@@ -71,7 +73,7 @@ int main (int argc, char *argv[]) {
     GuBiblio* biblio;
 
     /* set up i18n */
-    bindtextdomain(PACKAGE, LOCALE_DIR);
+    bindtextdomain(PACKAGE, LOCALEDIR);
     setlocale(LC_ALL, "");
     textdomain(PACKAGE);
 
@@ -97,7 +99,7 @@ int main (int argc, char *argv[]) {
     /* initialize gtk */
     gtk_init (&argc, &argv);
     builder = gtk_builder_new();
-    gtk_builder_add_from_file(builder, DATA_DIR"/gummi.glade", NULL);
+    gtk_builder_add_from_file(builder, DATADIR"/gummi.glade", NULL);
     gtk_builder_set_translation_domain(builder, PACKAGE);
 
     /* initialize classes */

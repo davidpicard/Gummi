@@ -1,10 +1,11 @@
 bin_PROGRAMS = gummi
 AM_CFLAGS = $(GUI_CFLAGS) \
 	    -export-dynamic -Wall -O2 \
-	    -DDATA_DIR=\"$(datadir)/$(PACKAGE)\" \
-	    -DLOCALE_DIR=\"$(datadir)/locale\"
+	    -DDATADIR=\"$(datadir)/$(PACKAGE)\" \
+	    -DLOCALEDIR=\"$(datadir)/locale\"
 
-gummi_LDADD = $(GUI_LIBS)
+gummi_LDADD = $(GUI_LIBS) \
+	      $(LIBINTL)
 
 gummi_SOURCES = biblio.c  biblio.h \
 		configfile.c configfile.h \
@@ -18,4 +19,5 @@ gummi_SOURCES = biblio.c  biblio.h \
 		preview.c preview.h \
 		template.c template.h \
 		updatecheck.c updatecheck.h \
-		utils.c utils.h
+		utils.c utils.h \
+		gettext.h
