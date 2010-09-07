@@ -30,8 +30,9 @@
 
 #include "gui.h"
 
-#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #ifndef WIN32
 #   include <unistd.h>
 #endif
@@ -150,6 +151,11 @@ void gui_quit() {
     if (check_for_save())
       on_menu_save_activate(NULL, NULL);  
     gtk_main_quit();
+
+    printf("   ___ \n"
+           "  {o,o}    Thanks for using Gummi!\n" 
+           "  |)__)    I welcome your feedback at:\n"
+           "  -\"-\"-    http://gummi.midnightcoding.org\n\n");
 }
 
 void on_menu_new_activate(GtkWidget *widget, void* user) {
