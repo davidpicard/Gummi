@@ -318,8 +318,15 @@ void on_menu_findprev_activate(GtkWidget *widget, void * user) {
 }
 
 void on_menu_bibload_activate(GtkWidget *widget, void * user) {
-    // insert contents
+    gchar *filename;
+    filename = get_open_filename("Bibtex files", "bib/*");
+    if (biblio_check_valid_file(filename)) {
+        //biblio_setup_bibliography();
+        // set bibfilenm label to filename
+
+    }
 }
+
 
 void on_menu_bibupdate_activate(GtkWidget *widget, void * user) {
     // insert contents
@@ -566,7 +573,7 @@ void on_bibrefresh_clicked(GtkWidget* widget, void* user) {
     gummi->gui->bibprogressval = 0.0;
     g_timeout_add(2, on_bibprogressbar_update, NULL);
     gtk_list_store_clear(gummi->gui->list_biblios);
-    if (biblio_detect_bibliography) {
+    if (biblio_detect_bibliography(gummi->editor)) {
         // setup_bibliopgrahy, return filenm and number of entries
         // parse entries(argument list_biblios)
         gtk_label_set_text(gummi->gui->bibfilenm, "return setup");
