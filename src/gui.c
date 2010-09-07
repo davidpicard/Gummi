@@ -122,15 +122,15 @@ GummiGui* gui_init(GtkBuilder* builder) {
         gtk_widget_show(GTK_WIDGET(g->toolbar));
     }
 
-    if (config_get_value("statusbar")) {
+    if (config_get_value("statusbar"))
         gtk_check_menu_item_set_active(g->menu_statusbar, TRUE);
-        gtk_widget_show(GTK_WIDGET(g->statusbar));
-    }
+    else
+        gtk_widget_hide(GTK_WIDGET(g->statusbar));
 
     if (config_get_value("rightpane")) {
         gtk_check_menu_item_set_active(g->menu_rightpane, TRUE);
-        gtk_widget_show(GTK_WIDGET(g->rightpane));
     } else {
+        gtk_widget_hide(GTK_WIDGET(g->rightpane));
         config_set_value("compile_status", "False");
         gtk_toggle_tool_button_set_active(g->previewoff, TRUE);
     }

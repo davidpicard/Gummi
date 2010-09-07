@@ -50,14 +50,14 @@
 #include "utils.h"
 
 static gint slog_debug = 0;
-static GtkWidget* parent = 0;
+static GtkWindow* parent = 0;
 
 void slog_init(gint debug) {
     slog_debug = debug;
 }
 
 void slog_set_gui_parent(GtkWidget* p) {
-    parent = p;
+    parent = GTK_WINDOW(p);
 }
 
 void slog(gint level, const gchar *fmt, ...) {
