@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
 #ifndef WIN32
 #   include <unistd.h>
 #endif
@@ -567,14 +568,22 @@ void on_bibcompile_clicked(GtkWidget* widget, void* user) {
 }
 
 void on_bibrefresh_clicked(GtkWidget* widget, void* user) {
+    gchar *text;
+    GError                  *err=NULL;
+
     gummi->gui->bibprogressval = 0.0;
     g_timeout_add(2, on_bibprogressbar_update, NULL);
     gtk_list_store_clear(gummi->gui->list_biblios);
     if (biblio_detect_bibliography(gummi->editor)) {
         // setup_bibliopgrahy, return filenm and number of entries
-        // parse entries(argument list_biblios)
+        
+        g_file_get_contents("/home/alexander/alex.bib", &text, NULL, &err);
+        
+        int number = biblio_parse_entries(gummi->gui->list_biblios, text);
+        printf("%d\n", number);
+
         gtk_label_set_text(gummi->gui->bibfilenm, "return setup");
-        gtk_label_set_text(gummi->gui->bibrefnr, "return setup");
+        gtk_label_set_text(gummi->gui->bibrefnr, "number");
         gtk_progress_bar_set_text(gummi->gui->bibprogressbar,
                 _("return filename loaded"));
     }

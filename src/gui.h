@@ -35,6 +35,7 @@
 
 #include "iofunctions.h"
 
+
 #define g_e_buffer GTK_TEXT_BUFFER(gummi->editor->sourcebuffer)
 #define g_e_view GTK_TEXT_VIEW(gummi->editor->sourceview)
 

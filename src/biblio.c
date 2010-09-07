@@ -140,3 +140,68 @@ gboolean biblio_check_valid_file(GuBiblio* b, gchar *filename) {
     }
 }
 
+int biblio_parse_entries(GtkListStore *biblio_store, gchar *bib_content) {
+    int refs_number = 0;
+    GRegex* bib_entry;
+    GRegex* entry_ident;
+    GRegex* entry_title;
+    GRegex* entry_author;
+    GRegex* entry_year;
+
+    GMatchInfo *match_info;
+    
+    bib_entry = g_regex_new(
+        "(@article|@book|@booklet|@conference|@inbook|@incollection|"
+        "@inproceedings|@manual|@mastersthesis|@misc|@phdthesis|"
+        "@proceedings|@techreport|@unpublished)([^@]*)", 
+        (G_REGEX_CASELESS | G_REGEX_DOTALL), 0, NULL);
+      
+    /*
+    entry_ident = g_regex_new("{([^,]*)", 0, 0, NULL);
+    entry_title = g_regex_new('author\s*=\s*(.*)', 0, 0, NULL);
+    entry_author = g_regex_new("[^book]title\s*=\s*(.*)", 0, 0, NULL);
+    entry_year = g_regex_new('year\s*=\s*{?"?([1|2][0-9][0-9][0-9])}?"?', 0, 0, NULL);
+    */
+        
+    g_regex_match (bib_entry, bib_content, 0, &match_info);
+    while (g_match_info_matches (match_info)) {
+        gchar *entry = g_match_info_fetch (match_info, 0);
+
+        // split the entry up in its pieces and feed it to the list_store
+        refs_number += 1;
+        g_free (entry);
+        g_match_info_next (match_info, NULL);
+    }
+    
+    return refs_number;
+}
+    
+    /*
+		entries = re.compile('(@article|@book|@booklet|@conference|@inbook|' \
+			'@incollection|@inproceedings|@manual|@mastersthesis|@misc|' \
+			'@phdthesis|@proceedings|@techreport|@unpublished)([^@]*)' \
+			, re.DOTALL | re.IGNORECASE)
+		for elem in entries.findall(bibstr):
+			entry = elem[1]
+			ident_exp = re.compile('{([^,]*)')		
+			author_exp = re.compile('author\s*=\s*(.*)')
+			title_exp = re.compile('[^book]title\s*=\s*(.*)')
+			year_exp = re.compile('year\s*=\s*{?"?([1|2][0-9][0-9][0-9])}?"?')
+
+			ident_res = ident_exp.findall(entry)[0]
+			try: author_res = author_exp.findall(entry)[0]
+			except: author_res = "????"
+			try: title_res = title_exp.findall(entry)[0]
+			except: title_res = "????"
+			try: year_res = year_exp.findall(entry)[0]
+			except: year_res = "????"
+
+			author_fmt = re.sub("[{|}|\"|\,]", "", author_res)	
+			title_fmt = re.sub("[{|}|\"|\,|\$]", "", title_res)
+			year_fmt = year_res
+
+			biblist.append([ident_res, title_fmt, author_fmt, year_fmt])
+			refnr = refnr + 1
+			
+		return refnr
+*/
