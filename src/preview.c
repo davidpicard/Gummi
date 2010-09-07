@@ -46,6 +46,7 @@
 
 
 GuPreview* preview_init(GtkBuilder * builder) {
+    L_F_DEBUG;
     GuPreview* p = (GuPreview*)g_malloc(sizeof(GuPreview));
     GdkColor bg = {0,0xed00,0xec00,0xeb00};
     p->drawarea = GTK_WIDGET(gtk_builder_get_object(builder, "preview_draw"));
@@ -64,6 +65,7 @@ GuPreview* preview_init(GtkBuilder * builder) {
 }
 
 void preview_set_pdffile(GuPreview* prev, const gchar *pdffile) {
+    L_F_DEBUG;
     GError *err = NULL;
     prev->page_current = 0;
     
@@ -78,6 +80,7 @@ void preview_set_pdffile(GuPreview* prev, const gchar *pdffile) {
 }
 
 void preview_refresh(GuPreview* prev) {
+    L_F_DEBUG;
     GError *err = NULL;
     prev->doc = poppler_document_new_from_file(prev->uri, NULL, &err);
     prev->page_total = poppler_document_get_n_pages(prev->doc);
@@ -88,6 +91,7 @@ void preview_refresh(GuPreview* prev) {
 
 
 void preview_set_pagedata(GuPreview* prev) {
+    L_F_DEBUG;
     if ((prev->page_total - 1) > prev->page_current) {
         gtk_widget_set_sensitive(GTK_WIDGET(prev->page_next), TRUE);
     }
@@ -104,6 +108,7 @@ void preview_set_pagedata(GuPreview* prev) {
 }
 
 void preview_goto_page(GuPreview* prev, int page_number) {
+    L_F_DEBUG;
     if (page_number < 0 || page_number >= prev->page_total)
         slog(L_ERROR, "page_number is a negative number!\n");
 
@@ -116,6 +121,7 @@ void preview_goto_page(GuPreview* prev, int page_number) {
 }
 
 gboolean on_expose(GtkWidget* w, GdkEventExpose* e, GuPreview* prev) {
+    L_F_DEBUG;
     GtkAllocation scrollwsize;
     cairo_t* cr;
     cr = gdk_cairo_create(w->window);

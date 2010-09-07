@@ -42,6 +42,7 @@ const gchar bracket_type[][16] = { "matrix", "pmatrix", "bmatrix",
                                   "Bmatrix", "vmatrix", "Vmatrix" };
 
 GuImporter* importer_init(GtkBuilder* builder) {
+    L_F_DEBUG;
     GuImporter* i = (GuImporter*)g_malloc(sizeof(GuImporter));
 
     i->import_tabs =
@@ -86,6 +87,7 @@ GuImporter* importer_init(GtkBuilder* builder) {
 }
 
 void importer_insert_table(GuImporter* ic, GuEditor* ec) {
+    L_F_DEBUG;
     GtkTextIter current;
     const gchar* text = importer_generate_table(ic);
     editor_get_current_iter(ec, &current);
@@ -97,6 +99,7 @@ void importer_insert_table(GuImporter* ic, GuEditor* ec) {
 }
 
 void importer_insert_matrix(GuImporter* ic, GuEditor* ec) {
+    L_F_DEBUG;
     GtkTextIter current;
     const gchar* text = importer_generate_matrix(ic);
     editor_insert_package(ec, "amsmath");
@@ -109,6 +112,7 @@ void importer_insert_matrix(GuImporter* ic, GuEditor* ec) {
 }
 
 void importer_insert_image(GuImporter* ic, GuEditor* ec) {
+    L_F_DEBUG;
     GtkTextIter current;
     const gchar* text = importer_generate_image(ic);
     const gchar* imagefile = gtk_entry_get_text(ic->image_file);
@@ -138,6 +142,7 @@ void importer_imagegui_set_sensitive(GuImporter* ic, const gchar* name,
 }
 
 const gchar* importer_generate_table(GuImporter* ic) {
+    L_F_DEBUG;
     gint i = 0, j = 0;
     static gchar result[BUFSIZ * 2] = { 0 };
     gchar table[BUFSIZ * 2] = { 0 },
@@ -184,6 +189,7 @@ const gchar* importer_generate_table(GuImporter* ic) {
 }
 
 const gchar* importer_generate_matrix(GuImporter* ic) {
+    L_F_DEBUG;
     gint i = 0, j = 0;
     static gchar result[BUFSIZ * 2] = { 0 };
     gchar tmp[BUFSIZ / 8];
@@ -216,6 +222,7 @@ const gchar* importer_generate_matrix(GuImporter* ic) {
 }
 
 const gchar* importer_generate_image(GuImporter* ic) {
+    L_F_DEBUG;
     const gchar* image_file = gtk_entry_get_text(ic->image_file);
     const gchar* caption = gtk_entry_get_text(ic->image_caption);
     const gchar* label = gtk_entry_get_text(ic->image_label);

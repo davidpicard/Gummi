@@ -63,7 +63,6 @@ const gchar config_str[] =
 "compile_status = True\n"
 "compile_scheme = on_idle\n"
 "compile_timer = 1\n"
-"idle_threshold = 2000\n"
 "\n"
 "[Misc]\n"
 "recent1 = __NULL__\n"
@@ -81,17 +80,19 @@ const gchar config_str[] =
 "	\\end{document}\n\n";
 
 void config_init(const gchar* filename) {
+    L_F_DEBUG;
     config_filename = filename;
 }
 
 const gchar* config_get_value(const gchar* term) {
+    L_F_DEBUG;
     FILE* fh = 0;
     gchar buf[BUF_MAX];
     static gchar ret[BUF_MAX];
     gchar* pstr;
 
     if (!(fh = fopen(config_filename, "r"))) {
-        slog(L_INFO, "can't find configuration file, reseting to default\n");
+        slog(L_ERROR, "can't find configuration file, reseting to default\n");
         config_set_default();
         return config_get_value(term);
     }
@@ -126,6 +127,7 @@ const gchar* config_get_value(const gchar* term) {
 }
 
 void config_set_value(const gchar* term, const gchar* value) {
+    L_F_DEBUG;
     int i = 0, count = 0;
     int max = strlen(value) > BUF_MAX -1? BUF_MAX -1: strlen(value);
     finfo fin = config_load();
@@ -161,6 +163,7 @@ void config_set_value(const gchar* term, const gchar* value) {
 }
 
 void config_set_default(void) {
+    L_F_DEBUG;
     FILE* fh = 0;
     if (!(fh = fopen(config_filename, "w")))
         slog(L_FATAL, "can't open config for writing... abort\n");
@@ -170,6 +173,7 @@ void config_set_default(void) {
 }
 
 finfo config_load(void) {
+    L_F_DEBUG;
     int i = 0, count = 0;
     FILE* fh = 0;
 
@@ -178,7 +182,7 @@ finfo config_load(void) {
         pbuf[i] = (gchar*)g_malloc(BUF_MAX * sizeof(gchar));
 
     if (!(fh = fopen(config_filename, "r"))) {
-        slog(L_INFO, "can't find configuration file, reseting to default\n");
+        slog(L_ERROR, "can't find configuration file, reseting to default\n");
         config_set_default();
         return config_load();
     }
@@ -194,6 +198,7 @@ finfo config_load(void) {
 }
 
 void config_save(finfo fin) {
+    L_F_DEBUG;
     FILE* fh = 0;
     int i = 0;
     if (!(fh = fopen(config_filename, "w")))
@@ -207,6 +212,7 @@ void config_save(finfo fin) {
 }
 
 int config_find_index_of(gchar** pbuf, const gchar* term) {
+    L_F_DEBUG;
     int i = 0;
     for (i = 0; i < CONFIG_MAX; ++i) {
         if (0 == strncmp(pbuf[i], term, strlen(term)))

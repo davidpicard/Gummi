@@ -36,6 +36,8 @@
 #include "preview.h"
 
 typedef struct _GuMotion {
+    GuEditor* b_editor;
+    GuPreview* b_preview;
     gint workfd;
     gchar* typesetter;
     gchar* filename;
@@ -43,20 +45,25 @@ typedef struct _GuMotion {
     gchar* workfile;
     const gchar* tmpdir;
     guint update;
+    guint timer;
+    guint shandlers[2];
 } GuMotion;
 
-GuMotion* motion_init(gint dum);
+GuMotion* motion_init(GuEditor* ec, GuPreview* pc);
 void motion_create_environment(GuMotion* mc, const gchar* filename);
-void motion_set_filename(GuMotion* motion, const gchar* name);
-void motion_initial_preview(GuMotion* mo, GuEditor* ec, GuPreview* pr);
-void motion_update_workfile(GuMotion* mo, GuEditor* ec);
-void motion_update_pdffile(GuMotion* motion);
-void motion_update_auxfile(GuMotion* motion);
-void motion_start_updatepreview(GuMotion* motion);
-void motion_stop_updatepreview(GuMotion* motion);
-void motion_export_pdffile(GuMotion* motion, const gchar* path);
-gboolean motion_updatepreview();
-
+void motion_set_filename(GuMotion* mc, const gchar* name);
+void motion_initial_preview(GuMotion* mc);
+void motion_update_workfile(GuMotion* mc);
+void motion_update_pdffile(GuMotion* mc);
+void motion_update_auxfile(GuMotion* mc);
+void motion_start_updatepreview(GuMotion* mc);
+void motion_stop_updatepreview(GuMotion* mc);
+void motion_export_pdffile(GuMotion* mc, const gchar* path);
+void motion_start_timer(GuMotion* mc);
+void motion_stop_timer(GuMotion* mc);
+gboolean on_key_press_cb(GtkWidget* widget, GdkEventKey* event, void* user);
+gboolean on_key_release_cb(GtkWidget* widget, GdkEventKey* event, void* user);
+gboolean motion_updatepreview(void* user);
 
 #endif /* GUMMI_MOTION_H */
 

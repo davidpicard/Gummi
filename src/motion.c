@@ -38,13 +38,19 @@
 #include <glib.h>
 
 #include "configfile.h"
+#include "editor.h"
 #include "environment.h"
+#include "preview.h"
 #include "utils.h"
 
-extern Gummi* gummi;
-
-GuMotion* motion_init(gint dum) {
+GuMotion* motion_init(GuEditor* ec, GuPreview* pc) {
+    L_F_DEBUG;
     GuMotion* m = (GuMotion*)g_malloc(sizeof(GuMotion));
+    /* initialize basis */
+    m->b_editor = ec;
+    m->b_preview = pc;
+
+    /* initialize members */
     const gchar* typesetter = config_get_value("typesetter");
     m->typesetter = (gchar*)g_malloc(strlen(typesetter) + 1);
     strncpy(m->typesetter, typesetter, strlen(typesetter) + 1);
@@ -54,10 +60,12 @@ GuMotion* motion_init(gint dum) {
     m->workfile = NULL;
     m->tmpdir = g_get_tmp_dir();
     m->update = 0;
+    m->timer = 0;
     return m;
 }
 
 void motion_create_environment(GuMotion* mc, const gchar* filename) {
+    L_F_DEBUG;
     gchar tname[BUFSIZ];
     snprintf(tname, BUFSIZ, "%s/gummi_XXXXXXX", mc->tmpdir);
     gint tname_len = strlen(tname) + 1;
@@ -84,39 +92,39 @@ void motion_create_environment(GuMotion* mc, const gchar* filename) {
     slog(L_INFO, "PDF: %s\n\n", mc->pdffile); 
 }
 
-void motion_set_filename(GuMotion* motion, const gchar* name) {
-    if (motion->filename)
-        g_free(motion->filename);
+void motion_set_filename(GuMotion* mc, const gchar* name) {
+    L_F_DEBUG;
+    if (mc->filename)
+        g_free(mc->filename);
     if (name) {
-        motion->filename = (gchar*)g_malloc(strlen(name) + 1);
-        strcpy(motion->filename, name);
+        mc->filename = (gchar*)g_malloc(strlen(name) + 1);
+        strcpy(mc->filename, name);
     } else {
-        motion->filename = NULL;
+        mc->filename = NULL;
     }
 }
 
-void motion_initial_preview(GuMotion* mo, GuEditor* ec, GuPreview* pr) {
-    motion_update_workfile(mo, ec);
-    motion_update_pdffile(mo);
-    preview_set_pdffile(pr, mo->pdffile);
+void motion_initial_preview(GuMotion* mc) {
+    L_F_DEBUG;
+    motion_update_workfile(mc);
+    motion_update_pdffile(mc);
+    preview_set_pdffile(mc->b_preview, mc->pdffile);
     // TODO: run some checks
     // if config says compile_status is true:
     
     // TODO: shouldnt pass ec!!!
-    motion_start_updatepreview(mo);
+    motion_start_updatepreview(mc);
 }
 
-void motion_update_workfile(GuMotion* mc, GuEditor* ec) {
-    GtkTextIter start;
-    GtkTextIter end;
+void motion_update_workfile(GuMotion* mc) {
+    L_F_DEBUG;
     gchar *text;
     FILE *fp;
 
     // TODO: the following line caused hangups in python, attention!
-    gtk_widget_set_sensitive(ec->sourceview, FALSE);
-    gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(ec->sourcebuffer), &start, &end);
-    text = gtk_text_iter_get_text (&start, &end);
-    gtk_widget_set_sensitive(ec->sourceview, TRUE);
+    gtk_widget_set_sensitive(mc->b_editor->sourceview, FALSE);
+    text = editor_grab_buffer(mc->b_editor);
+    gtk_widget_set_sensitive(mc->b_editor->sourceview, TRUE);
     
     // TODO: restore text iters to selection before compile
     //gtk_text_buffer_select_range(ec->sourcebuffer, ec->
@@ -124,16 +132,18 @@ void motion_update_workfile(GuMotion* mc, GuEditor* ec) {
     fp = fopen(mc->workfile, "w");
     
     if(fp == NULL) {
-        slog(L_DEBUG, "unable to create workfile in tmpdir");
+        slog(L_ERROR, "unable to create workfile in tmpdir");
+        return;
     }
     fwrite(text, strlen(text), 1, fp);
     g_free(text);
     fclose(fp);
     // TODO: Maybe add editorviewer grab focus line here if necessary
-    gtk_widget_grab_focus(ec->sourceview);
+    gtk_widget_grab_focus(mc->b_editor->sourceview);
 }
 
 void motion_update_pdffile(GuMotion* motion) {
+    L_F_DEBUG;
     gchar command[BUFSIZ];
     snprintf(command, sizeof command, "%s "
                                       "-interaction=nonstopmode "
@@ -148,35 +158,51 @@ void motion_update_pdffile(GuMotion* motion) {
 }
 
 
-void motion_start_updatepreview(GuMotion* motion) {
-    gboolean compile_activated;
-    guint compile_timer;
-    compile_activated = (gboolean)config_get_value("compile_status");
-    compile_timer = atoi(config_get_value("compile_timer"));
-    if (compile_activated)
-        motion->update = g_timeout_add_seconds(compile_timer,
-                motion_updatepreview, NULL);
-}
-
-void motion_stop_updatepreview(GuMotion* motion) {
-    if (motion->update != 0) {
-        g_source_remove(motion->update);
-        motion->update = 0;
+void motion_start_updatepreview(GuMotion* mc) {
+    L_F_DEBUG;
+    if (0 == strcmp(config_get_value("compile_scheme"), "on_idle")) {
+        mc->shandlers[0] = g_signal_connect(mc->b_editor->sourceview,
+                                            "key-press-event",
+                                            G_CALLBACK(on_key_press_cb),
+                                            (void*)mc);
+        mc->shandlers[1] = g_signal_connect(mc->b_editor->sourceview,
+                                            "key-release-event",
+                                            G_CALLBACK(on_key_release_cb),
+                                            (void*)mc);
+        motion_start_timer(mc);
+    } else  {
+        mc->update = g_timeout_add_seconds(
+                atoi(config_get_value("compile_timer")),
+                motion_updatepreview, (void*)mc);
     }
 }
 
-void motion_update_auxfile(GuMotion* motion) {
+void motion_stop_updatepreview(GuMotion* mc) {
+    L_F_DEBUG;
+    if (0 == strcmp(config_get_value("compile_scheme"), "on_idle")) {
+        g_signal_handler_disconnect(mc->b_editor->sourceview, mc->shandlers[0]);
+        g_signal_handler_disconnect(mc->b_editor->sourceview, mc->shandlers[1]);
+        motion_stop_timer(mc);
+    } else if (mc->update > 0) {
+        g_source_remove(mc->update);
+        mc->update = 0;
+    }
+}
+
+void motion_update_auxfile(GuMotion* mc) {
+    L_F_DEBUG;
     gchar command[BUFSIZ];
     snprintf(command, sizeof command, "%s "
                                       "--draftmode "
                                       "-interaction=nonstopmode "
                                       "--output-directory='%s' '%s'", \
-                                      motion->typesetter,
-                                      motion->tmpdir, motion->workfile);
+                                      mc->typesetter,
+                                      mc->tmpdir, mc->workfile);
     utils_popen_r(command);
 }
 
-void motion_export_pdffile(GuMotion* motion, const gchar* path) {
+void motion_export_pdffile(GuMotion* mc, const gchar* path) {
+    L_F_DEBUG;
     FILE *in, *out;
     gchar savepath[PATH_MAX];
     gchar buf[BUFSIZ];
@@ -186,7 +212,7 @@ void motion_export_pdffile(GuMotion* motion, const gchar* path) {
         strncpy(savepath, path, PATH_MAX);
     /* I use this to copy file instead of g_file_copy or other OS dependent
      * functions */
-    if (NULL == (in = fopen(motion->pdffile, "rb")))
+    if (NULL == (in = fopen(mc->pdffile, "rb")))
         slog(L_G_ERROR, "Failed to export PDF\n");
     if (NULL == (out = fopen(savepath, "wb")))
         slog(L_G_ERROR, "Failed to save %s\n", savepath);
@@ -197,11 +223,38 @@ void motion_export_pdffile(GuMotion* motion, const gchar* path) {
     fclose(out);
 }
 
-gboolean motion_updatepreview(void) {
-    if (gtk_text_buffer_get_modified(g_e_buffer)) {
-        motion_update_workfile(gummi->motion, gummi->editor);
-        motion_update_pdffile(gummi->motion);
-        preview_refresh(gummi->preview);
+gboolean motion_updatepreview(void* user) {
+    L_F_DEBUG;
+    GuMotion* mc = (GuMotion*)user;
+    motion_update_workfile(mc);
+    motion_update_pdffile(mc);
+    preview_refresh(mc->b_preview);
+    return 0 != strcmp(config_get_value("compile_scheme"), "on_idle");
+}
+
+void motion_start_timer(GuMotion* mc) {
+    L_F_DEBUG;
+    motion_stop_timer(mc);
+    mc->timer = g_timeout_add_seconds(atoi(config_get_value("compile_timer")),
+            motion_updatepreview, (void*)mc);
+}
+
+void motion_stop_timer(GuMotion* mc) {
+    L_F_DEBUG;
+    if (mc->timer > 0) {
+        g_source_remove(mc->timer);
+        mc->timer = 0;
     }
-    return TRUE;
+}
+    
+gboolean on_key_press_cb(GtkWidget* widget, GdkEventKey* event, void* user) {
+    L_F_DEBUG;
+    motion_stop_timer((GuMotion*)user);
+    return FALSE;
+}
+
+gboolean on_key_release_cb(GtkWidget* widget, GdkEventKey* event, void* user) {
+    L_F_DEBUG;
+    motion_start_timer((GuMotion*)user);
+    return FALSE;
 }

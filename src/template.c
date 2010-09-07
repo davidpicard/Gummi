@@ -36,6 +36,7 @@
 #include <gtk/gtk.h>
 
 #include "environment.h"
+#include "utils.h"
 
 gchar* template_article = 
 "\\documentclass{article}\n"
@@ -109,6 +110,7 @@ gchar* template_report =
 "\\end{document}\n";
 
 GuTemplate* template_init(GtkBuilder* builder) {
+    L_F_DEBUG;
     GuTemplate* t = (GuTemplate*)g_malloc(sizeof(GuTemplate));
     t->templatewindow =
         GTK_WINDOW(gtk_builder_get_object(builder, "templatewindow"));
@@ -124,10 +126,12 @@ GuTemplate* template_init(GtkBuilder* builder) {
 }
 
 void template_update_window(GdkEvent* event, void* button) {
+    L_F_DEBUG;
     gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 }
 
 const gchar* template_get(GuTemplate* templ) {
+    L_F_DEBUG;
     const gchar* templates[] = { template_article, template_book,
                                  template_letter, template_report };
     GList* selection = gtk_icon_view_get_selected_items(templ->iconview);

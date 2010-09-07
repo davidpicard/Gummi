@@ -754,7 +754,6 @@ void prefsgui_main(void) {
 void prefsgui_set_current_settings(GuPrefsGui* prefs) {
     /* set font */
     const gchar* font = config_get_value("font");
-    slog(L_DEBUG, "setting font to %s\n", font);
     PangoFontDescription* font_desc = pango_font_description_from_string(font);
     gtk_widget_modify_font(GTK_WIDGET(prefs->default_text), font_desc);
     pango_font_description_free(font_desc);
@@ -912,7 +911,7 @@ void on_compile_value_changed(GtkWidget* widget, void* user) {
 
 void on_editor_font_set(GtkWidget* widget, void* user) {
     const gchar* font = gtk_font_button_get_font_name(GTK_FONT_BUTTON(widget));
-    slog(L_DEBUG, "setting font to %s\n", font);
+    slog(L_INFO, "setting font to %s\n", font);
     config_set_value("font", font);
     PangoFontDescription* font_desc = pango_font_description_from_string(font);
     gtk_widget_modify_font(GTK_WIDGET(gummi->editor->sourceview), font_desc);
@@ -941,6 +940,7 @@ void on_combo_language_changed(GtkWidget* widget, void* user) {
 void on_combo_compilescheme_changed(GtkWidget* widget, void* user) {
     gint selected = gtk_combo_box_get_active(GTK_COMBO_BOX(widget));
     const gchar scheme[][16] = { "on_idle", "real_time" };
+    slog(L_INFO, "compile scheme changed to %s\n", scheme[selected]);
     if (config_get_value("compile_status")) {
         motion_stop_updatepreview(gummi->motion);
         config_set_value("compile_scheme", scheme[selected]);

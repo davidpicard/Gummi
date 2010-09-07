@@ -43,6 +43,8 @@
 #define L_G_ERROR  0x20    /* recoverable error */
 #define L_G_FATAL  0x40    /* inrecoverable error */
 
+#define L_F_DEBUG  slog(L_DEBUG, "%s()\n", __func__);
+
 typedef struct _pdata {
     gint ret;
     gchar* data;

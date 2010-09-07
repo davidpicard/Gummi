@@ -48,6 +48,7 @@
 /* TODO: use Winsock for WIN32 */
 #else
 gboolean updatecheck(void) {
+    L_F_DEBUG;
     GtkWidget* dialog;
     struct sockaddr_in servaddr;
     struct hostent *hp;

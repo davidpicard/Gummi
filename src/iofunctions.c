@@ -42,7 +42,7 @@ extern Gummi* gummi;
 static guint sid = 0;
 
 void iofunctions_load_default_text(GuEditor* ec) {
-    slog(L_DEBUG, "loading default text\n");
+    L_F_DEBUG;
     editor_fill_buffer(ec, config_get_value("welcome"));
 }
 
@@ -53,7 +53,7 @@ void iofunctions_load_file(GuEditor* ec, gchar *filename)
     gchar           *text;
     gboolean        result;
 
-    slog(L_DEBUG, "loading %s from command line argument\n", filename);
+    slog(L_INFO, "loading %s from command line argument\n", filename);
 
     /* add Loading message to status bar and  ensure GUI is current */
     status = g_strdup_printf ("Loading %s...", filename);
@@ -73,6 +73,7 @@ void iofunctions_load_file(GuEditor* ec, gchar *filename)
 }
 
 void iofunctions_write_file(GuEditor* ec, gchar *filename) {
+    L_F_DEBUG;
     GError          *err=NULL;
     gchar           *status;
     gchar           *text;
@@ -97,19 +98,23 @@ void iofunctions_write_file(GuEditor* ec, gchar *filename) {
 }
 
 void iofunctions_start_autosave(gint time, gchar* name) {
+    L_F_DEBUG;
     sid = g_timeout_add_seconds(time, iofunctions_autosave_cb, name);
 }
 
 void iofunctions_stop_autosave(void) {
+    L_F_DEBUG;
     g_source_remove(sid);
 }
 
 void iofunctions_reset_autosave(gchar* name) {
+    L_F_DEBUG;
     iofunctions_stop_autosave();
     iofunctions_start_autosave(atoi(config_get_value("autosave_timer")), name);
 }
 
 gboolean iofunctions_autosave_cb(void* name) {
+    L_F_DEBUG;
     gchar* fname = (gchar*)name;
     char buf[BUFSIZ];
     if (fname) {

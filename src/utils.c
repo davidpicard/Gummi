@@ -62,13 +62,13 @@ void slog(gint level, const gchar *fmt, ...) {
     if (L_IS_TYPE(level, L_DEBUG) && !slog_debug) return;
 
     if (L_IS_TYPE(level, L_DEBUG))
-        fprintf(stderr, "[Debug] ");
+        fprintf(stderr, "\e[1;32m[Debug]\e[0m ");
     else if (L_IS_TYPE(level, L_FATAL) || L_IS_TYPE(level, L_G_FATAL))
-        fprintf(stderr, "[Fatal] ");
+        fprintf(stderr, "\e[1;37;41m[Fatal]\e[0m ");
     else if (L_IS_TYPE(level, L_ERROR) || L_IS_TYPE(level, L_G_ERROR))
-        fprintf(stderr, "[Error] ");
+        fprintf(stderr, "\e[1;31m[Error]\e[0m ");
     else
-        fprintf(stderr, "[Info] ");
+        fprintf(stderr, "\e[1;34m[Info]\e[0m ");
     
     va_start(vap, fmt);
     vsnprintf(message, BUFSIZ, fmt, vap);

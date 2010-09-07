@@ -95,8 +95,8 @@ int main (int argc, char *argv[]) {
     gui = gui_init(builder);
     editor = editor_init(builder);
     importer = importer_init(builder);
-    motion = motion_init(0); 
     preview = preview_init(builder);
+    motion = motion_init(editor, preview); 
     templ = template_init(builder);
     biblio = biblio_init(builder);
 
@@ -110,7 +110,7 @@ int main (int argc, char *argv[]) {
         motion_create_environment(motion, argv[1]);
     }
 	
-    motion_initial_preview(motion, editor, preview);
+    motion_initial_preview(motion);
     gui_main(builder);
     return 0;
 }
