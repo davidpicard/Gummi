@@ -89,7 +89,7 @@ void motion_create_environment(GuMotion* mc, const gchar* filename) {
     slog(L_INFO, "Environment created for:\n");
     slog(L_INFO, "TEX: %s\n", mc->filename);
     slog(L_INFO, "TMP: %s\n", mc->workfile);
-    slog(L_INFO, "PDF: %s\n\n", mc->pdffile); 
+    slog(L_INFO, "PDF: %s\n", mc->pdffile); 
 }
 
 void motion_set_filename(GuMotion* mc, const gchar* name) {
@@ -114,6 +114,7 @@ void motion_initial_preview(GuMotion* mc) {
     
     // TODO: shouldnt pass ec!!!
     motion_start_updatepreview(mc);
+    motion_stop_updatepreview(mc);
 }
 
 void motion_update_workfile(GuMotion* mc) {

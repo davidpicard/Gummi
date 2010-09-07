@@ -111,6 +111,10 @@ int main (int argc, char *argv[]) {
     }
 	
     motion_initial_preview(motion);
+
+    if (config_get_value("compile_status"))
+        motion_start_updatepreview(motion);
+
     gui_main(builder);
     return 0;
 }

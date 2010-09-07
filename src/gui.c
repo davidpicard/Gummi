@@ -904,8 +904,8 @@ void on_compile_value_changed(GtkWidget* widget, void* user) {
     snprintf(val_str, 16, "%d", newval);
     config_set_value("compile_timer", val_str);
     if (config_get_value("compile_status")) {
-       motion_stop_updatepreview(gummi->motion);
-       motion_start_updatepreview(gummi->motion);
+        motion_stop_updatepreview(gummi->motion);
+        motion_start_updatepreview(gummi->motion);
     }
 }
 
@@ -940,7 +940,7 @@ void on_combo_language_changed(GtkWidget* widget, void* user) {
 void on_combo_compilescheme_changed(GtkWidget* widget, void* user) {
     gint selected = gtk_combo_box_get_active(GTK_COMBO_BOX(widget));
     const gchar scheme[][16] = { "on_idle", "real_time" };
-    slog(L_INFO, "compile scheme changed to %s\n", scheme[selected]);
+    slog(L_INFO, "compile scheme set to %s\n", scheme[selected]);
     if (config_get_value("compile_status")) {
         motion_stop_updatepreview(gummi->motion);
         config_set_value("compile_scheme", scheme[selected]);
