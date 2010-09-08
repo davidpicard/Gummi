@@ -83,10 +83,11 @@ void iofunctions_load_file(GuEditor* ec, gchar *filename)
 
 void iofunctions_write_file(GuEditor* ec, gchar *filename) {
     L_F_DEBUG;
-    GError          *err=NULL;
-    gchar           *status;
-    gchar           *text;
-    gboolean         result;
+    GError* err=NULL;
+    gchar* status;
+    gchar* text;
+    gchar* encoded;
+    gboolean result;
 
     status = g_strdup_printf(_("Saving %s..."), filename);
     statusbar_set_message(status);    
@@ -94,6 +95,7 @@ void iofunctions_write_file(GuEditor* ec, gchar *filename) {
     while (gtk_events_pending()) gtk_main_iteration();
     
     text = editor_grab_buffer(ec);
+    encoded = iofunctions_encode_text(text);
     
     /* set the contents of the file to the text from the buffer */
     if (filename != NULL)    
@@ -102,7 +104,8 @@ void iofunctions_write_file(GuEditor* ec, gchar *filename) {
     if (result == FALSE) {
         slog(L_G_ERROR, _("%s\nPlease try again later."), err->message);
         g_error_free(err);
-    }    
+    }
+    g_free(encoded);
     g_free(text); 
 }
 
@@ -124,17 +127,39 @@ void iofunctions_reset_autosave(gchar* name) {
 }
 
 char* iofunctions_decode_text(gchar* text) {
-    size_t in_size = strlen(text), out_size = in_size * 2;
-    gchar* out = (gchar*)g_malloc(out_size);
-    gchar* process = out;
-    iconv_t cd = iconv_open("UTF-8//IGNORE", "ISO−8859-1");
+    GError* err = NULL;
+    gchar* result = 0;
+    gsize read = 0, written = 0;
 
-    if (-1 == iconv(cd, &text, &in_size, &process, &out_size)) {
-        slog(L_G_ERROR, _("Can not convert text to UTF-8!\n"));
-        gfree(out);
-        out = NULL;
+    if (!(result = g_locale_to_utf8(text, -1, &read, &written, &err))) {
+        slog(L_ERROR, "failed to convert text from default locale, trying "
+                "ISO-8859-1\n");
+        size_t in_size = strlen(text), out_size = in_size * 2;
+        gchar* out = (gchar*)g_malloc(out_size);
+        gchar* process = out;
+        iconv_t cd = iconv_open("UTF-8//IGNORE", "ISO−8859-1");
+
+        if (-1 == iconv(cd, &text, &in_size, &process, &out_size)) {
+            slog(L_G_ERROR, _("Can not convert text to UTF-8!\n"));
+            g_free(out);
+            out = NULL;
+        }
+        result = out;
     }
-    return out;
+    return result;
+}
+
+gchar* iofunctions_encode_text(gchar* text) {
+    GError* err = NULL;
+    gchar* result = 0;
+    gsize read = 0, written = 0;
+
+    if (!(result = g_locale_from_utf8(text, -1, &read, &written, &err))) {
+        slog(L_ERROR, "failed to convert text to default locale, text will "
+                "be saved in UTF-8\n");
+        result = g_strdup(text);
+    }
+    return result;
 }
 
 gboolean iofunctions_autosave_cb(void* name) {
