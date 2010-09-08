@@ -366,7 +366,7 @@ void on_menu_bibload_activate(GtkWidget *widget, void * user) {
 }
 
 void on_menu_bibupdate_activate(GtkWidget *widget, void * user) {
-    // insert contents
+    biblio_compile_bibliography(gummi->biblio, gummi->motion);
 }
 
 void on_menu_docstat_activate(GtkWidget *widget, void * user) {

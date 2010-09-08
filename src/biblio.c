@@ -77,31 +77,6 @@ gboolean biblio_detect_bibliography(GuEditor* ec) {
     }
     return TRUE;
 }
-/*
- g_regex_match (regex, string, 0, &match_info);
-  while (g_match_info_matches (match_info))
-    {
-      gchar *word = g_match_info_fetch (match_info, 0);
-      g_print ("Found: %s\n", word);
-      g_free (word);
-      g_match_info_next (match_info, NULL);
-    }
-  g_match_info_free (match_info);
-  g_regex_unref (regex);
-  */
-
-/*
- 		content = self.editorpane.grab_buffer()
-		bib = re.compile('\\\\bibliography{([^{}]*})')
-		for elem in bib.findall(content):
-			candidate = elem[:-1]
-			if candidate[-4:] == ".bib":
-				if self.check_valid_file(candidate):
-					return True
-			else:
-				if self.check_valid_file(candidate + ".bib"):
-					return True
-		return False */
 
 gboolean biblio_compile_bibliography(GuBiblio* bc, GuMotion* mc) {
     gchar command[BUFSIZ];
@@ -157,6 +132,7 @@ gboolean biblio_check_valid_file(GuBiblio* b, gchar *filename) {
 int biblio_parse_entries(GuBiblio* bc, gchar *bib_content) {
     int entry_total = 0;
     
+    GtkTreeIter iter;
     GRegex* regex_entry;
     GRegex* subregex_ident;
     GRegex* subregex_title;
@@ -164,12 +140,6 @@ int biblio_parse_entries(GuBiblio* bc, gchar *bib_content) {
     GRegex* subregex_year;
 
     GMatchInfo *match_entry; 
-    /*   
-    GMatchInfo *match_ident;
-    GMatchInfo *match_title;
-    GMatchInfo *match_author;
-    GMatchInfo *match_year;
-    */
     
     regex_entry = g_regex_new(
         "(@article|@book|@booklet|@conference|@inbook|@incollection|"
@@ -186,7 +156,7 @@ int biblio_parse_entries(GuBiblio* bc, gchar *bib_content) {
     
     g_regex_match(regex_entry, bib_content, 0, &match_entry);
     
-    while (g_match_info_matches (match_entry)) {
+    while (g_match_info_matches(match_entry)) {
         
         gchar *entry = g_match_info_fetch (match_entry, 0);
 
@@ -195,47 +165,26 @@ int biblio_parse_entries(GuBiblio* bc, gchar *bib_content) {
         gchar **author_res = g_regex_split(subregex_author, entry, 0);
         gchar **year_res = g_regex_split(subregex_year, entry, 0);
         
-        printf("%s\n%s\n%s\n%s\n\n", ident_res[1], title_res[1], author_res[1], year_res[1]);
-        //TODO: split the entry up in its pieces and feed it to the list_store
+        gtk_list_store_append(bc->list_biblios, &iter);
+        gtk_list_store_set(bc->list_biblios, &iter, 0, ident_res[1],
+                                                    1, title_res[1],
+                                                    2, author_res[1],
+                                                    3, year_res[1], -1);
+        g_strfreev(ident_res);
+        g_strfreev(title_res);
+        g_strfreev(author_res);
+        g_strfreev(year_res);
         
-        g_strfreev(ident_res); g_strfreev(title_res);
-        g_strfreev(author_res); g_strfreev(year_res);
-        
-        
-        entry_total += 1;
+        ++entry_total;
         g_free (entry);
         g_match_info_next (match_entry, NULL);
     }
+    g_match_info_free(match_entry);
+    g_regex_unref(regex_entry);
+    g_regex_unref(subregex_ident);
+    g_regex_unref(subregex_title);
+    g_regex_unref(subregex_author);
+    g_regex_unref(subregex_year);
     
     return entry_total;
 }
-    
-    /*
-		entries = re.compile('(@article|@book|@booklet|@conference|@inbook|' \
-			'@incollection|@inproceedings|@manual|@mastersthesis|@misc|' \
-			'@phdthesis|@proceedings|@techreport|@unpublished)([^@]*)' \
-			, re.DOTALL | re.IGNORECASE)
-		for elem in entries.findall(bibstr):
-			entry = elem[1]
-			ident_exp = re.compile('{([^,]*)')		
-			author_exp = re.compile('author\s*=\s*(.*)')
-			title_exp = re.compile('[^book]title\s*=\s*(.*)')
-			year_exp = re.compile('year\s*=\s*{?"?([1|2][0-9][0-9][0-9])}?"?')
-
-			ident_res = ident_exp.findall(entry)[0]
-			try: author_res = author_exp.findall(entry)[0]
-			except: author_res = "????"
-			try: title_res = title_exp.findall(entry)[0]
-			except: title_res = "????"
-			try: year_res = year_exp.findall(entry)[0]
-			except: year_res = "????"
-
-			author_fmt = re.sub("[{|}|\"|\,]", "", author_res)	
-			title_fmt = re.sub("[{|}|\"|\,|\$]", "", title_res)
-			year_fmt = year_res
-
-			biblist.append([ident_res, title_fmt, author_fmt, year_fmt])
-			refnr = refnr + 1
-			
-		return refnr
-*/
