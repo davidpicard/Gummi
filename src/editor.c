@@ -458,16 +458,22 @@ void editor_get_current_iter(GuEditor* ec, GtkTextIter* current) {
 
 void editor_undo_change(GuEditor* ec) {
     L_F_DEBUG;
+    GtkTextIter current;
     if (gtk_source_buffer_can_undo(ec->sourcebuffer)) {
         gtk_source_buffer_undo(ec->sourcebuffer);
+        editor_get_current_iter(ec, &current);
+        gtk_text_view_scroll_to_iter(ec_sourceview, &current, 0.4, FALSE, 0, 0);
         gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     }
 }
 
 void editor_redo_change(GuEditor* ec) {
     L_F_DEBUG;
+    GtkTextIter current;
     if (gtk_source_buffer_can_redo(ec->sourcebuffer)) {
         gtk_source_buffer_redo(ec->sourcebuffer);
+        editor_get_current_iter(ec, &current);
+        gtk_text_view_scroll_to_iter(ec_sourceview, &current, 0.4, FALSE, 0, 0);
         gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     }
 }
