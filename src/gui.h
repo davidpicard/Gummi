@@ -172,6 +172,7 @@ void preview_zoom_change(GtkWidget* widget, void* user);
 
 gchar* get_open_filename(GuFilterType type);
 gchar* get_save_filename(GuFilterType type);
+void file_dialog_set_filter(GtkFileChooser* dialog, GuFilterType type);
 gboolean check_for_save(void);
 
 void errorbuffer_set_text(gchar *message);

@@ -37,8 +37,6 @@
 #include <string.h>
 #include <sys/stat.h>
 
-//#include "gettext.h"
-
 #include "configfile.h"
 #include "environment.h"
 #include "gui.h"

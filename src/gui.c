@@ -678,39 +678,7 @@ gchar* get_open_filename(GuFilterType type) {
                 GTK_STOCK_OPEN, GTK_RESPONSE_OK,
                 NULL));
 
-    switch (type) {
-        case FILTER_LATEX:
-            gtk_file_filter_set_name(filter, "LaTeX files");
-            gtk_file_filter_add_pattern(filter, "*.tex");
-            gtk_file_chooser_add_filter(chooser, filter);
-            gtk_file_chooser_set_filter(chooser, filter);
-            filter = gtk_file_filter_new();
-            gtk_file_filter_set_name(filter, "Text files");
-            gtk_file_filter_add_mime_type(filter, "text/plain");
-            gtk_file_chooser_add_filter(chooser, filter);
-            break;
-
-        case FILTER_PDF:
-            gtk_file_filter_set_name(filter, "PDF files");
-            gtk_file_filter_add_pattern(filter, "*.pdf");
-            gtk_file_chooser_add_filter(chooser, filter);
-            gtk_file_chooser_set_filter(chooser, filter);
-            break;
-
-        case FILTER_IMAGE:
-            gtk_file_filter_set_name(filter, "Image files");
-            gtk_file_filter_add_mime_type(filter, "image/*");
-            gtk_file_chooser_add_filter(chooser, filter);
-            gtk_file_chooser_set_filter(chooser, filter);
-            break;
-
-        case FILTER_BIBLIO:
-            gtk_file_filter_set_name(filter, "Bibtex files");
-            gtk_file_filter_add_pattern(filter, "*.bib");
-            gtk_file_chooser_add_filter(chooser, filter);
-            gtk_file_chooser_set_filter(chooser, filter);
-            break;
-    }
+    file_dialog_set_filter(chooser, type);
            
     if (gtk_dialog_run(GTK_DIALOG (chooser)) == GTK_RESPONSE_OK)
         filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
@@ -721,7 +689,6 @@ gchar* get_open_filename(GuFilterType type) {
 
 gchar* get_save_filename(GuFilterType type) {
     GtkFileChooser* chooser = NULL;
-    GtkFileFilter* filter = gtk_file_filter_new();
     gchar* filename = NULL;
         
     chooser = GTK_FILE_CHOOSER(gtk_file_chooser_dialog_new(
@@ -731,6 +698,18 @@ gchar* get_save_filename(GuFilterType type) {
                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                 GTK_STOCK_SAVE, GTK_RESPONSE_OK,
                 NULL));
+
+    file_dialog_set_filter(chooser, type);
+                           
+    if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_OK)
+        filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
+    
+    gtk_widget_destroy(GTK_WIDGET(chooser));
+    return filename;
+}
+
+void file_dialog_set_filter(GtkFileChooser* dialog, GuFilterType type) {
+    GtkFileFilter* filter = gtk_file_filter_new();
 
     switch (type) {
         case FILTER_LATEX:
@@ -765,12 +744,7 @@ gchar* get_save_filename(GuFilterType type) {
             gtk_file_chooser_set_filter(chooser, filter);
             break;
     }
-                           
-    if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_OK)
-        filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
     
-    gtk_widget_destroy(GTK_WIDGET(chooser));
-    return filename;
 }
 
 void errorbuffer_set_text(gchar *message) {
