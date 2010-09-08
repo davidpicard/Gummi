@@ -61,6 +61,7 @@ void preview_set_pdffile(GuPreview* prev, const gchar *pdffile);
 void preview_refresh(GuPreview* prev);
 void preview_set_pagedata(GuPreview* prev);
 void preview_goto_page(GuPreview* prev, int page_number);
+void preview_cleanup(GuPreview* prev);
 
 gboolean on_expose(GtkWidget* w, GdkEventExpose* e, GuPreview* prev);
 

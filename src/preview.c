@@ -77,13 +77,10 @@ void preview_set_pdffile(GuPreview* pc, const gchar *pdffile) {
     if (pc->uri) g_free(pc->uri);
     pc->uri = g_strconcat("file://", pdffile, NULL);
 
-    if (pc->doc && pc->page) {
-        g_object_unref(pc->page);
-        g_object_unref(pc->doc);
-    }
+    preview_cleanup(pc);
     pc->doc = poppler_document_new_from_file(pc->uri, NULL, &err);
-
     pc->page = poppler_document_get_page(pc->doc, pc->page_current);
+
     poppler_page_get_size(pc->page, &pc->page_width, &pc->page_height);
 
     pc->page_total = poppler_document_get_n_pages(pc->doc);
@@ -98,11 +95,9 @@ void preview_refresh(GuPreview* pc) {
     pc->page_total = poppler_document_get_n_pages(pc->doc);
     preview_set_pagedata(pc);
 
-    if (pc->doc) {
-        g_object_unref(pc->page);
-        g_object_unref(pc->doc);
-    }
+    preview_cleanup(pc);
     pc->doc = poppler_document_new_from_file(pc->uri, NULL, &err);
+    pc->page = poppler_document_get_page(pc->doc, pc->page_current);    
 
     gtk_widget_queue_draw(pc->drawarea);
 }
@@ -135,6 +130,11 @@ void preview_goto_page(GuPreview* pc, int page_number) {
             (page_number < (pc->page_total -1)));
     preview_refresh(pc);
     // set label info
+}
+
+void preview_cleanup(GuPreview* prev) {
+    if (prev->page) g_object_unref(prev->page);
+    if (prev->doc) g_object_unref(prev->doc);
 }
 
 gboolean on_expose(GtkWidget* w, GdkEventExpose* e, GuPreview* pc) {
@@ -178,7 +178,6 @@ gboolean on_expose(GtkWidget* w, GdkEventExpose* e, GuPreview* pc) {
     cairo_rectangle(cr, 0, 0, pc->page_width, pc->page_height);
     cairo_fill(cr);
     
-    pc->page = poppler_document_get_page(pc->doc, pc->page_current);    
     poppler_page_render(pc->page, cr);
     cairo_destroy(cr);
     return FALSE;
