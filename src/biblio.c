@@ -142,6 +142,11 @@ int biblio_parse_entries(GuBiblio* bc, gchar *bib_content) {
     GRegex* subregex_title;
     GRegex* subregex_author;
     GRegex* subregex_year;
+    GRegex* regex_author_out;
+    GRegex* regex_title_out;
+
+    gchar* author_out;
+    gchar* title_out;
 
     GMatchInfo *match_entry; 
     
@@ -156,6 +161,8 @@ int biblio_parse_entries(GuBiblio* bc, gchar *bib_content) {
     subregex_author = g_regex_new("author[\\s]*=[\\s]*(.*)", 0, 0, NULL);
     subregex_year = g_regex_new("year[\\s]*=[\\s]*[{|\"]?([1|2][0-9]{3})", 0,
             0, NULL);
+    regex_author_out = g_regex_new("[{|}|\"|,]", 0, 0, NULL);
+    regex_title_out = g_regex_new("[{|}|\"|,|\\$]", 0, 0, NULL);
     
     
     g_regex_match(regex_entry, bib_content, 0, &match_entry);
@@ -168,12 +175,19 @@ int biblio_parse_entries(GuBiblio* bc, gchar *bib_content) {
         gchar **title_res = g_regex_split(subregex_title, entry, 0);
         gchar **author_res = g_regex_split(subregex_author, entry, 0);
         gchar **year_res = g_regex_split(subregex_year, entry, 0);
+
+        author_out = g_regex_replace(regex_author_out, author_res[1],
+                                     -1, 0, "", 0, 0);
+        title_out = g_regex_replace(regex_title_out, title_res[1],
+                                     -1, 0, "", 0, 0);
         
         gtk_list_store_append(bc->list_biblios, &iter);
         gtk_list_store_set(bc->list_biblios, &iter, 0, ident_res[1],
-                                                    1, title_res[1],
-                                                    2, author_res[1],
+                                                    1, title_out,
+                                                    2, author_out,
                                                     3, year_res[1], -1);
+        g_free(author_out);
+        g_free(title_out);
         g_strfreev(ident_res);
         g_strfreev(title_res);
         g_strfreev(author_res);
@@ -189,6 +203,8 @@ int biblio_parse_entries(GuBiblio* bc, gchar *bib_content) {
     g_regex_unref(subregex_title);
     g_regex_unref(subregex_author);
     g_regex_unref(subregex_year);
+    g_regex_unref(regex_author_out);
+    g_regex_unref(regex_title_out);
     
     return entry_total;
 }
