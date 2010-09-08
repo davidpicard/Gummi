@@ -1068,6 +1068,7 @@ gchar* get_open_filename(GuFilterType type) {
                 NULL));
 
     file_dialog_set_filter(chooser, type);
+    gtk_file_chooser_set_current_folder(chooser, g_get_home_dir());
 
     if (gtk_dialog_run(GTK_DIALOG (chooser)) == GTK_RESPONSE_OK)
         filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
@@ -1089,6 +1090,7 @@ gchar* get_save_filename(GuFilterType type) {
                 NULL));
 
     file_dialog_set_filter(chooser, type);
+    gtk_file_chooser_set_current_folder(chooser, g_get_home_dir());
 
     if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_OK)
         filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));

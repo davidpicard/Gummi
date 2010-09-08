@@ -360,9 +360,11 @@ void editor_search_next(GuEditor* ec, gboolean inverse) {
 
     if (ret && (!ec->wholeword || (ec->wholeword
             && gtk_text_iter_starts_word(&mstart)
-            && gtk_text_iter_ends_word(&mend))))
+            && gtk_text_iter_ends_word(&mend)))) {
         gtk_text_buffer_place_cursor(ec_sourcebuffer,
                 (ec->cur_swap ^ ec->backwards ^ inverse)? &mstart: &mend);
+        gtk_text_view_scroll_to_iter(ec_sourceview, &mstart, 0.4, FALSE, 0, 0);
+    }
 
     /* check if the top/bottom is reached */
     gtk_text_buffer_get_start_iter(ec_sourcebuffer, &start);
@@ -372,13 +374,17 @@ void editor_search_next(GuEditor* ec, gboolean inverse) {
         if (ec->backwards ^ inverse) {
             response = utils_yes_no_dialog(
                     _("Top reached, search from bottom?"));
-            if (GTK_RESPONSE_YES == response)
+            if (GTK_RESPONSE_YES == response) {
                 gtk_text_buffer_place_cursor(ec_sourcebuffer, &end);
+                editor_search_next(ec, inverse);
+            }
         } else {
             response = utils_yes_no_dialog(
                     _("Bottom reached, search from top?"));
-            if (GTK_RESPONSE_YES == response)
+            if (GTK_RESPONSE_YES == response) {
                 gtk_text_buffer_place_cursor(ec_sourcebuffer, &start);
+                editor_search_next(ec, inverse);
+            }
         }
     }
 }

@@ -72,7 +72,6 @@ void motion_create_environment(GuMotion* mc, const gchar* filename) {
     L_F_DEBUG;
     gchar tname[BUFSIZ];
     snprintf(tname, BUFSIZ, "%s/gummi_XXXXXXX", mc->tmpdir);
-    gint tname_len = strlen(tname) + 1;
 
     if (mc->workfd != -1) {
         close(mc->workfd);
