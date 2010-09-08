@@ -32,7 +32,8 @@
 #define GUMMI_UPDATE_CHECK
 
 #include <glib.h>
+#include <gtk/gtk.h>
 
-gboolean updatecheck(void);
+gboolean updatecheck(GtkWindow* parent);
 
 #endif /* GUMMI_UPDATE_CHECK */

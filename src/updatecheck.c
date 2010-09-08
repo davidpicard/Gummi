@@ -47,7 +47,7 @@
 #ifdef WIN32
 /* TODO: use Winsock for WIN32 */
 #else
-gboolean updatecheck(void) {
+gboolean updatecheck(GtkWindow* parent) {
     L_F_DEBUG;
     GtkWidget* dialog;
     struct sockaddr_in servaddr;
@@ -106,7 +106,7 @@ gboolean updatecheck(void) {
     slog(L_INFO, "Currently installed: "PACKAGE_VERSION"\n");
     slog(L_INFO, "Currently available: %s", avail_version);
 
-    dialog = gtk_message_dialog_new (NULL, 
+    dialog = gtk_message_dialog_new (parent, 
         GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
         GTK_MESSAGE_INFO,
         GTK_BUTTONS_OK,

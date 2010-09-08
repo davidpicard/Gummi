@@ -379,7 +379,7 @@ void on_menu_spelling_toggled(GtkWidget *widget, void * user) {
 }
 
 void on_menu_update_activate(GtkWidget *widget, void * user) {
-    gboolean ret = updatecheck();
+    gboolean ret = updatecheck(GTK_WINDOW(gummi->gui->mainwindow));
     if (!ret)
         slog(L_G_ERROR, "Update check failed!\n");
 }

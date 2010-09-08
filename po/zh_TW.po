@@ -177,6 +177,7 @@ msgid ""
 "Error status for\n"
 "active document"
 msgstr "目前文件的錯誤輸出\n"
+" "
 
 #: ../data/gummi.glade.h:50
 msgid "Export to PDF"
@@ -653,7 +654,9 @@ msgid ""
 "\n"
 "Gummi has encountered a serious error and require restart, your can find "
 "your file in the %s directory\n"
-msgstr "Gummi發生了嚴重的錯誤而必需關閉, 你可以在%s資料夾裡找到未儲存的檔案\n"
+msgstr ""
+"\n"
+"Gummi發生了嚴重的錯誤而必需關閉, 你可以在%s資料夾裡找到未儲存的檔案\n"
 
 #: ../src/utils.c:128
 msgid "Confirmation"
