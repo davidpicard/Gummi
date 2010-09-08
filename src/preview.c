@@ -43,8 +43,6 @@
 #include "environment.h"
 #include "utils.h"
 
-
-
 GuPreview* preview_init(GtkBuilder * builder) {
     L_F_DEBUG;
     GuPreview* p = (GuPreview*)g_malloc(sizeof(GuPreview));
@@ -90,7 +88,6 @@ void preview_refresh(GuPreview* prev) {
     prev->page = poppler_document_get_page(prev->doc, prev->page_current);    
     gtk_widget_queue_draw(prev->drawarea);
 }
-
 
 void preview_set_pagedata(GuPreview* prev) {
     L_F_DEBUG;

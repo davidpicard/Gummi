@@ -859,7 +859,7 @@ void prefsgui_set_current_settings(GuPrefsGui* prefs) {
     GtkTreeIter iter;
     const gchar* lang = 0;
     gint count = 0;
-    gboolean valid = FALSE;
+    gboolean value = FALSE, valid = FALSE;
     const gchar* font = config_get_value("font");
 
     PangoFontDescription* font_desc = pango_font_description_from_string(font);
@@ -867,10 +867,15 @@ void prefsgui_set_current_settings(GuPrefsGui* prefs) {
     pango_font_description_free(font_desc);
 
     /* set all checkboxs */
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs->textwrap_button),
-            (gboolean)config_get_value("textwrapping"));
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs->wordwrap_button),
-            (gboolean)config_get_value("wordwrapping"));
+    value = (gboolean)config_get_value("textwrapping");
+    if (value) {
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs->textwrap_button),
+                value);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs->wordwrap_button),
+                (gboolean)config_get_value("wordwrapping"));
+    } else
+        gtk_widget_set_sensitive(GTK_WIDGET(prefs->wordwrap_button), FALSE);
+    
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs->line_numbers),
             (gboolean)config_get_value("line_numbers"));
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs->highlighting),

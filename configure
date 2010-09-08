@@ -2752,6 +2752,7 @@ am__tar='${AMTAR} chof - "$$tardir"'; am__untar='${AMTAR} xf -'
 
 
 # Init gettext
+# ls po/*.po | sort | sed 's/po\///g;s/.po//g'| sed ':a;N;s/\n/ /g;ta'
 ALL_LINGUAS="ca_ES da fr gr_EL it_IT nl_NL pt_BR ru zh_TW"
 
 
