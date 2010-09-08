@@ -33,9 +33,6 @@
 
 #include <gtk/gtk.h>
 
-#include "iofunctions.h"
-
-
 #define g_e_buffer GTK_TEXT_BUFFER(gummi->editor->sourcebuffer)
 #define g_e_view GTK_TEXT_VIEW(gummi->editor->sourceview)
 
@@ -103,9 +100,11 @@ typedef struct _GummiGui {
     GtkListStore* list_biblios;
     GtkLabel* bibfilenm;
     GtkLabel* bibrefnr;
+    GtkMenuItem* recent[3];
     
     double bibprogressval;
     guint statusid;
+    gchar* recent_list[3];
 } GummiGui;
 
 typedef enum _GuFilterType {
@@ -118,7 +117,7 @@ typedef enum _GuFilterType {
 /* Main GUI */
 GummiGui* gui_init(GtkBuilder* builder);
 void gui_main(GtkBuilder* builder);
-void gui_quit(void);
+gboolean gui_quit(void);
 void on_menu_new_activate(GtkWidget* widget, void* user);
 void on_menu_open_activate(GtkWidget* widget, void* user);
 void on_menu_save_activate(GtkWidget* widget, void* user);
@@ -170,15 +169,6 @@ void preview_next_page(GtkWidget* widget, void* user);
 void preview_prev_page(GtkWidget* widget, void* user);
 void preview_zoom_change(GtkWidget* widget, void* user);
 
-gchar* get_open_filename(GuFilterType type);
-gchar* get_save_filename(GuFilterType type);
-void file_dialog_set_filter(GtkFileChooser* dialog, GuFilterType type);
-gboolean check_for_save(void);
-
-void errorbuffer_set_text(gchar *message);
-void statusbar_set_message(gchar* message);
-gboolean statusbar_del_message(void* user);
-
 /* Preference GUI */
 GuPrefsGui* prefsgui_init(GummiGui* gui);
 void prefsgui_main(void);
@@ -211,5 +201,22 @@ void on_button_import_table_apply_clicked(GtkWidget* widget, void* user);
 void on_button_import_image_apply_clicked(GtkWidget* widget, void* user);
 void on_button_import_matrix_apply_clicked(GtkWidget* widget, void* user);
 void on_image_file_activate(void);
+
+
+/* misc functions */
+gchar* get_open_filename(GuFilterType type);
+gchar* get_save_filename(GuFilterType type);
+void file_dialog_set_filter(GtkFileChooser* dialog, GuFilterType type);
+gint check_for_save(void);
+
+void display_recent_files(GummiGui* gui);
+
+void errorbuffer_set_text(gchar *message);
+void statusbar_set_message(gchar* message);
+gboolean statusbar_del_message(void* user);
+
+/* XXX: always call this function along with the 'gtk_text_buffer_set_modified'
+ * function after any change to the buffer */
+void check_motion_timer(void);
 
 #endif /* GUMMI_GUI_H */

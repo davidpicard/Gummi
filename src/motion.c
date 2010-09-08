@@ -264,17 +264,12 @@ gboolean motion_updatepreview(void* user) {
     return 0 != strcmp(config_get_value("compile_scheme"), "on_idle");
 }
 
-/* XXX: All actions that calls 'gtk_text_buffer_set_modified(*, TRUE)' need to
- * call 'motion_start_timer()' */
 void motion_start_timer(GuMotion* mc) {
     L_F_DEBUG;
-    if (config_get_value("compile_status") &&
-            0 == strcmp(config_get_value("compile_scheme"), "on_idle")) {
-        motion_stop_timer(mc);
-        mc->timer = g_timeout_add_seconds(
-                atoi(config_get_value("compile_timer")),
-                motion_updatepreview, (void*)mc);
-    }
+    motion_stop_timer(mc);
+    mc->timer = g_timeout_add_seconds(
+            atoi(config_get_value("compile_timer")),
+            motion_updatepreview, (void*)mc);
 }
 
 void motion_stop_timer(GuMotion* mc) {

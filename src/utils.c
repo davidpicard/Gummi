@@ -112,7 +112,7 @@ void slog(gint level, const gchar *fmt, ...) {
         exit(1);
 }
 
-gboolean utils_yes_no_dialog(const gchar* message) {
+gint utils_yes_no_dialog(const gchar* message) {
     GtkWidget* dialog;
     gint ret = 0;
     dialog = gtk_message_dialog_new (parent, 
@@ -123,10 +123,7 @@ gboolean utils_yes_no_dialog(const gchar* message) {
 
     ret = gtk_dialog_run(GTK_DIALOG(dialog));      
     gtk_widget_destroy(dialog);
-    if (ret == GTK_RESPONSE_YES)
-        return TRUE;
-    else
-        return FALSE;
+    return ret;
 }
 
 gboolean utils_path_exists(const gchar* path) {
