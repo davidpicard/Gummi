@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-08 09:33+0800\n"
+"POT-Creation-Date: 2010-09-08 18:10+0800\n"
 "PO-Revision-Date: 2010-05-24 14:43+0200\n"
 "Last-Translator: Dimitris Leventeas <mydimle@gmail.com>\n"
 "Language-Team: EL <mydimle@gmail.com>>\n"
@@ -249,7 +249,7 @@ msgstr "Ταίριαξε ολόκληρη λέξη μόνο"
 msgid "Matrix"
 msgstr "Μητρώο"
 
-#: ../data/gummi.glade.h:66 ../src/gui.c:594
+#: ../data/gummi.glade.h:66 ../src/gui.c:628
 msgid "N/A"
 msgstr "Μη Διαθέσιμο"
 
@@ -417,7 +417,7 @@ msgstr "_Επισκόπιση"
 msgid "filter:"
 msgstr "φίλτρο:"
 
-#: ../data/gummi.glade.h:108 ../src/gui.c:592
+#: ../data/gummi.glade.h:108 ../src/gui.c:626
 msgid "no bibliography file detected"
 msgstr "Δεν βρέθηκε αρχείο βιβλιογραφίας"
 
@@ -505,7 +505,7 @@ msgstr "Τονίζοντας:"
 msgid "Line numbers:"
 msgstr "Αριθμοί γραμμών:"
 
-#: ../data/prefs.glade.h:13 ../src/gui.c:593
+#: ../data/prefs.glade.h:13 ../src/gui.c:627
 msgid "None"
 msgstr "Κανένα"
 
@@ -567,31 +567,51 @@ msgstr "δευτερόλεπτα"
 msgid "xelatex"
 msgstr "xelatex"
 
-#: ../src/editor.c:374
+#: ../src/editor.c:377
 msgid "Top reached, search from bottom?"
 msgstr ""
 
-#: ../src/editor.c:379
+#: ../src/editor.c:384
 msgid "Bottom reached, search from top?"
 msgstr ""
 
-#: ../src/gui.c:588
-msgid "return filename loaded"
+#: ../src/gui.c:202
+#, fuzzy, c-format
+msgid "Error loading recent file: %s"
+msgstr "Σφάλμα φορτώνοντας πρόσφατο αρχείο: "
+
+#: ../src/gui.c:590
+#, fuzzy
+msgid "Compiling bibliography file..."
+msgstr "Μεταφράζοντας το αρχείο βιβλιογραφίας"
+
+#: ../src/gui.c:592
+msgid "bibliography compiled without errors"
+msgstr "Η βιβλιογραφία μεταφράστηκε χωρίς λάθη"
+
+#: ../src/gui.c:594
+#, fuzzy
+msgid "Error compiling bibliography file or none detected..."
+msgstr "Λάθος μεταφράζοντας το αρχείο βιβλιογραφίας ή δεν βρέθηκε κάποιο"
+
+#: ../src/gui.c:597
+msgid "error compiling bibliography file"
+msgstr "λάθος μεταφράζοντας το αρχείο βιβλιογραφίας"
+
+#: ../src/gui.c:620
+#, c-format
+msgid "%s loaded"
 msgstr ""
 
-#: ../src/gui.c:648
+#: ../src/gui.c:1037
 msgid "Do you want to save the changes you have made?"
 msgstr "Θέλετε να αποθηκεύσετε τις αλλαγές που κάνατε;"
 
-#: ../src/gui.c:657
-msgid "Save?"
-msgstr "Αποθήκευση;"
-
-#: ../src/gui.c:673
+#: ../src/gui.c:1046
 msgid "Open File..."
 msgstr "Άνοιγμα Αρχείου..."
 
-#: ../src/gui.c:694
+#: ../src/gui.c:1068
 msgid "Save File..."
 msgstr "Αποθήκευση Αρχείου..."
 
@@ -600,19 +620,23 @@ msgstr "Αποθήκευση Αρχείου..."
 msgid "%s: No such file or directory\n"
 msgstr ""
 
-#: ../src/iofunctions.c:82
+#: ../src/iofunctions.c:92
 #, fuzzy, c-format
 msgid "Saving %s..."
 msgstr "Αποθήκευση _Ως..."
 
-#: ../src/iofunctions.c:94
+#: ../src/iofunctions.c:105
 #, c-format
 msgid ""
 "%s\n"
 "Please try again later."
 msgstr ""
 
-#: ../src/iofunctions.c:123
+#: ../src/iofunctions.c:143
+msgid "Can not convert text to UTF-8!\n"
+msgstr ""
+
+#: ../src/iofunctions.c:171
 #, fuzzy, c-format
 msgid "Autosaving file %s"
 msgstr "Αποθηκεύοντας το αρχείο"
@@ -630,12 +654,21 @@ msgstr ""
 "\n"
 "Τρέχοντα διαθέσιμα:\n"
 
-#: ../src/utils.c:87
+#: ../src/utils.c:88
+#, c-format
 msgid ""
 "\n"
 "Gummi has encountered a serious error and require restart, your can find "
-"your file in the /tmp directory\n"
+"your file in the %s directory\n"
 msgstr ""
+
+#: ../src/utils.c:128
+#, fuzzy
+msgid "Confirmation"
+msgstr "Λεζάντα"
+
+#~ msgid "Save?"
+#~ msgstr "Αποθήκευση;"
 
 #~ msgid "Currently installed:\n"
 #~ msgstr "Τρέχοντα εγκατεστημένα:\n"
@@ -675,18 +708,3 @@ msgstr ""
 
 #~ msgid "Error"
 #~ msgstr "Σφάλμα"
-
-#~ msgid "Compiling bibliography file.."
-#~ msgstr "Μεταφράζοντας το αρχείο βιβλιογραφίας"
-
-#~ msgid "bibliography compiled without errors"
-#~ msgstr "Η βιβλιογραφία μεταφράστηκε χωρίς λάθη"
-
-#~ msgid "Error compiling bibliography file or none detected.."
-#~ msgstr "Λάθος μεταφράζοντας το αρχείο βιβλιογραφίας ή δεν βρέθηκε κάποιο"
-
-#~ msgid "error compiling bibliography file"
-#~ msgstr "λάθος μεταφράζοντας το αρχείο βιβλιογραφίας"
-
-#~ msgid "Error loading recent file: "
-#~ msgstr "Σφάλμα φορτώνοντας πρόσφατο αρχείο: "
