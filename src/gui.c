@@ -599,7 +599,9 @@ void on_bibcolumn_clicked(GtkWidget* widget, void* user) {
 }
 
 void on_bibcompile_clicked(GtkWidget* widget, void* user) {
-    g_timeout_add_seconds(10, on_bibprogressbar_update, NULL);
+    gummi->biblio->progressval = 0.0;
+    g_timeout_add(10, on_bibprogressbar_update, NULL);
+
     if (biblio_compile_bibliography(gummi->biblio, gummi->motion)) {
         statusbar_set_message(_("Compiling bibliography file..."));
         gtk_progress_bar_set_text(gummi->biblio->progressbar,
@@ -621,6 +623,9 @@ void on_bibrefresh_clicked(GtkWidget* widget, void* user) {
     gummi->biblio->progressval = 0.0;
     g_timeout_add(2, on_bibprogressbar_update, NULL);
     gtk_list_store_clear(gummi->biblio->list_biblios);
+
+    if (!gummi->biblio->filename) return;
+
     if (biblio_detect_bibliography(gummi->editor)) {
         biblio_setup_bibliography(gummi->biblio, gummi->editor);
         g_file_get_contents(gummi->biblio->filename, &text, NULL, &err);

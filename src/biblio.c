@@ -96,7 +96,6 @@ gboolean biblio_setup_bibliography(GuBiblio* b, GuEditor* ec) {
     gchar *dst;
     
     dst = g_strconcat(g_get_tmp_dir(), G_DIR_SEPARATOR_S, b->basename, NULL);
-    
     utils_copy_file(b->filename, dst);
     bibpath = g_strconcat(b->dirname, G_DIR_SEPARATOR_S, b->basename, NULL);
     editor_insert_bib(ec, bibpath);

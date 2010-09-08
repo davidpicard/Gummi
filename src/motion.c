@@ -81,7 +81,7 @@ void motion_create_environment(GuMotion* mc, const gchar* filename) {
     
     mc->workfd = g_mkstemp(tname); 
     if (mc->workfile) g_free(mc->workfile);
-    mc->workfile = g_strdup_printf("%s.tex", tname);
+    mc->workfile = g_strdup(tname);
 
     if (mc->pdffile) g_free(mc->pdffile);
     mc->pdffile =  g_strdup_printf("%s.pdf", tname);
