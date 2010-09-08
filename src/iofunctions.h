@@ -39,6 +39,7 @@ void iofunctions_write_file(GuEditor* ec, gchar *filename);
 void iofunctions_start_autosave(gint time, gchar* name);
 void iofunctions_stop_autosave(void);
 void iofunctions_reset_autosave(gchar* name);
+gchar* iofunctions_decode_text(gchar* text);
 gboolean iofunctions_autosave_cb(void* name);
 
 #endif /* GUMMI_IOFUNCTIONS_H */

@@ -82,13 +82,10 @@ void motion_create_environment(GuMotion* mc, const gchar* filename) {
     
     mc->workfd = g_mkstemp(tname); 
     if (mc->workfile) g_free(mc->workfile);
-    mc->workfile = (gchar*)g_malloc(tname_len);
-    strcpy(mc->workfile, tname);
+    mc->workfile = g_strdup_printf("%s.tex", tname);
 
     if (mc->pdffile) g_free(mc->pdffile);
-    mc->pdffile = (gchar*)g_malloc(tname_len + 4);    
-    strncpy(mc->pdffile, tname, tname_len +4);
-    strncat(mc->pdffile, ".pdf", tname_len - strlen(mc->pdffile) +3);
+    mc->pdffile =  g_strdup_printf("%s.pdf", tname);
     
     slog(L_INFO, "Environment created for:\n");
     slog(L_INFO, "TEX: %s\n", mc->filename);
@@ -114,9 +111,7 @@ void motion_initial_preview(GuMotion* mc) {
     motion_update_pdffile(mc);
     preview_set_pdffile(mc->b_preview, mc->pdffile);
     // TODO: run some checks
-    // if config says compile_status is true:
-    
-    // TODO: shouldnt pass ec!!!
+
     motion_start_updatepreview(mc);
     motion_stop_updatepreview(mc);
 }

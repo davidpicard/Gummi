@@ -30,7 +30,10 @@
 
 #include "iofunctions.h"
 
+#include <iconv.h>
+#include <locale.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "configfile.h"
 #include "editor.h"
@@ -48,10 +51,11 @@ void iofunctions_load_default_text(GuEditor* ec) {
 
 void iofunctions_load_file(GuEditor* ec, gchar *filename)
 {
-    GError          *err=NULL;
-    gchar           *status;
-    gchar           *text;
-    gboolean        result;
+    GError* err = NULL;
+    gchar* status;
+    gchar* text;
+    gchar* decoded;
+    gboolean result;
 
     slog(L_INFO, "loading %s ...\n", filename);
 
@@ -68,7 +72,12 @@ void iofunctions_load_file(GuEditor* ec, gchar *filename)
         iofunctions_load_default_text(ec);
         return;
     }
-    editor_fill_buffer(ec, text);
+    if (NULL == (decoded = iofunctions_decode_text(text))) {
+        g_free(text); 
+        return;
+    }
+    editor_fill_buffer(ec, decoded);
+    g_free(decoded);
     g_free(text); 
 }
 
@@ -112,6 +121,20 @@ void iofunctions_reset_autosave(gchar* name) {
     L_F_DEBUG;
     iofunctions_stop_autosave();
     iofunctions_start_autosave(atoi(config_get_value("autosave_timer")), name);
+}
+
+char* iofunctions_decode_text(gchar* text) {
+    size_t in_size = strlen(text), out_size = in_size * 2;
+    gchar* out = (gchar*)g_malloc(out_size);
+    gchar* process = out;
+    iconv_t cd = iconv_open("UTF-8//IGNORE", "ISO−8859-1");
+
+    if (-1 == iconv(cd, &text, &in_size, &process, &out_size)) {
+        slog(L_G_ERROR, _("Can not convert text to UTF-8!\n"));
+        gfree(out);
+        out = NULL;
+    }
+    return out;
 }
 
 gboolean iofunctions_autosave_cb(void* name) {

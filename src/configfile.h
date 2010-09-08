@@ -32,7 +32,7 @@
 
 #include <glib.h>
 
-#define CONFIG_MAX 64
+#define CONFIG_MAX 128
 #define BUF_MAX BUFSIZ / 8
 
 typedef struct _finfo {
