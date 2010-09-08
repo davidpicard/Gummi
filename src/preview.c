@@ -77,7 +77,10 @@ void preview_set_pdffile(GuPreview* pc, const gchar *pdffile) {
     if (pc->uri) g_free(pc->uri);
     pc->uri = g_strconcat("file://", pdffile, NULL);
 
-    if (pc->doc) g_object_unref(pc->doc);
+    if (pc->doc && pc->page) {
+        g_object_unref(pc->page);
+        g_object_unref(pc->doc);
+    }
     pc->doc = poppler_document_new_from_file(pc->uri, NULL, &err);
 
     pc->page = poppler_document_get_page(pc->doc, pc->page_current);
