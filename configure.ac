@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.65])
-AC_INIT([Gummi], [svn], [alexvandermey@gmail.com], [gummi], [http://gummi.midnightcoding.org/])
+AC_INIT([Gummi beta], [0.5], [alexvandermey@gmail.com], [gummi-beta], [http://gummi.midnightcoding.org/])
 AM_INIT_AUTOMAKE
 
 # Init gettext
