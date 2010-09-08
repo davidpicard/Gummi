@@ -158,15 +158,12 @@ void gui_quit() {
 }
 
 void on_menu_new_activate(GtkWidget *widget, void* user) {
-    const char *text;
-    
     if (check_for_save ())
         on_menu_save_activate(NULL, NULL);  
-    /* clear editor for a new file */
-    text = config_get_value("welcome");
-    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_e_buffer), text, -1);
-    gtk_text_buffer_set_modified(g_e_buffer, FALSE);
+
+    iofunctions_load_default_text(gummi->editor);
     motion_create_environment(gummi->motion, NULL);
+    motion_start_timer(gummi->motion);
 }
 
 void on_menu_template_activate(GtkWidget *widget, void * user) {
@@ -190,8 +187,10 @@ void on_menu_open_activate(GtkWidget *widget, void* user) {
         on_menu_save_activate(NULL, NULL);  
     }
     filename = get_open_filename(FILTER_LATEX);
-    if (filename != NULL) 
+    if (filename != NULL) {
         iofunctions_load_file(gummi->editor, filename); 
+        motion_start_timer(gummi->motion);
+    }
 }
 
 void on_menu_save_activate(GtkWidget *widget, void* user) {
@@ -320,7 +319,7 @@ void on_menu_bibload_activate(GtkWidget *widget, void * user) {
     gchar *filename;
     filename = get_open_filename(FILTER_BIBLIO);
     if (biblio_check_valid_file(gummi->biblio, filename)) {
-        biblio_setup_bibliography(gummi->editor, gummi->biblio);
+        biblio_setup_bibliography(gummi->biblio, gummi->editor);
         gtk_label_set_text(gummi->gui->bibfilenm, gummi->biblio->bibbasename);
     }
 }
@@ -655,10 +654,10 @@ gboolean check_for_save() {
                      "%s", msg);
 
         gtk_window_set_title (GTK_WINDOW (dialog), _("Save?"));
-        if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_NO) {
+        if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_NO)
             ret = FALSE;
-        }      
-        else ret = TRUE;
+        else
+            ret = TRUE;
 
         gtk_widget_destroy (dialog);      
     }

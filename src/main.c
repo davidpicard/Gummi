@@ -105,7 +105,7 @@ int main (int argc, char *argv[]) {
     editor = editor_init(builder);
     importer = importer_init(builder);
     preview = preview_init(builder);
-    motion = motion_init(editor, preview); 
+    motion = motion_init(builder, editor, preview); 
     templ = template_init(builder);
     biblio = biblio_init(builder);
 

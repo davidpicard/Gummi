@@ -43,7 +43,7 @@
 #include "preview.h"
 #include "utils.h"
 
-GuMotion* motion_init(GuEditor* ec, GuPreview* pc) {
+GuMotion* motion_init(GtkBuilder* builder, GuEditor* ec, GuPreview* pc) {
     L_F_DEBUG;
     GuMotion* m = (GuMotion*)g_malloc(sizeof(GuMotion));
     /* initialize basis */
@@ -51,6 +51,8 @@ GuMotion* motion_init(GuEditor* ec, GuPreview* pc) {
     m->b_preview = pc;
 
     /* initialize members */
+    m->statuslight =
+        GTK_TOOL_BUTTON(gtk_builder_get_object(builder, "tool_statuslight"));
     const gchar* typesetter = config_get_value("typesetter");
     m->typesetter = (gchar*)g_malloc(strlen(typesetter) + 1);
     strncpy(m->typesetter, typesetter, strlen(typesetter) + 1);
@@ -181,7 +183,11 @@ void motion_update_pdffile(GuMotion* mc) {
         g_strfreev(result);
         g_match_info_free(match_info);
         g_regex_unref(match_str);
-    }
+
+        /* update status light */
+        gtk_tool_button_set_stock_id(mc->statuslight, "gtk-no");
+    } else
+        gtk_tool_button_set_stock_id(mc->statuslight, "gtk-yes");
 }
 
 

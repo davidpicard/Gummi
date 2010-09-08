@@ -53,7 +53,7 @@ void iofunctions_load_file(GuEditor* ec, gchar *filename)
     gchar           *text;
     gboolean        result;
 
-    slog(L_INFO, "loading %s from command line argument\n", filename);
+    slog(L_INFO, "loading %s ...\n", filename);
 
     /* add Loading message to status bar and  ensure GUI is current */
     status = g_strdup_printf ("Loading %s...", filename);

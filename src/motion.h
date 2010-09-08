@@ -38,6 +38,7 @@
 typedef struct _GuMotion {
     GuEditor* b_editor;
     GuPreview* b_preview;
+    GtkToolButton* statuslight;
     gint workfd;
     gchar* typesetter;
     gchar* filename;
@@ -51,7 +52,7 @@ typedef struct _GuMotion {
     guint shandlers[2];
 } GuMotion;
 
-GuMotion* motion_init(GuEditor* ec, GuPreview* pc);
+GuMotion* motion_init(GtkBuilder* builder, GuEditor* ec, GuPreview* pc);
 void motion_create_environment(GuMotion* mc, const gchar* filename);
 void motion_set_filename(GuMotion* mc, const gchar* name);
 void motion_initial_preview(GuMotion* mc);
