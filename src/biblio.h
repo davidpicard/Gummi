@@ -35,17 +35,24 @@
 #include "motion.h"
  
 typedef struct _GuBiblio {
-    gchar *bibbasename;
-    gchar *bibdirname;
+    GtkProgressBar* progressbar;
+    GtkAdjustment* progressmon;
+    GtkListStore* list_biblios;
+    GtkLabel* filenm_label;
+    GtkLabel* refnr_label;
+    gchar* filename;
+    gchar* basename;
+    gchar* dirname;
+    double progressval;
 } GuBiblio;
 
 GuBiblio* biblio_init(GtkBuilder* builder);
 
 gboolean biblio_detect_bibliography();
-gboolean biblio_compile_bibliography(GuMotion* mc);
+gboolean biblio_compile_bibliography(GuBiblio* bc, GuMotion* mc);
 gboolean biblio_setup_bibliography();
 gboolean biblio_check_valid_file(GuBiblio* b, gchar *filename);
-
+int biblio_parse_entries(GuBiblio* bc, gchar *bib_content);
 
 
 #endif /* GUMMI_BIBLIO_H */

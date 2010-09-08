@@ -85,23 +85,12 @@ GummiGui* gui_init(GtkBuilder* builder) {
         GTK_CHECK_MENU_ITEM(gtk_builder_get_object(builder, "menu_rightpane"));
     g->statusid =
         gtk_statusbar_get_context_id(GTK_STATUSBAR(g->statusbar), "Gummi");
-    g->bibprogressbar =
-        GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "bibprogressbar"));
-    g->bibprogressmon =
-        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "bibprogressmon"));
-    g->list_biblios = 
-        GTK_LIST_STORE(gtk_builder_get_object(builder, "list_biblios"));
-    g->bibfilenm = 
-        GTK_LABEL(gtk_builder_get_object(builder, "bibfilenm"));
-    g->bibrefnr = 
-        GTK_LABEL(gtk_builder_get_object(builder, "bibrefnr"));
     g->recent[0] =
         GTK_MENU_ITEM(gtk_builder_get_object(builder, "menu_recent1"));
     g->recent[1] =
         GTK_MENU_ITEM(gtk_builder_get_object(builder, "menu_recent2"));
     g->recent[2] =
         GTK_MENU_ITEM(gtk_builder_get_object(builder, "menu_recent3"));
-    g->bibprogressval = 0.0;
 
     g->prefsgui = prefsgui_init(g);
     g->searchgui = searchgui_init(builder);
@@ -368,14 +357,13 @@ void on_menu_findprev_activate(GtkWidget *widget, void * user) {
 }
 
 void on_menu_bibload_activate(GtkWidget *widget, void * user) {
-    gchar *filename;
+    gchar *filename = NULL;
     filename = get_open_filename(FILTER_BIBLIO);
     if (biblio_check_valid_file(gummi->biblio, filename)) {
         biblio_setup_bibliography(gummi->biblio, gummi->editor);
-        gtk_label_set_text(gummi->gui->bibfilenm, gummi->biblio->bibbasename);
+        gtk_label_set_text(gummi->biblio->filenm_label,gummi->biblio->basename);
     }
 }
-
 
 void on_menu_bibupdate_activate(GtkWidget *widget, void * user) {
     // insert contents
@@ -612,37 +600,43 @@ void on_bibcolumn_clicked(GtkWidget* widget, void* user) {
 
 void on_bibcompile_clicked(GtkWidget* widget, void* user) {
     g_timeout_add_seconds(10, on_bibprogressbar_update, NULL);
-    if (biblio_compile_bibliography(gummi->motion)) {
-
+    if (biblio_compile_bibliography(gummi->biblio, gummi->motion)) {
+        statusbar_set_message(_("Compiling bibliography file..."));
+        gtk_progress_bar_set_text(gummi->biblio->progressbar,
+                _("bibliography compiled without errors"));
+    } else {
+        statusbar_set_message(_("Error compiling bibliography file or none "
+                    "detected..."));
+        gtk_progress_bar_set_text(gummi->biblio->progressbar,
+                _("error compiling bibliography file"));
     }
-
 }
 
 void on_bibrefresh_clicked(GtkWidget* widget, void* user) {
-    gchar *text;
-    GError                  *err=NULL;
+    gchar* text;
+    GError* err=NULL;
 
-    gummi->gui->bibprogressval = 0.0;
+    gummi->biblio->progressval = 0.0;
     g_timeout_add(2, on_bibprogressbar_update, NULL);
-    gtk_list_store_clear(gummi->gui->list_biblios);
+    gtk_list_store_clear(gummi->biblio->list_biblios);
     if (biblio_detect_bibliography(gummi->editor)) {
-        // setup_bibliopgrahy, return filenm and number of entries
+        biblio_setup_bibliography(gummi->biblio, gummi->editor);
 
-        g_file_get_contents("/home/alexander/alex.bib", &text, NULL, &err);
+        g_file_get_contents(gummi->biblio->filename, &text, NULL, &err);
 
-        int number = biblio_parse_entries(gummi->gui->list_biblios, text);
+        int number = biblio_parse_entries(gummi->biblio, text);
         printf("%d\n", number);
 
-        gtk_label_set_text(gummi->gui->bibfilenm, "return setup");
-        gtk_label_set_text(gummi->gui->bibrefnr, "number");
-        gtk_progress_bar_set_text(gummi->gui->bibprogressbar,
+        gtk_label_set_text(gummi->biblio->filenm_label, "return setup");
+        gtk_label_set_text(gummi->biblio->refnr_label, "number");
+        gtk_progress_bar_set_text(gummi->biblio->progressbar,
                 _("return filename loaded"));
     }
     else {
-        gtk_progress_bar_set_text(gummi->gui->bibprogressbar,
+        gtk_progress_bar_set_text(gummi->biblio->progressbar,
                 _("no bibliography file detected"));
-        gtk_label_set_text(gummi->gui->bibfilenm, _("None"));
-        gtk_label_set_text(gummi->gui->bibrefnr, _("N/A"));
+        gtk_label_set_text(gummi->biblio->filenm_label, _("None"));
+        gtk_label_set_text(gummi->biblio->refnr_label, _("N/A"));
     }
 }
 
@@ -652,9 +646,9 @@ void on_bibreference_clicked(GtkWidget* widget, void* user) {
 
 gboolean on_bibprogressbar_update(void* user) {
     gtk_adjustment_set_value
-        (gummi->gui->bibprogressmon, gummi->gui->bibprogressval);
-    gummi->gui->bibprogressval += 1.0;
-    if (gummi->gui->bibprogressval > 60) return FALSE;
+        (gummi->biblio->progressmon, gummi->biblio->progressval);
+    gummi->biblio->progressval += 1.0;
+    if (gummi->biblio->progressval > 60) return FALSE;
     else return TRUE;
 }
 

@@ -39,14 +39,23 @@
 extern Gummi* gummi;
 extern GuEditor* ec;
 
-GtkWidget *progressbar;
-
 
 GuBiblio* biblio_init(GtkBuilder * builder) {
     GuBiblio* b = (GuBiblio*)g_malloc(sizeof(GuBiblio));
-    progressbar = GTK_WIDGET(gtk_builder_get_object(builder, "bibprogressbar"));
-    b->bibbasename = NULL;
-    b->bibdirname = NULL;
+    b->progressbar =
+        GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "bibprogressbar"));
+    b->progressmon =
+        GTK_ADJUSTMENT(gtk_builder_get_object(builder, "bibprogressmon"));
+    b->list_biblios = 
+        GTK_LIST_STORE(gtk_builder_get_object(builder, "list_biblios"));
+    b->filenm_label = 
+        GTK_LABEL(gtk_builder_get_object(builder, "bibfilenm"));
+    b->refnr_label = 
+        GTK_LABEL(gtk_builder_get_object(builder, "bibrefnr"));
+    b->progressval = 0.0;
+    b->filename = NULL;
+    b->basename = NULL;
+    b->dirname = NULL;
     return b;
 }
 
@@ -94,48 +103,49 @@ gboolean biblio_detect_bibliography(GuEditor* ec) {
 					return True
 		return False */
 
-gboolean biblio_compile_bibliography(GuMotion* mc) {
+gboolean biblio_compile_bibliography(GuBiblio* bc, GuMotion* mc) {
     gchar command[BUFSIZ];
     motion_update_workfile(mc);
     motion_update_auxfile(mc);
     snprintf(command, sizeof command, "bibtex '%s'", mc->workfile);
     pdata res = utils_popen_r(command);
-    gtk_widget_set_tooltip_text(progressbar, res.data);
-    if(strstr(res.data, "Database file #1") == NULL) {
+    gtk_widget_set_tooltip_text(GTK_WIDGET(bc->progressbar), res.data);
+    if(strstr(res.data, "Database file #1") == NULL)
         return FALSE;
-    }
-    else {
+    else
         return TRUE;
-    }
 }
 
-gboolean biblio_setup_bibliography(GuEditor* ec, GuBiblio* b) {
+gboolean biblio_setup_bibliography(GuBiblio* b, GuEditor* ec) {
     gchar *bibpath;
-    gchar *source;
-    gchar *dest;
+    gchar *dst;
     
-    source = g_strconcat(b->bibdirname, b->bibbasename, NULL);
-    dest = g_strconcat("/tmp", b->bibbasename, NULL);
+    dst = g_strconcat(g_get_tmp_dir(), G_DIR_SEPARATOR_S, b->basename, NULL);
     
-    utils_copy_file(source, dest);
-    bibpath = g_strconcat(b->bibdirname, b->bibbasename, NULL);
+    utils_copy_file(b->filename, dst);
+    bibpath = g_strconcat(b->dirname, G_DIR_SEPARATOR_S, b->basename, NULL);
     editor_insert_bib(ec, bibpath);
+
+    g_free(dst);
     g_free(bibpath);
     return TRUE;
-    
 }
 
-
 gboolean biblio_check_valid_file(GuBiblio* b, gchar *filename) {
+    if (b->filename) g_free(b->filename);
+    if (b->basename) g_free(b->basename);
+    if (b->dirname) g_free(b->dirname);
+
     if (utils_path_exists(filename) == TRUE) {
+        b->filename = g_strdup(filename);
         if (g_path_is_absolute(filename)) {
-            b->bibbasename = g_path_get_basename(filename);
-            b->bibdirname = g_path_get_dirname(filename);
+            b->basename = g_strdup(g_path_get_basename(filename));
+            b->dirname = g_strdup(g_path_get_dirname(filename));
             return TRUE;
         }
         else {
-            b->bibbasename = filename;
-            b->bibdirname = g_get_current_dir();
+            b->basename = g_strdup(filename);
+            b->dirname = g_strdup(g_get_current_dir());
             return TRUE;
         }
     }
@@ -144,7 +154,7 @@ gboolean biblio_check_valid_file(GuBiblio* b, gchar *filename) {
     }
 }
 
-int biblio_parse_entries(GtkListStore *biblio_store, gchar *bib_content) {
+int biblio_parse_entries(GuBiblio* bc, gchar *bib_content) {
     int entry_total = 0;
     
     GRegex* regex_entry;
@@ -170,10 +180,11 @@ int biblio_parse_entries(GtkListStore *biblio_store, gchar *bib_content) {
     subregex_ident = g_regex_new("@.+{([^,]+,)", 0, 0, NULL);
     subregex_title = g_regex_new("[^book]title[\\s]*=[\\s]*(.*)", 0, 0, NULL);
     subregex_author = g_regex_new("author[\\s]*=[\\s]*(.*)", 0, 0, NULL);
-    subregex_year = g_regex_new("year[\\s]*=[\\s]*[{|\"]?([1|2][0-9]{3})", 0, 0, NULL);
+    subregex_year = g_regex_new("year[\\s]*=[\\s]*[{|\"]?([1|2][0-9]{3})", 0,
+            0, NULL);
     
     
-    g_regex_match (regex_entry, bib_content, 0, &match_entry);
+    g_regex_match(regex_entry, bib_content, 0, &match_entry);
     
     while (g_match_info_matches (match_entry)) {
         

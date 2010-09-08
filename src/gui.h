@@ -95,14 +95,8 @@ typedef struct _GummiGui {
     GtkCheckMenuItem* menu_toolbar;
     GtkCheckMenuItem* menu_statusbar;
     GtkCheckMenuItem* menu_rightpane;
-    GtkProgressBar* bibprogressbar;
-    GtkAdjustment* bibprogressmon;
-    GtkListStore* list_biblios;
-    GtkLabel* bibfilenm;
-    GtkLabel* bibrefnr;
     GtkMenuItem* recent[3];
     
-    double bibprogressval;
     guint statusid;
     gchar* recent_list[3];
 } GummiGui;

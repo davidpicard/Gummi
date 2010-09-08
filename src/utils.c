@@ -142,7 +142,7 @@ void utils_copy_file(const gchar* source, const gchar* dest) {
     gint size = 0;
 
     if (NULL == (in = fopen(source, "rb")))
-        slog(L_G_ERROR, "failed to export PDF\n");
+        slog(L_G_ERROR, "failed to open %s\n", source);
     if (NULL == (out = fopen(dest, "wb")))
         slog(L_G_ERROR, "failed to save %s\n", dest);
 
