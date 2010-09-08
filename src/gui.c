@@ -624,13 +624,25 @@ void on_bibrefresh_clicked(GtkWidget* widget, void* user) {
     else {
         gtk_progress_bar_set_text(gummi->biblio->progressbar,
                 _("no bibliography file detected"));
-        gtk_label_set_text(gummi->biblio->filenm_label, _("None"));
+        gtk_label_set_text(gummi->biblio->filenm_label, _("none"));
         gtk_label_set_text(gummi->biblio->refnr_label, _("N/A"));
     }
 }
 
 
-void on_bibreference_clicked(GtkWidget* widget, void* user) {
+void on_bibreference_clicked(GtkTreeView* view, GtkTreePath* Path,
+        GtkTreeViewColumn* column, void* user) {
+    GtkTreeIter iter;
+    gchar* value;
+    gchar* out;
+    GtkTreeModel* model = GTK_TREE_MODEL(gummi->biblio->list_biblios);
+    GtkTreeSelection* selection = gtk_tree_view_get_selection(view);
+
+    gtk_tree_selection_get_selected(selection, &model, &iter);
+    gtk_tree_model_get(model, &iter, 0, &value, -1);
+    out = g_strdup_printf("\\cite{%s}", value);
+    gtk_text_buffer_insert_at_cursor(g_e_buffer, out, strlen(out));
+    g_free(out);
 }
 
 gboolean on_bibprogressbar_update(void* user) {

@@ -62,6 +62,7 @@ void slog_set_gui_parent(GtkWidget* p) {
 
 void slog(gint level, const gchar *fmt, ...) {
     gchar message[BUFSIZ];
+    gchar* out;
     va_list vap;
 
     if (L_IS_TYPE(level, L_DEBUG) && !slog_debug) return;
@@ -84,14 +85,17 @@ void slog(gint level, const gchar *fmt, ...) {
         GtkWidget* dialog;
         // TODO: display the tmp file name
         if (L_IS_TYPE(level, L_G_FATAL))
-            strncat(message, _("\nGummi has encountered a serious error and "
-                    "require restart, your can find your file in the /tmp "
-                    "directory\n"), BUFSIZ - strlen(message) -1);
+            out = g_strdup_printf(_("\nGummi has encountered a serious error "
+                    "and require restart, your can find your file in the %s "
+                    "directory\n"), g_get_tmp_dir());
+        else
+            out = g_strdup(message);
         dialog = gtk_message_dialog_new (parent, 
                 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                 L_IS_TYPE(level,L_G_INFO)? GTK_MESSAGE_INFO: GTK_MESSAGE_ERROR,
                 GTK_BUTTONS_OK,
                 "%s", message);
+        g_free(out);
 
         if (L_IS_TYPE(level, L_G_ERROR))
             gtk_window_set_title(GTK_WINDOW(dialog), "Error!");
@@ -121,6 +125,7 @@ gint utils_yes_no_dialog(const gchar* message) {
                  GTK_BUTTONS_YES_NO,
                  "%s", message);
 
+    gtk_window_set_title(GTK_WINDOW(dialog), _("Confirmation"));
     ret = gtk_dialog_run(GTK_DIALOG(dialog));      
     gtk_widget_destroy(dialog);
     return ret;
