@@ -61,20 +61,20 @@ GuBiblio* biblio_init(GtkBuilder * builder) {
 
 
 gboolean biblio_detect_bibliography(GuEditor* ec) {
-    printf("detect\n");
     gchar *content;
     GMatchInfo *match_info;
     GRegex* bib_regex;
     
     content = editor_grab_buffer(ec);
     bib_regex = g_regex_new("\\\\bibliography{([^{}]*})", 0, 0, NULL);
-    g_regex_match (bib_regex, content, 0, &match_info);
+    g_regex_match(bib_regex, content, 0, &match_info);
     while (g_match_info_matches (match_info)) {
         gchar *word = g_match_info_fetch (match_info, 0);
-        g_print ("Found: %s\n", word);
         g_free (word);
-        g_match_info_next (match_info, NULL);
+        g_match_info_next(match_info, NULL);
     }
+    g_match_info_free(match_info);
+    g_regex_unref(bib_regex);
     return TRUE;
 }
 

@@ -613,24 +613,26 @@ void on_bibcompile_clicked(GtkWidget* widget, void* user) {
 }
 
 void on_bibrefresh_clicked(GtkWidget* widget, void* user) {
-    gchar* text;
-    GError* err=NULL;
+    gchar* text = 0;
+    gchar* str = 0;
+    GError* err = NULL;
+    gint number = 0;
 
     gummi->biblio->progressval = 0.0;
     g_timeout_add(2, on_bibprogressbar_update, NULL);
     gtk_list_store_clear(gummi->biblio->list_biblios);
     if (biblio_detect_bibliography(gummi->editor)) {
         biblio_setup_bibliography(gummi->biblio, gummi->editor);
-
         g_file_get_contents(gummi->biblio->filename, &text, NULL, &err);
-
-        int number = biblio_parse_entries(gummi->biblio, text);
-        printf("%d\n", number);
-
-        gtk_label_set_text(gummi->biblio->filenm_label, "return setup");
-        gtk_label_set_text(gummi->biblio->refnr_label, "number");
-        gtk_progress_bar_set_text(gummi->biblio->progressbar,
-                _("return filename loaded"));
+        number = biblio_parse_entries(gummi->biblio, text);
+        gtk_label_set_text(gummi->biblio->filenm_label,
+                gummi->biblio->basename);
+        str = g_strdup_printf("%d", number);
+        gtk_label_set_text(gummi->biblio->refnr_label, str);
+        g_free(str);
+        str = g_strdup_printf(_("%s loaded"), gummi->biblio->basename);
+        gtk_progress_bar_set_text(gummi->biblio->progressbar, str);
+        g_free(str);
     }
     else {
         gtk_progress_bar_set_text(gummi->biblio->progressbar,
