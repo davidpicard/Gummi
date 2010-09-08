@@ -77,7 +77,10 @@ void preview_set_pdffile(GuPreview* pc, const gchar *pdffile) {
     if (pc->uri) g_free(pc->uri);
     pc->uri = g_strconcat("file://", pdffile, NULL);
 
-    preview_cleanup(pc);
+    /* clean up */
+    if (pc->page) g_object_unref(prev->page);
+    if (pc->doc) g_object_unref(prev->doc);
+
     pc->doc = poppler_document_new_from_file(pc->uri, NULL, &err);
     pc->page = poppler_document_get_page(pc->doc, pc->page_current);
 
@@ -95,7 +98,10 @@ void preview_refresh(GuPreview* pc) {
     pc->page_total = poppler_document_get_n_pages(pc->doc);
     preview_set_pagedata(pc);
 
-    preview_cleanup(pc);
+    /* clean up */
+    if (pc->page) g_object_unref(prev->page);
+    if (pc->doc) g_object_unref(prev->doc);
+
     pc->doc = poppler_document_new_from_file(pc->uri, NULL, &err);
     pc->page = poppler_document_get_page(pc->doc, pc->page_current);    
 
@@ -130,11 +136,6 @@ void preview_goto_page(GuPreview* pc, int page_number) {
             (page_number < (pc->page_total -1)));
     preview_refresh(pc);
     // set label info
-}
-
-void preview_cleanup(GuPreview* prev) {
-    if (prev->page) g_object_unref(prev->page);
-    if (prev->doc) g_object_unref(prev->doc);
 }
 
 gboolean on_expose(GtkWidget* w, GdkEventExpose* e, GuPreview* pc) {
