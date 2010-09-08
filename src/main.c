@@ -113,18 +113,13 @@ int main (int argc, char *argv[]) {
 
     slog_set_gui_parent(gui->mainwindow);
 
-    if ( argc != 2 ) {
+    if (argc != 2) {
         iofunctions_load_default_text(editor);
         motion_create_environment(motion, NULL);
     } else {
         iofunctions_load_file(editor, argv[1]);
         motion_create_environment(motion, argv[1]);
     }
-	
-    motion_initial_preview(motion);
-
-    if (config_get_value("compile_status"))
-        motion_start_updatepreview(motion);
 
     gui_main(builder);
     return 0;

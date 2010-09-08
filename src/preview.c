@@ -47,6 +47,8 @@ GuPreview* preview_init(GtkBuilder * builder) {
     L_F_DEBUG;
     GuPreview* p = (GuPreview*)g_malloc(sizeof(GuPreview));
     GdkColor bg = {0,0xed00,0xec00,0xeb00};
+    p->preview_viewport =
+        GTK_VIEWPORT(gtk_builder_get_object(builder, "preview_view"));
     p->drawarea = GTK_WIDGET(gtk_builder_get_object(builder, "preview_draw"));
     p->scrollw = GTK_WIDGET(gtk_builder_get_object(builder, "preview_scroll"));
     p->page_next = GTK_WIDGET(gtk_builder_get_object(builder, "page_next"));
@@ -64,103 +66,103 @@ GuPreview* preview_init(GtkBuilder * builder) {
     return p;
 }
 
-void preview_set_pdffile(GuPreview* prev, const gchar *pdffile) {
+void preview_set_pdffile(GuPreview* pc, const gchar *pdffile) {
     L_F_DEBUG;
     GError *err = NULL;
-    prev->page_current = 0;
+    pc->page_current = 0;
     
-    prev->uri = g_strconcat("file://", pdffile, NULL);
-    prev->doc = poppler_document_new_from_file(prev->uri, NULL, &err);
-    prev->page = poppler_document_get_page(prev->doc, prev->page_current);
-    poppler_page_get_size(prev->page, &prev->page_width, &prev->page_height);
-    prev->page_total = poppler_document_get_n_pages(prev->doc);
-    prev->page_ratio = (prev->page_width / prev->page_height);
-    prev->page_scale = 1.0;
-    preview_set_pagedata(prev);
+    pc->uri = g_strconcat("file://", pdffile, NULL);
+    pc->doc = poppler_document_new_from_file(pc->uri, NULL, &err);
+    pc->page = poppler_document_get_page(pc->doc, pc->page_current);
+    poppler_page_get_size(pc->page, &pc->page_width, &pc->page_height);
+    pc->page_total = poppler_document_get_n_pages(pc->doc);
+    pc->page_ratio = (pc->page_width / pc->page_height);
+    pc->page_scale = 1.0;
+    preview_set_pagedata(pc);
 }
 
-void preview_refresh(GuPreview* prev) {
+void preview_refresh(GuPreview* pc) {
     L_F_DEBUG;
     GError *err = NULL;
-    prev->doc = poppler_document_new_from_file(prev->uri, NULL, &err);
-    prev->page_total = poppler_document_get_n_pages(prev->doc);
-    preview_set_pagedata(prev);
-    prev->page = poppler_document_get_page(prev->doc, prev->page_current);    
-    gtk_widget_queue_draw(prev->drawarea);
+    pc->doc = poppler_document_new_from_file(pc->uri, NULL, &err);
+    pc->page_total = poppler_document_get_n_pages(pc->doc);
+    preview_set_pagedata(pc);
+    pc->page = poppler_document_get_page(pc->doc, pc->page_current);    
+    gtk_widget_queue_draw(pc->drawarea);
 }
 
-void preview_set_pagedata(GuPreview* prev) {
+void preview_set_pagedata(GuPreview* pc) {
     L_F_DEBUG;
-    if ((prev->page_total - 1) > prev->page_current) {
-        gtk_widget_set_sensitive(GTK_WIDGET(prev->page_next), TRUE);
+    if ((pc->page_total - 1) > pc->page_current) {
+        gtk_widget_set_sensitive(GTK_WIDGET(pc->page_next), TRUE);
     }
-    else if (prev->page_current >= prev->page_total) {
-        preview_goto_page(prev, prev->page_total -1);
+    else if (pc->page_current >= pc->page_total) {
+        preview_goto_page(pc, pc->page_total -1);
     }
     char current[8];
-    snprintf(current, sizeof current, "%d", (prev->page_current+1));
+    snprintf(current, sizeof current, "%d", (pc->page_current+1));
     char total[8];
-    snprintf(total, sizeof total, "of %d", prev->page_total);
+    snprintf(total, sizeof total, "of %d", pc->page_total);
 
-    gtk_entry_set_text(GTK_ENTRY(prev->page_input), current);
-    gtk_label_set_text(GTK_LABEL(prev->page_label), total);
+    gtk_entry_set_text(GTK_ENTRY(pc->page_input), current);
+    gtk_label_set_text(GTK_LABEL(pc->page_label), total);
 }
 
-void preview_goto_page(GuPreview* prev, int page_number) {
+void preview_goto_page(GuPreview* pc, int page_number) {
     L_F_DEBUG;
-    if (page_number < 0 || page_number >= prev->page_total)
+    if (page_number < 0 || page_number >= pc->page_total)
         slog(L_ERROR, "page_number is a negative number!\n");
 
-    prev->page_current = page_number;
-    gtk_widget_set_sensitive(prev->page_prev, (page_number > 0));
-    gtk_widget_set_sensitive(prev->page_next,
-            (page_number < (prev->page_total -1)));
-    preview_refresh(prev);
+    pc->page_current = page_number;
+    gtk_widget_set_sensitive(pc->page_prev, (page_number > 0));
+    gtk_widget_set_sensitive(pc->page_next,
+            (page_number < (pc->page_total -1)));
+    preview_refresh(pc);
     // set label info
 }
 
-gboolean on_expose(GtkWidget* w, GdkEventExpose* e, GuPreview* prev) {
+gboolean on_expose(GtkWidget* w, GdkEventExpose* e, GuPreview* pc) {
     L_F_DEBUG;
     GtkAllocation scrollwsize;
     cairo_t* cr;
     cr = gdk_cairo_create(w->window);
     
-    gtk_widget_get_allocation(prev->scrollw, &scrollwsize);
+    gtk_widget_get_allocation(pc->scrollw, &scrollwsize);
     double scrollw_ratio = (scrollwsize.width / scrollwsize.height);
     
     // TODO: STOP WITH ERROR IF PAGE RATIO OR PAGE WIDTH IS NULL!
     
-    if (prev->best_fit || prev->fit_width) {
-        if (scrollw_ratio < prev->page_ratio || prev->fit_width) {
-            prev->page_scale = scrollwsize.width / prev->page_width;
+    if (pc->best_fit || pc->fit_width) {
+        if (scrollw_ratio < pc->page_ratio || pc->fit_width) {
+            pc->page_scale = scrollwsize.width / pc->page_width;
         }
         else {
-            prev->page_scale = scrollwsize.height / prev->page_height;
+            pc->page_scale = scrollwsize.height / pc->page_height;
         }
     }
     
-    if (!prev->best_fit && !prev->fit_width) {
-        gtk_widget_set_size_request(prev->drawarea, (prev->page_width *
-                    prev->page_scale), (prev->page_height * prev->page_scale));
+    if (!pc->best_fit && !pc->fit_width) {
+        gtk_widget_set_size_request(pc->drawarea, (pc->page_width *
+                    pc->page_scale), (pc->page_height * pc->page_scale));
     }
-    else if (prev->fit_width) {
-        if (fabs(prev->page_ratio - scrollw_ratio) > 0.01) {
-            gtk_widget_set_size_request(prev->drawarea, -1,
-                    (prev->page_height*prev->page_scale));
+    else if (pc->fit_width) {
+        if (fabs(pc->page_ratio - scrollw_ratio) > 0.01) {
+            gtk_widget_set_size_request(pc->drawarea, -1,
+                    (pc->page_height*pc->page_scale));
         }
     }
-    else if (prev->best_fit) {
-        gtk_widget_set_size_request(prev->drawarea, -1,
-                (prev->page_height*prev->page_scale)-10);
+    else if (pc->best_fit) {
+        gtk_widget_set_size_request(pc->drawarea, -1,
+                (pc->page_height*pc->page_scale)-10);
     }
     
     // import python lines for calculating scale here
-    cairo_scale(cr, prev->page_scale, prev->page_scale);
+    cairo_scale(cr, pc->page_scale, pc->page_scale);
     cairo_set_source_rgb(cr, 1, 1, 1);
-    cairo_rectangle(cr, 0, 0, prev->page_width, prev->page_height);
+    cairo_rectangle(cr, 0, 0, pc->page_width, pc->page_height);
     cairo_fill(cr);
     
-    poppler_page_render(prev->page, cr);
+    poppler_page_render(pc->page, cr);
     cairo_destroy(cr);
     return FALSE;
 } 

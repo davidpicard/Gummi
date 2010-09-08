@@ -225,13 +225,14 @@ void on_menu_open_activate(GtkWidget *widget, void* user) {
     filename = get_open_filename(FILTER_LATEX);
     if (filename != NULL) {
         iofunctions_load_file(gummi->editor, filename); 
+        motion_create_environment(gummi->motion, filename);
+
         /* add to recent list */
         g_free(gummi->gui->recent_list[2]);
         for (i = 1; i >= 0; --i)
             gummi->gui->recent_list[i + 1] = gummi->gui->recent_list[i];
         gummi->gui->recent_list[0] = g_strdup(filename);
         display_recent_files(gummi->gui);
-        //check_motion_timer();
     }
 }
 
@@ -596,6 +597,7 @@ void on_bibcompile_clicked(GtkWidget* widget, void* user) {
         gtk_progress_bar_set_text(gummi->biblio->progressbar,
                 _("error compiling bibliography file"));
     }
+    check_motion_timer();
 }
 
 void on_bibrefresh_clicked(GtkWidget* widget, void* user) {
@@ -1180,7 +1182,8 @@ gboolean statusbar_del_message(void* user) {
 
 void check_motion_timer(void) {
     if (config_get_value("compile_status") &&
-            0 == strcmp(config_get_value("compile_scheme"), "on_idle")) {
+            0 == strcmp(config_get_value("compile_scheme"), "on_idle") &&
+            !gummi->motion->no_pdf) {
         motion_start_timer(gummi->motion);
     }
     gtk_text_buffer_set_modified(g_e_buffer, TRUE);

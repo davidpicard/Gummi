@@ -36,6 +36,7 @@
 typedef struct _GuPreview {
     PopplerDocument* doc;
     PopplerPage* page;
+    GtkViewport* preview_viewport;
     GtkWidget *drawarea;
     GtkWidget *page_next;
     GtkWidget *page_prev;

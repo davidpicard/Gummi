@@ -137,13 +137,10 @@ void editor_activate_spellchecking(GuEditor* ec, gboolean status) {
 
 void editor_fill_buffer(GuEditor* ec, const gchar* text) {
     L_F_DEBUG;
-    GtkTextIter start;
     gtk_text_buffer_begin_user_action(ec_sourcebuffer);
-    gtk_text_buffer_set_text(ec_sourcebuffer, (gchar*)"", 0);
     gtk_source_buffer_begin_not_undoable_action(ec->sourcebuffer);
-    gtk_text_buffer_get_start_iter(ec_sourcebuffer, &start);
     gtk_widget_set_sensitive(GTK_WIDGET(ec->sourceview), FALSE);
-    gtk_text_buffer_insert(ec_sourcebuffer, &start, text, strlen(text));
+    gtk_text_buffer_set_text(ec_sourcebuffer, text, strlen(text));
     gtk_text_buffer_set_modified(ec_sourcebuffer, FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(ec->sourceview), TRUE);
     gtk_source_buffer_end_not_undoable_action(ec->sourcebuffer);

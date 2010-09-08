@@ -65,6 +65,7 @@ GuMotion* motion_init(GtkBuilder* builder, GuEditor* ec, GuPreview* pc) {
     m->last_errorline = 0;
     m->update = 0;
     m->timer = 0;
+    m->no_pdf = FALSE;
     return m;
 }
 
@@ -85,6 +86,13 @@ void motion_create_environment(GuMotion* mc, const gchar* filename) {
 
     if (mc->pdffile) g_free(mc->pdffile);
     mc->pdffile =  g_strdup_printf("%s.pdf", tname);
+
+    /* This is important */
+    mc->no_pdf = TRUE;
+    motion_initial_preview(mc);
+
+    if (!mc->no_pdf && config_get_value("compile_status"))
+        motion_start_updatepreview(mc);
     
     slog(L_INFO, "Environment created for:\n");
     slog(L_INFO, "TEX: %s\n", mc->filename);
@@ -94,25 +102,25 @@ void motion_create_environment(GuMotion* mc, const gchar* filename) {
 
 void motion_set_filename(GuMotion* mc, const gchar* name) {
     L_F_DEBUG;
-    if (mc->filename)
-        g_free(mc->filename);
-    if (name) {
-        mc->filename = (gchar*)g_malloc(strlen(name) + 1);
-        strcpy(mc->filename, name);
-    } else {
+    if (mc->filename) g_free(mc->filename);
+    if (name)
+        mc->filename = g_strdup(name);
+    else
         mc->filename = NULL;
-    }
 }
 
 void motion_initial_preview(GuMotion* mc) {
     L_F_DEBUG;
     motion_update_workfile(mc);
     motion_update_pdffile(mc);
-    preview_set_pdffile(mc->b_preview, mc->pdffile);
-    // TODO: run some checks
 
-    motion_start_updatepreview(mc);
-    motion_stop_updatepreview(mc);
+    /* check for error and see if need to go into error mode */
+    if (mc->no_pdf)
+        motion_setup_preview_error_mode(mc);
+    else {
+        preview_set_pdffile(mc->b_preview, mc->pdffile);
+        motion_updatepreview(mc);
+    }
 }
 
 void motion_update_workfile(GuMotion* mc) {
@@ -160,6 +168,8 @@ void motion_update_pdffile(GuMotion* mc) {
     pdata cresult = utils_popen_r(command);
     errorbuffer_set_text(cresult.data);
     mc->errorline = 0;
+
+    mc->no_pdf = (gboolean)cresult.ret;
 
     /* find error line */
     if (cresult.ret == 1 && strstr(cresult.data, "Fatal error")) {
@@ -240,6 +250,7 @@ void motion_export_pdffile(GuMotion* mc, const gchar* path) {
 }
 
 void motion_update_errortags(GuMotion* mc) {
+    L_F_DEBUG;
     if (mc->errorline)
         editor_apply_errortags(mc->b_editor, mc->errorline);
     if (mc->last_errorline && !mc->errorline)
@@ -254,8 +265,51 @@ gboolean motion_updatepreview(void* user) {
     motion_update_pdffile(mc);
     motion_update_errortags(mc);
     preview_refresh(mc->b_preview);
-    motion_update_errortags(mc);
     return 0 != strcmp(config_get_value("compile_scheme"), "on_idle");
+}
+
+void motion_setup_preview_error_mode(GuMotion* mc) {
+    L_F_DEBUG;
+
+    GtkEventBox* eventbox = GTK_EVENT_BOX(gtk_event_box_new());
+    gtk_widget_set_events(GTK_WIDGET(eventbox), GDK_BUTTON_PRESS_MASK);
+    g_signal_connect(eventbox, "button-press-event",
+            G_CALLBACK(on_error_button_press), mc);
+    char* message = g_strdup_printf(_("PDF-Preview could not initialize.\n\n"
+            "It appears your LaTeX document contains errors or\n"
+            "the program `%s' was not installed.\n"
+            "Additional information is available on the Error Output tab.\n"
+            "Please correct the listed errors and click this area\n"
+            "to reload the preview panel."), mc->typesetter);
+    GtkLabel* label = GTK_LABEL(gtk_label_new(message));
+    g_free(message);
+    gtk_label_set_justify(label, GTK_JUSTIFY_CENTER);
+    gtk_container_add(GTK_CONTAINER(eventbox), GTK_WIDGET(label));
+    gtk_container_remove(GTK_CONTAINER(mc->b_preview->preview_viewport),
+            GTK_WIDGET(mc->b_preview->drawarea));
+    gtk_container_add(GTK_CONTAINER(mc->b_preview->preview_viewport),
+            GTK_WIDGET(eventbox));
+    gtk_widget_show_all(GTK_WIDGET(mc->b_preview->preview_viewport));
+}
+
+void on_error_button_press(GtkWidget* widget, GdkEventButton* event, void* m) {
+    L_F_DEBUG;
+
+    GuMotion* mc = (GuMotion*)m;
+    motion_update_workfile(mc);
+    motion_update_pdffile(mc);
+
+    if (!mc->no_pdf) {
+        gtk_container_remove(GTK_CONTAINER(mc->b_preview->preview_viewport),
+                widget);
+        gtk_container_add(GTK_CONTAINER(mc->b_preview->preview_viewport),
+                GTK_WIDGET(mc->b_preview->drawarea));
+        if (config_get_value("compile_status") &&
+            0 == strcmp(config_get_value("compile_scheme"), "on_idle")) {
+            preview_set_pdffile(mc->b_preview, mc->pdffile);
+            motion_updatepreview(mc);
+        }
+    }
 }
 
 void motion_start_timer(GuMotion* mc) {

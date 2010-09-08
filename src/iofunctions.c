@@ -46,7 +46,9 @@ static guint sid = 0;
 
 void iofunctions_load_default_text(GuEditor* ec) {
     L_F_DEBUG;
-    editor_fill_buffer(ec, config_get_value("welcome"));
+    gchar* str = g_strdup(config_get_value("welcome"));
+    editor_fill_buffer(ec, str);
+    g_free(str);
 }
 
 void iofunctions_load_file(GuEditor* ec, gchar *filename)
