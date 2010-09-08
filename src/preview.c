@@ -78,8 +78,8 @@ void preview_set_pdffile(GuPreview* pc, const gchar *pdffile) {
     pc->uri = g_strconcat("file://", pdffile, NULL);
 
     /* clean up */
-    if (pc->page) g_object_unref(prev->page);
-    if (pc->doc) g_object_unref(prev->doc);
+    if (pc->page) g_object_unref(pc->page);
+    if (pc->doc) g_object_unref(pc->doc);
 
     pc->doc = poppler_document_new_from_file(pc->uri, NULL, &err);
     pc->page = poppler_document_get_page(pc->doc, pc->page_current);
@@ -99,8 +99,8 @@ void preview_refresh(GuPreview* pc) {
     preview_set_pagedata(pc);
 
     /* clean up */
-    if (pc->page) g_object_unref(prev->page);
-    if (pc->doc) g_object_unref(prev->doc);
+    if (pc->page) g_object_unref(pc->page);
+    if (pc->doc) g_object_unref(pc->doc);
 
     pc->doc = poppler_document_new_from_file(pc->uri, NULL, &err);
     pc->page = poppler_document_get_page(pc->doc, pc->page_current);    
