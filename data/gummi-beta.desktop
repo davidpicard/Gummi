@@ -1,11 +1,12 @@
 [Desktop Entry]
-Version=0.4.0
+Version=0.5.0-beta
 Name=Gummi
 GenericName=LaTeX Editor
 Comment=Simple LaTeX Editor
-Exec=gummi
-Icon=gummi
+Exec=gummi-beta
+Icon=gummi-beta
 Terminal=false
 Type=Application
 Categories=Office;
 StartupNotify=true
+MimeType=text/x-tex;

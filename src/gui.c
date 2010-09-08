@@ -388,7 +388,7 @@ void on_menu_update_activate(GtkWidget *widget, void * user) {
 void on_menu_about_activate(GtkWidget *widget, void * user) {
     GError* err = NULL;
     GdkPixbuf* icon = gdk_pixbuf_new_from_file_at_size
-        (DATADIR"/gummi.png", 60, 60, &err);
+        (DATADIR"/gummi-beta.png", 60, 60, &err);
     const gchar* authors[] = { "Alexander van der Mey\n"
         "<alexvandermey@gmail.com>",
             "Wei-Ning Huang\n"

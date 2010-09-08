@@ -1,13 +1,13 @@
-bin_PROGRAMS = gummi
+bin_PROGRAMS = gummi-beta
 AM_CFLAGS = $(GUI_CFLAGS) \
 	    -export-dynamic -Wall -O2 \
 	    -DDATADIR=\"$(datadir)/$(PACKAGE)\" \
 	    -DLOCALEDIR=\"$(datadir)/locale\"
 
-gummi_LDADD = $(GUI_LIBS) \
+gummi_beta_LDADD = $(GUI_LIBS) \
 	      $(LIBINTL)
 
-gummi_SOURCES = biblio.c  biblio.h \
+gummi_beta_SOURCES = biblio.c  biblio.h \
 		configfile.c configfile.h \
 		editor.c editor.h \
 		environment.c environment.h \

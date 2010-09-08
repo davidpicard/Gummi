@@ -76,7 +76,13 @@ const gchar config_str[] =
 "	\\begin{center}\n"
 "	\\Huge{Welcome to Gummi} \\\\\\\n"
 "	\\\\\n"
-"	\\LARGE{You are using the "PACKAGE_VERSION" version.\\\\\n"
+"	\\LARGE{You are using the "PACKAGE_VERSION" version.\n"
+"	This package is a NIGHTLY BUILD as part of the\\\\\n"
+"	\\textbf{Gummi "PACKAGE_VERSION"}.\\\\\n"
+"	This package is NOT FOR PRODUCTION USE.\n"
+"	We would appreciate reports on any problems/bugs you experience using this package.\n"
+"	Please run your Gummi from the command line with the \\textit{\"gummi-beta -d\"} command.\\\\\\\n"
+"	\\\\\n"
 "	I welcome your suggestions at\\\\\n"
 "	http://gummi.midnightcoding.org}\\\\\n"
 "	\\end{center}\n"
@@ -85,11 +91,12 @@ const gchar config_str[] =
 void config_init(const gchar* filename) {
     L_F_DEBUG;
     const gchar* config_version = 0;
-    gchar buf[BUFSIZ];
+    gchar buf[BUFSIZ] = { 0 };
     config_filename = filename;
-    FILE* fh = fopen(filename, "r");
+    FILE* fh;
+    if ((fh = fopen(filename, "r")))
+        fgets(buf, BUFSIZ, fh);
     
-    fgets(buf, BUFSIZ, fh);
     config_version = config_get_value("config_version");
 
     if (!config_version ||

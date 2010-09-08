@@ -1,13 +1,13 @@
-man_MANS = gummi.1
+man_MANS = gummi-beta.1
 
 desktopdir = $(datadir)/applications
-desktop_DATA = $(PACKAGE).desktop
+desktop_DATA = $(PACKAGE)-beta.desktop
 
 pixmapsdir = $(datadir)/pixmaps
-pixmaps_DATA = $(PACKAGE).png
+pixmaps_DATA = $(PACKAGE)-beta.png
 
 imagesdir = $(datadir)/$(PACKAGE)
-images_DATA = $(PACKAGE).png icon.png article.png book.png letter.png report.png
+images_DATA = $(PACKAGE)-beta.png icon.png article.png book.png letter.png report.png
 
 gladedir = $(datadir)/$(PACKAGE)
 glade_DATA = gummi.glade prefs.glade
