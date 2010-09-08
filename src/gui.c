@@ -667,7 +667,6 @@ gboolean check_for_save() {
 
 gchar* get_open_filename(GuFilterType type) {
     GtkFileChooser* chooser = NULL;
-    GtkFileFilter* filter = gtk_file_filter_new();
     gchar* filename = NULL;
        
     chooser = GTK_FILE_CHOOSER(gtk_file_chooser_dialog_new(
@@ -715,33 +714,33 @@ void file_dialog_set_filter(GtkFileChooser* dialog, GuFilterType type) {
         case FILTER_LATEX:
             gtk_file_filter_set_name(filter, "LaTeX files");
             gtk_file_filter_add_pattern(filter, "*.tex");
-            gtk_file_chooser_add_filter(chooser, filter);
-            gtk_file_chooser_set_filter(chooser, filter);
+            gtk_file_chooser_add_filter(dialog, filter);
+            gtk_file_chooser_set_filter(dialog, filter);
             filter = gtk_file_filter_new();
             gtk_file_filter_set_name(filter, "Text files");
             gtk_file_filter_add_mime_type(filter, "text/plain");
-            gtk_file_chooser_add_filter(chooser, filter);
+            gtk_file_chooser_add_filter(dialog, filter);
             break;
 
         case FILTER_PDF:
             gtk_file_filter_set_name(filter, "PDF files");
             gtk_file_filter_add_pattern(filter, "*.pdf");
-            gtk_file_chooser_add_filter(chooser, filter);
-            gtk_file_chooser_set_filter(chooser, filter);
+            gtk_file_chooser_add_filter(dialog, filter);
+            gtk_file_chooser_set_filter(dialog, filter);
             break;
 
         case FILTER_IMAGE:
             gtk_file_filter_set_name(filter, "Image files");
             gtk_file_filter_add_mime_type(filter, "image/*");
-            gtk_file_chooser_add_filter(chooser, filter);
-            gtk_file_chooser_set_filter(chooser, filter);
+            gtk_file_chooser_add_filter(dialog, filter);
+            gtk_file_chooser_set_filter(dialog, filter);
             break;
 
         case FILTER_BIBLIO:
             gtk_file_filter_set_name(filter, "Bibtex files");
             gtk_file_filter_add_pattern(filter, "*.bib");
-            gtk_file_chooser_add_filter(chooser, filter);
-            gtk_file_chooser_set_filter(chooser, filter);
+            gtk_file_chooser_add_filter(dialog, filter);
+            gtk_file_chooser_set_filter(dialog, filter);
             break;
     }
     
