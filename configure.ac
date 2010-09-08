@@ -2,8 +2,12 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.65])
-AC_INIT([gummi], [svn], [alexvandermey@gmail.com])
+AC_INIT([Gummi], [svn], [alexvandermey@gmail.com], [gummi], [http://gummi.midnightcoding.org/])
 AM_INIT_AUTOMAKE
+
+# Init gettext
+# ls po/*.po | sort | sed 's/po\///g;s/.po//g'| sed ':a;N;s/\n/ /g;ta'
+ALL_LINGUAS="ca_ES da fr gr_EL it_IT nl_NL pt_BR ru zh_TW"
 AM_GNU_GETTEXT_VERSION([0.17])
 AM_GNU_GETTEXT([external])
 

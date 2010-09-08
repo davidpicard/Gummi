@@ -37,7 +37,7 @@
 #   define PACKAGE "gummi"
 #   define PACKAGE_NAME "Gummi"
 #   define PACKAGE_VERSION "svn"
-#define PACKAGE_URL "http://gummi.midnightcoding.org/"
+#   define PACKAGE_URL "http://gummi.midnightcoding.org/"
 #endif
 
 #define PACKAGE_COMMENTS "Simple LaTeX Editor for GTK+ users"

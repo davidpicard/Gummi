@@ -373,7 +373,7 @@ void on_menu_about_activate(GtkWidget *widget, void * user) {
                                  GTK_WINDOW(gummi->gui->mainwindow));
     gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
     gtk_about_dialog_set_authors(dialog, authors);
-    gtk_about_dialog_set_program_name(dialog, "Gummi");
+    gtk_about_dialog_set_program_name(dialog, PACKAGE_NAME);
     gtk_about_dialog_set_version(dialog, PACKAGE_VERSION);
     gtk_about_dialog_set_website(dialog, PACKAGE_URL);
     gtk_about_dialog_set_copyright(dialog, PACKAGE_COPYRIGHT);
