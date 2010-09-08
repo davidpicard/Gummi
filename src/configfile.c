@@ -94,8 +94,10 @@ void config_init(const gchar* filename) {
     gchar buf[BUFSIZ] = { 0 };
     config_filename = filename;
     FILE* fh;
-    if ((fh = fopen(filename, "r")))
+    if ((fh = fopen(filename, "r"))) {
         fgets(buf, BUFSIZ, fh);
+        fclose(fh);
+    }
     
     config_version = config_get_value("config_version");
 

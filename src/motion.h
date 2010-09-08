@@ -60,6 +60,7 @@ void motion_initial_preview(GuMotion* mc);
 void motion_update_workfile(GuMotion* mc);
 void motion_update_pdffile(GuMotion* mc);
 void motion_update_auxfile(GuMotion* mc);
+void motion_update_errortags(GuMotion* mc);
 void motion_start_updatepreview(GuMotion* mc);
 void motion_stop_updatepreview(GuMotion* mc);
 void motion_export_pdffile(GuMotion* mc, const gchar* path);

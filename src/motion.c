@@ -113,6 +113,7 @@ void motion_initial_preview(GuMotion* mc) {
     L_F_DEBUG;
     motion_update_workfile(mc);
     motion_update_pdffile(mc);
+    motion_update_errortags(mc);
 
     /* check for error and see if need to go into error mode */
     if (mc->no_pdf)
@@ -298,6 +299,7 @@ void on_error_button_press(GtkWidget* widget, GdkEventButton* event, void* m) {
     GuMotion* mc = (GuMotion*)m;
     motion_update_workfile(mc);
     motion_update_pdffile(mc);
+    motion_update_errortags(mc);
 
     if (!mc->no_pdf) {
         gtk_container_remove(GTK_CONTAINER(mc->b_preview->preview_viewport),

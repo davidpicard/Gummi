@@ -55,6 +55,9 @@ GuPreview* preview_init(GtkBuilder * builder) {
     p->page_prev = GTK_WIDGET(gtk_builder_get_object(builder, "page_prev"));
     p->page_label = GTK_WIDGET(gtk_builder_get_object(builder, "page_label"));
     p->page_input = GTK_WIDGET(gtk_builder_get_object(builder, "page_input"));
+    p->uri = NULL;
+    p->doc = NULL;
+    p->page = NULL;
     p->fit_width = TRUE;
     p->best_fit = FALSE;
     gtk_widget_modify_bg(p->drawarea, GTK_STATE_NORMAL, &bg); 
@@ -71,10 +74,18 @@ void preview_set_pdffile(GuPreview* pc, const gchar *pdffile) {
     GError *err = NULL;
     pc->page_current = 0;
     
+    if (pc->uri) g_free(pc->uri);
     pc->uri = g_strconcat("file://", pdffile, NULL);
+
+    if (pc->doc) g_object_unref(pc->doc);
     pc->doc = poppler_document_new_from_file(pc->uri, NULL, &err);
+
+    if (pc->page) g_object_unref(pc->page);
     pc->page = poppler_document_get_page(pc->doc, pc->page_current);
+
     poppler_page_get_size(pc->page, &pc->page_width, &pc->page_height);
+    g_object_unref(pc->page);
+
     pc->page_total = poppler_document_get_n_pages(pc->doc);
     pc->page_ratio = (pc->page_width / pc->page_height);
     pc->page_scale = 1.0;
@@ -87,6 +98,8 @@ void preview_refresh(GuPreview* pc) {
     pc->doc = poppler_document_new_from_file(pc->uri, NULL, &err);
     pc->page_total = poppler_document_get_n_pages(pc->doc);
     preview_set_pagedata(pc);
+
+    if (pc->page) g_object_unref(pc->page);
     pc->page = poppler_document_get_page(pc->doc, pc->page_current);    
     gtk_widget_queue_draw(pc->drawarea);
 }
