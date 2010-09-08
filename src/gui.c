@@ -143,6 +143,8 @@ GummiGui* gui_init(GtkBuilder* builder) {
 
 void gui_main(GtkBuilder* builder) {
     gtk_builder_connect_signals(builder, NULL);       
+    g_signal_connect(g_e_buffer, "changed",
+            G_CALLBACK(check_motion_timer), NULL);
     gtk_widget_show_all(gummi->gui->mainwindow);
     gtk_main();
 }
@@ -170,7 +172,6 @@ void on_menu_new_activate(GtkWidget *widget, void* user) {
         return;
     iofunctions_load_default_text(gummi->editor);
     motion_create_environment(gummi->motion, NULL);
-    check_motion_timer();
 }
 
 void on_menu_template_activate(GtkWidget *widget, void * user) {
@@ -196,7 +197,7 @@ void on_menu_recent_activate(GtkWidget *widget, void * user) {
 
     if (utils_path_exists(gummi->gui->recent_list[index])) {
         iofunctions_load_file(gummi->editor, gummi->gui->recent_list[index]); 
-        check_motion_timer();
+        //check_motion_timer();
     } else {
         ptr = g_strdup_printf(_("Error loading recent file: %s"),
                 gummi->gui->recent_list[index]);
@@ -230,7 +231,7 @@ void on_menu_open_activate(GtkWidget *widget, void* user) {
             gummi->gui->recent_list[i + 1] = gummi->gui->recent_list[i];
         gummi->gui->recent_list[0] = g_strdup(filename);
         display_recent_files(gummi->gui);
-        check_motion_timer();
+        //check_motion_timer();
     }
 }
 
@@ -259,8 +260,6 @@ void on_menu_cut_activate(GtkWidget *widget, void* user) {
 
     clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
     gtk_text_buffer_cut_clipboard(g_e_buffer, clipboard, TRUE);
-    gtk_text_buffer_set_modified(g_e_buffer, TRUE);
-    check_motion_timer();
 }
 
 void on_menu_copy_activate(GtkWidget *widget, void* user) {
@@ -268,30 +267,24 @@ void on_menu_copy_activate(GtkWidget *widget, void* user) {
 
     clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
     gtk_text_buffer_copy_clipboard(g_e_buffer, clipboard);
-    check_motion_timer();
 }
 void on_menu_paste_activate(GtkWidget *widget, void* user) {
     GtkClipboard     *clipboard;
 
     clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
     gtk_text_buffer_paste_clipboard(g_e_buffer, clipboard, NULL, TRUE);
-    gtk_text_buffer_set_modified(g_e_buffer, TRUE);
-    check_motion_timer();
 }
 
 void on_menu_undo_activate(GtkWidget *widget, void* user) {
     editor_undo_change(gummi->editor);
-    check_motion_timer();
 }
 
 void on_menu_redo_activate(GtkWidget *widget, void* user) {
     editor_redo_change(gummi->editor);
-    check_motion_timer();
 }
 
 void on_menu_delete_activate(GtkWidget *widget, void * user) {
     gtk_text_buffer_delete_selection(g_e_buffer, FALSE, TRUE);
-    check_motion_timer();
 }
 
 void on_menu_selectall_activate(GtkWidget *widget, void * user) {
@@ -436,32 +429,26 @@ void on_tool_previewoff_toggled(GtkWidget *widget, void * user) {
 
 void on_tool_textstyle_bold_activate(GtkWidget* widget, void* user) {
     editor_set_selection_textstyle(gummi->editor, "tool_bold");
-    check_motion_timer();
 }
 
 void on_tool_textstyle_italic_activate(GtkWidget* widget, void* user) {
     editor_set_selection_textstyle(gummi->editor, "tool_italic");
-    check_motion_timer();
 }
 
 void on_tool_textstyle_underline_activate(GtkWidget* widget, void* user) {
     editor_set_selection_textstyle(gummi->editor, "tool_unline");
-    check_motion_timer();
 }
 
 void on_tool_textstyle_left_activate(GtkWidget* widget, void* user) {
     editor_set_selection_textstyle(gummi->editor, "tool_left");
-    check_motion_timer();
 }
 
 void on_tool_textstyle_center_activate(GtkWidget* widget, void* user) {
     editor_set_selection_textstyle(gummi->editor, "tool_center");
-    check_motion_timer();
 }
 
 void on_tool_textstyle_right_activate(GtkWidget* widget, void* user) {
     editor_set_selection_textstyle(gummi->editor, "tool_right");
-    check_motion_timer();
 }
 
 void on_button_template_ok_clicked(GtkWidget* widget, void* user) {
@@ -532,17 +519,14 @@ GuImportGui* importgui_init(GtkBuilder* builder) {
 
 void on_button_import_table_apply_clicked(GtkWidget* widget, void* user) {
     importer_insert_table(gummi->importer, gummi->editor);
-    check_motion_timer();
 }
 
 void on_button_import_image_apply_clicked(GtkWidget* widget, void* user) {
     importer_insert_image(gummi->importer, gummi->editor);
-    check_motion_timer();
 }
 
 void on_button_import_matrix_apply_clicked(GtkWidget* widget, void* user) {
     importer_insert_matrix(gummi->importer, gummi->editor);
-    check_motion_timer();
 }
 
 void on_image_file_activate(void) {
@@ -1187,4 +1171,6 @@ void check_motion_timer(void) {
             0 == strcmp(config_get_value("compile_scheme"), "on_idle")) {
         motion_start_timer(gummi->motion);
     }
+    gtk_text_buffer_set_modified(g_e_buffer, TRUE);
+    gummi->editor->replace_activated = FALSE;
 }

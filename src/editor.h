@@ -82,6 +82,5 @@ void editor_start_replace_all(GuEditor* ec, const gchar* term,
 void editor_get_current_iter(GuEditor* ec, GtkTextIter* current);
 void editor_undo_change(GuEditor* ec);
 void editor_redo_change(GuEditor* ec);
-gboolean editor_buffer_set_modified_cb(GtkWidget* w, GdkEventKey* e, void* ec);
 
 #endif /* GUMMI_EDITOR_H */

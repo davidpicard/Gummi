@@ -209,8 +209,11 @@ void errorbuffer_set_text(gchar *message);
 void statusbar_set_message(gchar* message);
 gboolean statusbar_del_message(void* user);
 
-/* XXX: always call this function along with the 'gtk_text_buffer_set_modified'
- * function after any change to the buffer */
+/**
+ * @brief "changed" signal callback for editor->sourcebuffer
+ * Automatically check whether to start timer if buffer changed.
+ * Also set_modified for buffer
+ */
 void check_motion_timer(void);
 
 #endif /* GUMMI_GUI_H */

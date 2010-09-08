@@ -84,8 +84,6 @@ GuEditor* editor_init(GtkBuilder* builder) {
 
     editor_sourceview_config(ec);
 
-    g_signal_connect(ec_sourceview, "key-press-event",
-            G_CALLBACK(editor_buffer_set_modified_cb), ec);
     gtk_text_buffer_set_modified(ec_sourcebuffer, FALSE);
     return ec;
 }
@@ -122,11 +120,12 @@ void editor_activate_spellchecking(GuEditor* ec, gboolean status) {
     L_F_DEBUG;
     const gchar* lang = config_get_value("spell_language");
     GError* err = NULL;
+    GError* err2 = NULL;
     if (status) {
         GtkSpell* spell = gtkspell_new_attach(ec_sourceview, NULL, &err);
         if (!spell)
             slog(L_INFO, "gtkspell: %s\n", err->message);
-        if (!gtkspell_set_language(spell, lang, &err))
+        if (!gtkspell_set_language(spell, lang, &err2))
             slog(L_INFO, "gtkspell: %s\n", err->message);
     } else {
         GtkSpell* spell = gtkspell_get_from_text_view(ec_sourceview);
@@ -284,6 +283,8 @@ void editor_apply_errortags(GuEditor* ec, gint line) {
         gtk_text_buffer_get_iter_at_line(ec_sourcebuffer, &start, line -1);
         gtk_text_buffer_get_iter_at_line(ec_sourcebuffer, &end, line);
         gtk_text_buffer_apply_tag(ec_sourcebuffer, ec->errortag, &start, &end);
+        gtk_text_buffer_place_cursor(ec_sourcebuffer, &start);
+        gtk_text_view_scroll_to_iter(ec_sourceview, &start, 0.4, FALSE, 0, 0);
     }
 }
 
@@ -472,12 +473,4 @@ void editor_redo_change(GuEditor* ec) {
         gtk_source_buffer_redo(ec->sourcebuffer);
         gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     }
-}
-
-gboolean editor_buffer_set_modified_cb(GtkWidget* w, GdkEventKey* e, void* ec) {
-    L_F_DEBUG;
-    gtk_text_buffer_set_modified(
-            GTK_TEXT_BUFFER(((GuEditor*)ec)->sourcebuffer), TRUE);
-    ((GuEditor*)ec)->replace_activated = FALSE;
-    return FALSE;
 }
