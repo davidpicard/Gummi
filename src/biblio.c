@@ -61,21 +61,26 @@ GuBiblio* biblio_init(GtkBuilder * builder) {
 
 
 gboolean biblio_detect_bibliography(GuEditor* ec) {
-    gchar *content;
+    gchar* content;
+    gchar** result;
     GMatchInfo *match_info;
     GRegex* bib_regex;
     
     content = editor_grab_buffer(ec);
-    bib_regex = g_regex_new("\\\\bibliography{([^{}]*})", 0, 0, NULL);
-    g_regex_match(bib_regex, content, 0, &match_info);
-    while (g_match_info_matches (match_info)) {
-        gchar *word = g_match_info_fetch (match_info, 0);
-        g_free (word);
-        g_match_info_next(match_info, NULL);
+    bib_regex = g_regex_new("\\\\bibliography{([^{}]*)}", 0, 0, NULL);
+    if (g_regex_match(bib_regex, content, 0, &match_info)) {
+        result = g_match_info_fetch_all(match_info);
+        if (result[1] &&
+            0 == strncmp(result[1] + strlen(result[1]) -4, ".bib", 4) &&
+            utils_path_exists(result[1])) {
+            g_strfreev(result);
+            return TRUE;
+        }
+        g_strfreev(result);
     }
     g_match_info_free(match_info);
     g_regex_unref(bib_regex);
-    return TRUE;
+    return FALSE;
 }
 
 gboolean biblio_compile_bibliography(GuBiblio* bc, GuMotion* mc) {

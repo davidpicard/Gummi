@@ -624,8 +624,6 @@ void on_bibrefresh_clicked(GtkWidget* widget, void* user) {
     g_timeout_add(2, on_bibprogressbar_update, NULL);
     gtk_list_store_clear(gummi->biblio->list_biblios);
 
-    if (!gummi->biblio->filename) return;
-
     if (biblio_detect_bibliography(gummi->editor)) {
         biblio_setup_bibliography(gummi->biblio, gummi->editor);
         g_file_get_contents(gummi->biblio->filename, &text, NULL, &err);
