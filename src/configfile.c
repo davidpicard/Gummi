@@ -85,9 +85,16 @@ const gchar config_str[] =
 void config_init(const gchar* filename) {
     L_F_DEBUG;
     const gchar* config_version = 0;
+    gchar buf[BUFSIZ];
     config_filename = filename;
+    FILE* fh = fopen(filename, "r");
+    
+    fgets(buf, BUFSIZ, fh);
     config_version = config_get_value("config_version");
-    if (!config_version || 0 != strcmp(config_version, PACKAGE_VERSION)) {
+
+    if (!config_version ||
+        0 != strcmp(config_version, PACKAGE_VERSION) ||
+        0 == strcmp(buf, "[DEFAULT]\n")) {
         slog(L_INFO, "found old configuration file, replacing it with new "
                 "one ...\n");
         config_set_default();
