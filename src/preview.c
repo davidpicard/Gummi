@@ -80,11 +80,8 @@ void preview_set_pdffile(GuPreview* pc, const gchar *pdffile) {
     if (pc->doc) g_object_unref(pc->doc);
     pc->doc = poppler_document_new_from_file(pc->uri, NULL, &err);
 
-    if (pc->page) g_object_unref(pc->page);
     pc->page = poppler_document_get_page(pc->doc, pc->page_current);
-
     poppler_page_get_size(pc->page, &pc->page_width, &pc->page_height);
-    g_object_unref(pc->page);
 
     pc->page_total = poppler_document_get_n_pages(pc->doc);
     pc->page_ratio = (pc->page_width / pc->page_height);
@@ -95,12 +92,15 @@ void preview_set_pdffile(GuPreview* pc, const gchar *pdffile) {
 void preview_refresh(GuPreview* pc) {
     L_F_DEBUG;
     GError *err = NULL;
-    pc->doc = poppler_document_new_from_file(pc->uri, NULL, &err);
     pc->page_total = poppler_document_get_n_pages(pc->doc);
     preview_set_pagedata(pc);
 
-    if (pc->page) g_object_unref(pc->page);
-    pc->page = poppler_document_get_page(pc->doc, pc->page_current);    
+    if (pc->doc) {
+        g_object_unref(pc->page);
+        g_object_unref(pc->doc);
+    }
+    pc->doc = poppler_document_new_from_file(pc->uri, NULL, &err);
+
     gtk_widget_queue_draw(pc->drawarea);
 }
 
@@ -175,6 +175,7 @@ gboolean on_expose(GtkWidget* w, GdkEventExpose* e, GuPreview* pc) {
     cairo_rectangle(cr, 0, 0, pc->page_width, pc->page_height);
     cairo_fill(cr);
     
+    pc->page = poppler_document_get_page(pc->doc, pc->page_current);    
     poppler_page_render(pc->page, cr);
     cairo_destroy(cr);
     return FALSE;
