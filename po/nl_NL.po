@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: alexvandermey@gmail.com\n"
-"POT-Creation-Date: 2010-09-09 00:43+0800\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-09-09 12:13+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alexander van der Mey <alexvandermey@gmail.com>\n"
 "Language-Team: Dutch <LL@li.org>\n"
@@ -16,53 +16,150 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/gummi.glade:46
-msgid "Create new document.."
-msgstr "Creer nieuw document"
+#: ../data/gummi.glade.h:1
+msgid "        "
+msgstr ""
 
-#: data/gummi.glade:87
+#: ../data/gummi.glade.h:2
 msgid ".."
 msgstr ""
 
-#: data/gummi.glade:93
-msgid "Template options:"
+#: ../data/gummi.glade.h:3
+msgid "0"
 msgstr ""
 
-#: data/gummi.glade:178 data/gummi.glade:459
-msgid "Rows:"
-msgstr "Rijen:"
+#: ../data/gummi.glade.h:5
+#, no-c-format
+msgid "100%"
+msgstr ""
 
-#: data/gummi.glade:188 data/gummi.glade:469
-msgid "Columns:"
-msgstr "Kolommen"
+#: ../data/gummi.glade.h:7
+#, no-c-format
+msgid "125%"
+msgstr ""
 
-#: data/gummi.glade:272
-msgid "Bracket:"
-msgstr "Bracket:"
+#: ../data/gummi.glade.h:9
+#, no-c-format
+msgid "150%"
+msgstr ""
 
-#: data/gummi.glade:307
-msgid "File:"
-msgstr "Bestand:"
+#: ../data/gummi.glade.h:11
+#, no-c-format
+msgid "200%"
+msgstr ""
 
-#: data/gummi.glade:319
-msgid "Caption:"
-msgstr "Onderschrift:"
+#: ../data/gummi.glade.h:13
+#, no-c-format
+msgid "300%"
+msgstr ""
 
-#: data/gummi.glade:332
-msgid "Label:"
-msgstr "Label:"
+#: ../data/gummi.glade.h:15
+#, no-c-format
+msgid "400%"
+msgstr ""
 
-#: data/gummi.glade:414
-msgid "Scale:"
-msgstr "Schaal:"
+#: ../data/gummi.glade.h:17
+#, no-c-format
+msgid "50%"
+msgstr ""
 
-#: data/gummi.glade:512
+#: ../data/gummi.glade.h:19
+#, no-c-format
+msgid "70%"
+msgstr ""
+
+#: ../data/gummi.glade.h:21
+#, no-c-format
+msgid "85%"
+msgstr ""
+
+#: ../data/gummi.glade.h:22
+msgid "Align center"
+msgstr "Gecentreerd"
+
+#: ../data/gummi.glade.h:23
+msgid "Align left"
+msgstr "Links uitlijnen"
+
+#: ../data/gummi.glade.h:24
+msgid "Align right"
+msgstr "Rechts uitlijnen"
+
+#: ../data/gummi.glade.h:25
 msgid ""
 "Alignment of the\n"
 "cell content."
 msgstr "Uitlijning van de cel inhoud"
 
-#: data/gummi.glade:533
+#: ../data/gummi.glade.h:27
+msgid "Article"
+msgstr "Artikel"
+
+#: ../data/gummi.glade.h:28
+msgid "Best Fit"
+msgstr "Passend"
+
+#: ../data/gummi.glade.h:29
+msgid "Bibliography"
+msgstr "Bibliografie"
+
+#: ../data/gummi.glade.h:30
+msgid "Bold text"
+msgstr "Vette tekst"
+
+#: ../data/gummi.glade.h:31
+msgid "Book"
+msgstr "Boek"
+
+#: ../data/gummi.glade.h:32
+msgid "Border all cells"
+msgstr "Omlijn alle cellen"
+
+#: ../data/gummi.glade.h:33
+msgid "Border outline"
+msgstr "Omlijn buitenkant"
+
+#: ../data/gummi.glade.h:34
+msgid "Braces"
+msgstr "Braces"
+
+#: ../data/gummi.glade.h:35
+msgid "Bracket:"
+msgstr "Bracket:"
+
+#: ../data/gummi.glade.h:36
+msgid "Brackets"
+msgstr "Brackets:"
+
+#: ../data/gummi.glade.h:37
+msgid "Caption:"
+msgstr "Onderschrift:"
+
+#: ../data/gummi.glade.h:38
+msgid "Center text"
+msgstr "Centreer tekst"
+
+#: ../data/gummi.glade.h:39
+msgid "Check _Updates"
+msgstr "Controleer _Updates"
+
+#: ../data/gummi.glade.h:40
+msgid "Columns:"
+msgstr "Kolommen"
+
+#: ../data/gummi.glade.h:41
+msgid "Compile"
+msgstr "Compileer"
+
+#: ../data/gummi.glade.h:42
+msgid "Create a new document"
+msgstr "Creer nieuw document"
+
+#: ../data/gummi.glade.h:43
+msgid "Create new document.."
+msgstr "Creer nieuw document"
+
+#: ../data/gummi.glade.h:44
 msgid ""
 "Determines whether the\n"
 "cells have line borders. "
@@ -70,203 +167,15 @@ msgstr ""
 "Bepaalt of de cellen\n"
 "randen hebben"
 
-#: data/gummi.glade:606
-msgid "Find"
-msgstr "Zoeken"
+#: ../data/gummi.glade.h:46
+msgid "Double line"
+msgstr "Dubbele lijn"
 
-#: data/gummi.glade:629
-msgid "Search for:"
-msgstr "Zoeken naar:"
+#: ../data/gummi.glade.h:47
+msgid "Error output"
+msgstr "Fouten overzicht"
 
-#: data/gummi.glade:663
-msgid "Replace with:"
-msgstr "Vervangen door:"
-
-#: data/gummi.glade:688
-msgid "Match case"
-msgstr "Hoofdlettergevoelig"
-
-#: data/gummi.glade:702
-msgid "Match entire word only"
-msgstr "Enkel complete woorden"
-
-#: data/gummi.glade:715
-msgid "Search backwards"
-msgstr "Achterwaards zoeken"
-
-#: data/gummi.glade:763
-msgid "_Replace"
-msgstr "Vervang"
-
-#: data/gummi.glade:778
-msgid "Replace _All"
-msgstr "Alles vervangen"
-
-#: data/gummi.glade:941
-msgid "Gummi - LaTeX Editor"
-msgstr ""
-
-#: data/gummi.glade:956
-msgid "_File"
-msgstr "Bestand"
-
-#: data/gummi.glade:973
-msgid "New from _Template"
-msgstr "Nieuw vanuit template"
-
-#: data/gummi.glade:983
-msgid "_Open..."
-msgstr ""
-
-#: data/gummi.glade:1009
-msgid "Save _As..."
-msgstr "Opslaan als"
-
-#: data/gummi.glade:1020
-msgid "_Export to PDF"
-msgstr "Exporteer naar PDF"
-
-#: data/gummi.glade:1037 data/gummi.glade:1045 data/gummi.glade:1053
-msgid "shouldnotseeme"
-msgstr ""
-
-#: data/gummi.glade:1080
-msgid "_Edit"
-msgstr "Wijzig"
-
-#: data/gummi.glade:1186
-msgid "_View"
-msgstr "Bekijk"
-
-#: data/gummi.glade:1194
-msgid "_Statusbar"
-msgstr "Statusbalk"
-
-#: data/gummi.glade:1202
-msgid "_Toolbar"
-msgstr "Werkbalk"
-
-#: data/gummi.glade:1210
-msgid "_Right Pane"
-msgstr "Zijpaneel"
-
-#: data/gummi.glade:1223
-msgid "_Fullscreen"
-msgstr "Volledig scherm"
-
-#: data/gummi.glade:1236
-msgid "_Search"
-msgstr "Zoeken"
-
-#: data/gummi.glade:1254
-msgid "Find Ne_xt"
-msgstr "Zoek volgende"
-
-#: data/gummi.glade:1263
-msgid "Find Pre_vious"
-msgstr "Zoek vorige"
-
-#: data/gummi.glade:1276
-msgid "_Tools"
-msgstr ""
-
-#: data/gummi.glade:1283
-msgid "_Insert Bibliography"
-msgstr "Bibliografie invoegen"
-
-#: data/gummi.glade:1293
-msgid "_Compile Bibliography"
-msgstr "Compileer bibliografie"
-
-#: data/gummi.glade:1308
-msgid "_Document Statistics"
-msgstr "Document statistieken"
-
-#: data/gummi.glade:1324
-msgid "_Autocheck Spelling"
-msgstr "Controleer spelling"
-
-#: data/gummi.glade:1336
-msgid "_Help"
-msgstr ""
-
-#: data/gummi.glade:1343
-msgid "Check _Updates"
-msgstr "Controleer _Updates"
-
-#: data/gummi.glade:1381
-msgid "Create a new document"
-msgstr "Creer nieuw document"
-
-#: data/gummi.glade:1382 data/gummi.glade:1501
-msgid "toolbutton1"
-msgstr ""
-
-#: data/gummi.glade:1395
-msgid "Load a file"
-msgstr "Openen"
-
-#: data/gummi.glade:1397
-msgid "Open"
-msgstr "Openen"
-
-#: data/gummi.glade:1410
-msgid "Save the current file"
-msgstr ""
-
-#: data/gummi.glade:1412
-msgid "Save"
-msgstr "Opslaan"
-
-#: data/gummi.glade:1425 data/gummi.glade:1427
-msgid "Export to PDF"
-msgstr "Exporteer naar PDF"
-
-#: data/gummi.glade:1449
-msgid "Bold text"
-msgstr "Vette tekst"
-
-#: data/gummi.glade:1450 data/gummi.glade:1577
-msgid "toolbutton5"
-msgstr ""
-
-#: data/gummi.glade:1463
-msgid "Italic text"
-msgstr "Cursief"
-
-#: data/gummi.glade:1464
-msgid "toolbutton6"
-msgstr ""
-
-#: data/gummi.glade:1477
-msgid "Underline text"
-msgstr "Onderstreep tekst"
-
-#: data/gummi.glade:1478
-msgid "toolbutton7"
-msgstr ""
-
-#: data/gummi.glade:1500
-msgid "Align left"
-msgstr "Links uitlijnen"
-
-#: data/gummi.glade:1514
-msgid "Center text"
-msgstr "Centreer tekst"
-
-#: data/gummi.glade:1515 data/gummi.glade:1562
-msgid "toolbutton2"
-msgstr ""
-
-#: data/gummi.glade:1528
-msgid "Align right"
-msgstr "Rechts uitlijnen"
-
-#: data/gummi.glade:1529
-msgid "toolbutton3"
-msgstr ""
-
-#: data/gummi.glade:1575
+#: ../data/gummi.glade.h:48
 msgid ""
 "Error status for\n"
 "active document"
@@ -274,244 +183,465 @@ msgstr ""
 "Fout status voor\n"
 "actieve document"
 
-#: data/gummi.glade:1641
-msgid "        "
-msgstr ""
+#: ../data/gummi.glade.h:50
+msgid "Export to PDF"
+msgstr "Exporteer naar PDF"
 
-#: data/gummi.glade:1661
-msgid "Image"
-msgstr "Afbeelding"
+#: ../data/gummi.glade.h:51
+msgid "File:"
+msgstr "Bestand:"
 
-#: data/gummi.glade:1682
-msgid "Table"
-msgstr "Tabel"
-
-#: data/gummi.glade:1703
-msgid "Matrix"
-msgstr ""
-
-#: data/gummi.glade:1763
-msgid "Previous"
-msgstr "Vorige"
-
-#: data/gummi.glade:1777
-msgid "Next"
-msgstr "Volgende"
-
-#: data/gummi.glade:1809
-msgid "0"
-msgstr ""
-
-#: data/gummi.glade:1819
-msgid "of 0"
-msgstr ""
-
-#: data/gummi.glade:1874
-msgid "Preview Pane"
-msgstr "Voorproef paneel"
-
-#: data/gummi.glade:1909
-msgid "Error output"
-msgstr "Fouten overzicht"
-
-#: data/gummi.glade:1933
+#: ../data/gummi.glade.h:52
 msgid "Filename:"
 msgstr "Bestandsnaam:"
 
-#: data/gummi.glade:1946 src/gui.c:629
-msgid "none"
+#: ../data/gummi.glade.h:53
+msgid "Find"
+msgstr "Zoeken"
+
+#: ../data/gummi.glade.h:54
+msgid "Find Ne_xt"
+msgstr "Zoek volgende"
+
+#: ../data/gummi.glade.h:55
+msgid "Find Pre_vious"
+msgstr "Zoek vorige"
+
+#: ../data/gummi.glade.h:56
+msgid "Fit Page Width"
+msgstr "Paginabreed"
+
+#: ../data/gummi.glade.h:57
+msgid "Gummi - LaTeX Editor"
 msgstr ""
 
-#: data/gummi.glade:1955
-msgid "References:"
-msgstr "Referenties:"
+#: ../data/gummi.glade.h:58
+msgid "Image"
+msgstr "Afbeelding"
 
-#: data/gummi.glade:1967 src/gui.c:630
+#: ../data/gummi.glade.h:59
+msgid "Italic text"
+msgstr "Cursief"
+
+#: ../data/gummi.glade.h:60
+msgid "Label:"
+msgstr "Label:"
+
+#: ../data/gummi.glade.h:61
+msgid "Letter"
+msgstr "Letter"
+
+#: ../data/gummi.glade.h:62
+msgid "Load a file"
+msgstr "Openen"
+
+#: ../data/gummi.glade.h:63
+msgid "Match case"
+msgstr "Hoofdlettergevoelig"
+
+#: ../data/gummi.glade.h:64
+msgid "Match entire word only"
+msgstr "Enkel complete woorden"
+
+#: ../data/gummi.glade.h:65
+msgid "Matrix"
+msgstr ""
+
+#: ../data/gummi.glade.h:66 ../src/gui.c:630
 msgid "N/A"
 msgstr ""
 
-#: data/gummi.glade:2000
-msgid "Compile"
-msgstr "Compileer"
+#: ../data/gummi.glade.h:67
+msgid "New from _Template"
+msgstr "Nieuw vanuit template"
 
-#: data/gummi.glade:2033 src/gui.c:628
-msgid "no bibliography file detected"
-msgstr "Geen bibliografie bestanden gedetecteerd"
+#: ../data/gummi.glade.h:68
+msgid "Next"
+msgstr "Volgende"
 
-#: data/gummi.glade:2125
+#: ../data/gummi.glade.h:69
+msgid "No borders"
+msgstr "Geen omlijning"
+
+#: ../data/gummi.glade.h:70
+msgid "Open"
+msgstr "Openen"
+
+#: ../data/gummi.glade.h:71
+msgid "Parentheses"
+msgstr ""
+
+#: ../data/gummi.glade.h:72
+msgid "Preview Pane"
+msgstr "Voorproef paneel"
+
+#: ../data/gummi.glade.h:73
+msgid "Previous"
+msgstr "Vorige"
+
+#: ../data/gummi.glade.h:74
+msgid "References:"
+msgstr "Referenties:"
+
+#: ../data/gummi.glade.h:75
+msgid "Replace _All"
+msgstr "Alles vervangen"
+
+#: ../data/gummi.glade.h:76
+msgid "Replace with:"
+msgstr "Vervangen door:"
+
+#: ../data/gummi.glade.h:77
+msgid "Report"
+msgstr ""
+
+#: ../data/gummi.glade.h:78
+msgid "Rows:"
+msgstr "Rijen:"
+
+#: ../data/gummi.glade.h:79
+msgid "Save"
+msgstr "Opslaan"
+
+#: ../data/gummi.glade.h:80
+msgid "Save _As..."
+msgstr "Opslaan als"
+
+#: ../data/gummi.glade.h:81
+msgid "Save the current file"
+msgstr ""
+
+#: ../data/gummi.glade.h:82
+msgid "Scale:"
+msgstr "Schaal:"
+
+#: ../data/gummi.glade.h:83
+msgid "Search backwards"
+msgstr "Achterwaards zoeken"
+
+#: ../data/gummi.glade.h:84
+msgid "Search for:"
+msgstr "Zoeken naar:"
+
+#: ../data/gummi.glade.h:85
+msgid "Single line"
+msgstr "Enkele lijn"
+
+#: ../data/gummi.glade.h:86
+msgid "Table"
+msgstr "Tabel"
+
+#: ../data/gummi.glade.h:87
+msgid "Template options:"
+msgstr ""
+
+#: ../data/gummi.glade.h:88
+#, fuzzy
+msgid "Unbracketed"
+msgstr "Bracket:"
+
+#: ../data/gummi.glade.h:89
+msgid "Underline text"
+msgstr "Onderstreep tekst"
+
+#: ../data/gummi.glade.h:90
+msgid "_Autocheck Spelling"
+msgstr "Controleer spelling"
+
+#: ../data/gummi.glade.h:91
+msgid "_Compile Bibliography"
+msgstr "Compileer bibliografie"
+
+#: ../data/gummi.glade.h:92
+msgid "_Document Statistics"
+msgstr "Document statistieken"
+
+#: ../data/gummi.glade.h:93
+msgid "_Edit"
+msgstr "Wijzig"
+
+#: ../data/gummi.glade.h:94
+msgid "_Export to PDF"
+msgstr "Exporteer naar PDF"
+
+#: ../data/gummi.glade.h:95
+msgid "_File"
+msgstr "Bestand"
+
+#: ../data/gummi.glade.h:96
+msgid "_Fullscreen"
+msgstr "Volledig scherm"
+
+#: ../data/gummi.glade.h:97
+msgid "_Help"
+msgstr ""
+
+#: ../data/gummi.glade.h:98
+msgid "_Insert Bibliography"
+msgstr "Bibliografie invoegen"
+
+#: ../data/gummi.glade.h:99
+msgid "_Open..."
+msgstr ""
+
+#: ../data/gummi.glade.h:100
+msgid "_Replace"
+msgstr "Vervang"
+
+#: ../data/gummi.glade.h:101
+msgid "_Right Pane"
+msgstr "Zijpaneel"
+
+#: ../data/gummi.glade.h:102
+msgid "_Search"
+msgstr "Zoeken"
+
+#: ../data/gummi.glade.h:103
+msgid "_Statusbar"
+msgstr "Statusbalk"
+
+#: ../data/gummi.glade.h:104
+msgid "_Toolbar"
+msgstr "Werkbalk"
+
+#: ../data/gummi.glade.h:105
+msgid "_Tools"
+msgstr ""
+
+#: ../data/gummi.glade.h:106
+msgid "_View"
+msgstr "Bekijk"
+
+#: ../data/gummi.glade.h:107
 msgid "filter:"
 msgstr ""
 
-#: data/gummi.glade:2161
-msgid "Bibliography"
-msgstr "Bibliografie"
+#: ../data/gummi.glade.h:108 ../src/gui.c:628
+msgid "no bibliography file detected"
+msgstr "Geen bibliografie bestanden gedetecteerd"
 
-#: data/prefs.glade:6
-msgid "Gummi Preferences"
-msgstr "Gummi Voorkeuren"
-
-#: data/prefs.glade:30
-msgid "Text wrapping:"
-msgstr "Regelafbreking:"
-
-#: data/prefs.glade:44
-msgid "Enable text wrapping"
-msgstr "Regelafbreking inschakelen"
-
-#: data/prefs.glade:59
-msgid "Do not split words over two lines"
-msgstr "Woorden niet over twee regels splitsen"
-
-#: data/prefs.glade:76
-msgid "Line numbers:"
-msgstr "Regelnummers:"
-
-#: data/prefs.glade:90
-msgid "Display line numbers"
-msgstr "Regelnummers weergeven"
-
-#: data/prefs.glade:107
-msgid "Highlighting:"
-msgstr "Markering:"
-
-#: data/prefs.glade:121
-msgid "Highlight current line"
-msgstr "Huidige regel markeren"
-
-#: data/prefs.glade:139
-msgid "View"
-msgstr "Beeld"
-
-#: data/prefs.glade:158
-msgid "Editor font:"
-msgstr "Editor lettertype:"
-
-#: data/prefs.glade:209
-msgid "File saving:"
-msgstr "Bestanden opslaan:"
-
-#: data/prefs.glade:234
-msgid "_Autosave files every"
-msgstr "Automatisch bestanden opslaan elke"
-
-#: data/prefs.glade:266
-msgid "minutes"
-msgstr "minuten"
-
-#: data/prefs.glade:286
-msgid "Spell check language:"
-msgstr "Spell checker taal:"
-
-#: data/prefs.glade:355
-msgid "Editor"
+#: ../data/gummi.glade.h:109 ../src/gui.c:629
+msgid "none"
 msgstr ""
 
-#: data/prefs.glade:382
-msgid "Default Text"
-msgstr "Standaard tekst"
+#: ../data/gummi.glade.h:110
+msgid "of 0"
+msgstr ""
 
-#: data/prefs.glade:402
-msgid "Typesetter command:"
-msgstr "Typesetter commando:"
+#: ../data/gummi.glade.h:111
+msgid "shouldnotseeme"
+msgstr ""
 
-#: data/prefs.glade:460
-msgid "PDF Compiling:"
-msgstr "PDF Compilatie:"
+#: ../data/gummi.glade.h:112
+msgid "toolbutton1"
+msgstr ""
 
-#: data/prefs.glade:534
-msgid "seconds"
-msgstr "seconden"
+#: ../data/gummi.glade.h:113
+msgid "toolbutton2"
+msgstr ""
 
-#: data/prefs.glade:578
+#: ../data/gummi.glade.h:114
+msgid "toolbutton3"
+msgstr ""
+
+#: ../data/gummi.glade.h:115
+msgid "toolbutton5"
+msgstr ""
+
+#: ../data/gummi.glade.h:116
+msgid "toolbutton6"
+msgstr ""
+
+#: ../data/gummi.glade.h:117
+msgid "toolbutton7"
+msgstr ""
+
+#: ../data/prefs.glade.h:1
 msgid "Changes will become active on next start"
 msgstr "Wijzigingen worden actief bij volgende start"
 
-#: data/prefs.glade:597
+#: ../data/prefs.glade.h:2
+msgid "Default Text"
+msgstr "Standaard tekst"
+
+#: ../data/prefs.glade.h:3
+msgid "Display line numbers"
+msgstr "Regelnummers weergeven"
+
+#: ../data/prefs.glade.h:4
+msgid "Do not split words over two lines"
+msgstr "Woorden niet over twee regels splitsen"
+
+#: ../data/prefs.glade.h:5
+msgid "Editor"
+msgstr ""
+
+#: ../data/prefs.glade.h:6
+msgid "Editor font:"
+msgstr "Editor lettertype:"
+
+#: ../data/prefs.glade.h:7
+msgid "Enable text wrapping"
+msgstr "Regelafbreking inschakelen"
+
+#: ../data/prefs.glade.h:8
+msgid "File saving:"
+msgstr "Bestanden opslaan:"
+
+#: ../data/prefs.glade.h:9
+msgid "Gummi Preferences"
+msgstr "Gummi Voorkeuren"
+
+#: ../data/prefs.glade.h:10
+msgid "Highlight current line"
+msgstr "Huidige regel markeren"
+
+#: ../data/prefs.glade.h:11
+msgid "Highlighting:"
+msgstr "Markering:"
+
+#: ../data/prefs.glade.h:12
+msgid "Line numbers:"
+msgstr "Regelnummers:"
+
+#: ../data/prefs.glade.h:13
+msgid "None"
+msgstr ""
+
+#: ../data/prefs.glade.h:14
 msgid "PDF Compiling"
 msgstr "PDF Compilatie"
 
-#: data/prefs.glade:617
+#: ../data/prefs.glade.h:15
+msgid "PDF Compiling:"
+msgstr "PDF Compilatie:"
+
+#: ../data/prefs.glade.h:16
+msgid "Spell check language:"
+msgstr "Spell checker taal:"
+
+#: ../data/prefs.glade.h:17
+msgid "Text wrapping:"
+msgstr "Regelafbreking:"
+
+#: ../data/prefs.glade.h:18
+msgid "Typesetter command:"
+msgstr "Typesetter commando:"
+
+#: ../data/prefs.glade.h:19
+msgid "View"
+msgstr "Beeld"
+
+#: ../data/prefs.glade.h:20
+msgid "_Autosave files every"
+msgstr "Automatisch bestanden opslaan elke"
+
+#: ../data/prefs.glade.h:21
 msgid "_Reset defaults"
 msgstr "Herstel standaarden"
 
-#: src/editor.c:374
+#: ../data/prefs.glade.h:22
+msgid "compile every"
+msgstr "compileer elke"
+
+#: ../data/prefs.glade.h:23
+msgid "compile when idle for "
+msgstr "compileer wanneer idle voor"
+
+#: ../data/prefs.glade.h:24
+msgid "minutes"
+msgstr "minuten"
+
+#: ../data/prefs.glade.h:25
+msgid "pdflatex"
+msgstr ""
+
+#: ../data/prefs.glade.h:26
+msgid "seconds"
+msgstr "seconden"
+
+#: ../data/prefs.glade.h:27
+msgid "xelatex"
+msgstr ""
+
+#: ../src/editor.c:375
 msgid "Top reached, search from bottom?"
 msgstr ""
 
-#: src/editor.c:381
+#: ../src/editor.c:382
 msgid "Bottom reached, search from top?"
 msgstr ""
 
-#: src/gui.c:202
+#: ../src/gui.c:202
 #, c-format
 msgid "Error loading recent file: %s"
 msgstr ""
 
-#: src/gui.c:591
+#: ../src/gui.c:591
 #, fuzzy
 msgid "Compiling bibliography file..."
 msgstr "Compileer bibliografie"
 
-#: src/gui.c:593
+#: ../src/gui.c:593
 #, fuzzy
 msgid "bibliography compiled without errors"
 msgstr "Geen bibliografie bestanden gedetecteerd"
 
-#: src/gui.c:595
+#: ../src/gui.c:595
 #, fuzzy
 msgid "Error compiling bibliography file or none detected..."
 msgstr "Geen bibliografie bestanden gedetecteerd"
 
-#: src/gui.c:598
+#: ../src/gui.c:598
 #, fuzzy
 msgid "error compiling bibliography file"
 msgstr "Compileer bibliografie"
 
-#: src/gui.c:622
+#: ../src/gui.c:622
 #, c-format
 msgid "%s loaded"
 msgstr ""
 
-#: src/gui.c:1051
+#: ../src/gui.c:1051
 msgid "Do you want to save the changes you have made?"
 msgstr ""
 
-#: src/gui.c:1060
+#: ../src/gui.c:1060
 msgid "Open File..."
 msgstr ""
 
-#: src/gui.c:1082
+#: ../src/gui.c:1082
 #, fuzzy
 msgid "Save File..."
 msgstr "Opslaan als"
 
-#: src/importer.c:122
+#: ../src/importer.c:122
 #, c-format
 msgid "%s: No such file or directory\n"
 msgstr ""
 
-#: src/iofunctions.c:94
+#: ../src/iofunctions.c:94
 #, fuzzy, c-format
 msgid "Saving %s..."
 msgstr "Opslaan als"
 
-#: src/iofunctions.c:107
+#: ../src/iofunctions.c:107
 #, c-format
 msgid ""
 "%s\n"
 "Please try again later."
 msgstr ""
 
-#: src/iofunctions.c:145
+#: ../src/iofunctions.c:145
 msgid "Can not convert text to UTF-8!\n"
 msgstr ""
 
-#: src/iofunctions.c:173
+#: ../src/iofunctions.c:173
 #, fuzzy, c-format
 msgid "Autosaving file %s"
 msgstr "Enkele lijn"
 
-#: src/updatecheck.c:113
+#: ../src/updatecheck.c:113
 #, fuzzy, c-format
 msgid ""
 "Currently installed:\n"
@@ -524,7 +654,7 @@ msgstr ""
 "\n"
 "Momenteel verkrijgbaar:\n"
 
-#: src/utils.c:88
+#: ../src/utils.c:88
 #, c-format
 msgid ""
 "\n"
@@ -532,59 +662,10 @@ msgid ""
 "your file in the %s directory\n"
 msgstr ""
 
-#: src/utils.c:128
+#: ../src/utils.c:128
 #, fuzzy
 msgid "Confirmation"
 msgstr "Onderschrift:"
-
-#~ msgid "Align center"
-#~ msgstr "Gecentreerd"
-
-#~ msgid "Article"
-#~ msgstr "Artikel"
-
-#~ msgid "Best Fit"
-#~ msgstr "Passend"
-
-#~ msgid "Book"
-#~ msgstr "Boek"
-
-#~ msgid "Border all cells"
-#~ msgstr "Omlijn alle cellen"
-
-#~ msgid "Border outline"
-#~ msgstr "Omlijn buitenkant"
-
-#~ msgid "Braces"
-#~ msgstr "Braces"
-
-#~ msgid "Brackets"
-#~ msgstr "Brackets:"
-
-#~ msgid "Double line"
-#~ msgstr "Dubbele lijn"
-
-#~ msgid "Fit Page Width"
-#~ msgstr "Paginabreed"
-
-#~ msgid "Letter"
-#~ msgstr "Letter"
-
-#~ msgid "No borders"
-#~ msgstr "Geen omlijning"
-
-#~ msgid "Single line"
-#~ msgstr "Enkele lijn"
-
-#, fuzzy
-#~ msgid "Unbracketed"
-#~ msgstr "Bracket:"
-
-#~ msgid "compile every"
-#~ msgstr "compileer elke"
-
-#~ msgid "compile when idle for "
-#~ msgstr "compileer wanneer idle voor"
 
 #, fuzzy
 #~ msgid "Save?"

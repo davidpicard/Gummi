@@ -1,32 +1,30 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.65])
-AC_INIT([Gummi beta], [0.5.0], [alexvandermey@gmail.com], [gummi-beta], [http://gummi.midnightcoding.org/])
-AM_INIT_AUTOMAKE
+AC_PREREQ(2.65)
+AC_INIT([Gummi beta],[0.5.0],[alexvandermey@gmail.com],[gummi-beta],[http://gummi.midnightcoding.org/])
+AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 
-# Init gettext
 # ls po/*.po | sort | sed 's/po\///g;s/.po//g'| sed ':a;N;s/\n/ /g;ta'
+GETTEXT_PACKAGE=gummi-beta
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [The gettext domain])
+AC_SUBST(GETTEXT_PACKAGE)
+
 ALL_LINGUAS="ca_ES da fr gr_EL it_IT nl_NL pt_BR ru zh_TW"
-AM_GNU_GETTEXT_VERSION([0.17])
-AM_GNU_GETTEXT([external])
 
 AC_CONFIG_SRCDIR([src/environment.h])
 AC_CONFIG_HEADERS([config.h])
 AH_VERBATIM([USE_GTKSPELL], [#undef USE_GTKSPELL])
 
-AC_C_CONST
-AC_C_INLINE
-
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CC_C_O
+IT_PROG_INTLTOOL
 AM_PROG_CC_C_O
 
 # Checks for libraries.
 AC_ARG_ENABLE([spellcheck],
-	AC_HELP_STRING([--disable-spellcheck],
-	      [disable spellcheck support]),
+	AS_HELP_STRING([--disable-spellcheck],[disable spellcheck support]),
 	spellcheck=$enableval, spellcheck="yes")
 
 if test "$spellcheck" = yes; then
@@ -60,10 +58,13 @@ GUI_CFLAGS="$GUI_CFLAGS $gtkspell_CFLAGS"
 GUI_LIBS="$GUI_LIBS $gtkspell_LIBS"
 
 # Checks for header files.
-AC_CHECK_HEADERS([libintl.h locale.h netdb.h stdlib.h string.h sys/socket.h sys/time.h unistd.h])
+AC_CHECK_HEADERS([libintl.h locale.h netdb.h stdlib.h string.h sys/socket.h sys/time.h unistd.h fcntl.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
+AC_C_CONST
+AC_C_INLINE
+AC_TYPE_SIZE_T
 
 # Checks for library functions.
 AC_CHECK_FUNCS([gethostbyname memset setlocale socket strstr])
