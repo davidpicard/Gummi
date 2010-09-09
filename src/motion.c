@@ -66,6 +66,7 @@ GuMotion* motion_init(GtkBuilder* builder, GuEditor* ec, GuPreview* pc) {
     m->update = 0;
     m->timer = 0;
     m->no_pdf = FALSE;
+    m->modified_since_compile = FALSE;
     return m;
 }
 
@@ -171,6 +172,7 @@ void motion_update_pdffile(GuMotion* mc) {
     mc->errorline = 0;
 
     mc->no_pdf = (gboolean)cresult.ret;
+    mc->modified_since_compile = FALSE;
 
     /* find error line */
     if (cresult.ret == 1 && strstr(cresult.data, "Fatal error")) {
@@ -338,6 +340,8 @@ gboolean on_key_press_cb(GtkWidget* widget, GdkEventKey* event, void* user) {
 
 gboolean on_key_release_cb(GtkWidget* widget, GdkEventKey* event, void* user) {
     L_F_DEBUG;
-    motion_start_timer((GuMotion*)user);
+    GuMotion* mc = (GuMotion*)user;
+    if (mc->modified_since_compile)
+        motion_start_timer(mc);
     return FALSE;
 }

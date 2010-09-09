@@ -95,8 +95,9 @@ void preview_set_pdffile(GuPreview* pc, const gchar *pdffile) {
 void preview_refresh(GuPreview* pc) {
     L_F_DEBUG;
     GError *err = NULL;
-    pc->page_total = poppler_document_get_n_pages(pc->doc);
-    preview_set_pagedata(pc);
+
+    /* This is line is very important, if no pdf exist, preview will fail */
+    if (!utils_path_exists(pc->uri + 7)) return FALSE;
 
     /* clean up */
     if (pc->page) g_object_unref(pc->page);
@@ -104,6 +105,9 @@ void preview_refresh(GuPreview* pc) {
 
     pc->doc = poppler_document_new_from_file(pc->uri, NULL, &err);
     pc->page = poppler_document_get_page(pc->doc, pc->page_current);    
+
+    pc->page_total = poppler_document_get_n_pages(pc->doc);
+    preview_set_pagedata(pc);
 
     gtk_widget_queue_draw(pc->drawarea);
 }
@@ -140,6 +144,9 @@ void preview_goto_page(GuPreview* pc, int page_number) {
 
 gboolean on_expose(GtkWidget* w, GdkEventExpose* e, GuPreview* pc) {
     L_F_DEBUG;
+    /* This is line is very important, if no pdf exist, preview will fail */
+    if (!utils_path_exists(pc->uri + 7)) return FALSE;
+
     GtkAllocation scrollwsize;
     cairo_t* cr;
     cr = gdk_cairo_create(w->window);

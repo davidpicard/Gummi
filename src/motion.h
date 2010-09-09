@@ -51,6 +51,7 @@ typedef struct _GuMotion {
     guint timer;
     guint shandlers[2];
     gboolean no_pdf;
+    gboolean modified_since_compile;
 } GuMotion;
 
 GuMotion* motion_init(GtkBuilder* builder, GuEditor* ec, GuPreview* pc);
