@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.65)
-AC_INIT([Gummi beta], [0.5.0~lucid~100909], [alexvandermey@gmail.com], [gummi-beta], [http://gummi.midnightcoding.org/])
+AC_INIT([Gummi-Beta], [0.5.0], [alexvandermey@gmail.com], [gummi-beta], [http://gummi.midnightcoding.org/])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 
 # ls po/*.po | sort | sed 's/po\///g;s/.po//g'| sed ':a;N;s/\n/ /g;ta'
@@ -42,7 +42,7 @@ AM_PATH_GTK_2_0([2.16.0], [
 	 GUI_LIBS="$GUI_LIBS $GTK_LIBS"
 	], [AC_MSG_ERROR([You need Gtk+ >= 2.16.0 to build $PACKAGE])]) 
 
-PKG_CHECK_MODULES(gtksourceview, [gtksourceview-2.0 >= 2.9.7],,
+PKG_CHECK_MODULES(gtksourceview, [gtksourceview-2.0 >= 2.2.1],,
 	[AC_MSG_ERROR([You need GtkSourceView2 >= 2.9.7 to build $PACKAGE])]) 
 GUI_CFLAGS="$GUI_CFLAGS $gtksourceview_CFLAGS"
 GUI_LIBS="$GUI_LIBS $gtksourceview_LIBS"
