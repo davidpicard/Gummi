@@ -82,13 +82,16 @@
 #define _(T) gettext(T)
 
 /* Gummi Class Hierarchy
- *                                         GuPrefsGui GuImportGui GuSearchGui
- *                                               \         |           /
- * GuEditor      GuPreview  GuImporter GuTemplate `---- GummiGui -----`
- *   | \            / |          |          |              |
- *   |  ` GuMotion `  |          |          |              |
- *   |        |       |          |          |              |
- *   `--------`-------`----------|----------`--------------`
+ *
+ * GuEditor GuFileInfo GuPreview          GuPrefsGui GuImportGui GuSearchGui
+ *   |\     /    |      |  /                    \          |          /
+ *   | `---+- GuMotion -+-`                      `----- GummiGui ----`
+ *   |     |            |                                  |
+ *   |     |            |   GuImporter GuTemplate GuBiblio |
+ *   |     |            |        |          |        |     |
+ *   |     |            |        |          |        |     |
+ *   |     |            |        |          |        |     |
+ *   `-----`------------`--------|----------`--------------`
  *                             Gummi
  */
 
