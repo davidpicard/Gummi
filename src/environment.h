@@ -27,7 +27,6 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 #ifndef GUMMI_ENVIRONMENT_H
 #define GUMMI_ENVIRONMENT_H
 
@@ -67,9 +66,11 @@
 "FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\n" \
 "OTHER DEALINGS IN THE SOFTWARE.\n"
 
+#include <glib.h>
 #include <libintl.h>
 
 #include "biblio.h"
+#include "fileinfo.h"
 #include "gui.h"
 #include "editor.h"
 #include "importer.h"
@@ -93,6 +94,7 @@
 
 typedef struct _Gummi {
     GummiGui* gui;
+    GuFileInfo* finfo;
     GuEditor* editor;
     GuImporter* importer;
     GuMotion* motion;
@@ -101,7 +103,8 @@ typedef struct _Gummi {
     GuTemplate* templ;
 } Gummi;
 
-Gummi* gummi_init(GummiGui* gu, GuEditor* ed, GuImporter* im, GuMotion* mo,
-        GuPreview* prev, GuBiblio* bib, GuTemplate* tpl);
+Gummi* gummi_init(GummiGui* gu, GuFileInfo* fc, GuEditor* ed, GuImporter* im,
+        GuMotion* mo, GuPreview* prev, GuBiblio* bib, GuTemplate* tpl);
+void gummi_create_environment(Gummi* gc, gchar* filename);
 
 #endif /* GUMMI_ENVIRONMENT_H */

@@ -44,10 +44,13 @@
 #include "preview.h"
 #include "utils.h"
 
-GuMotion* motion_init(GtkBuilder* builder, GuEditor* ec, GuPreview* pc) {
+GuMotion* motion_init(GtkBuilder* builder, GuFileInfo* fc, GuEditor* ec,
+        GuPreview* pc) {
     L_F_DEBUG;
     GuMotion* m = (GuMotion*)g_malloc(sizeof(GuMotion));
+
     /* initialize basis */
+    m->b_finfo = fc;
     m->b_editor = ec;
     m->b_preview = pc;
 
@@ -57,61 +60,12 @@ GuMotion* motion_init(GtkBuilder* builder, GuEditor* ec, GuPreview* pc) {
     const gchar* typesetter = config_get_value("typesetter");
     m->typesetter = (gchar*)g_malloc(strlen(typesetter) + 1);
     strncpy(m->typesetter, typesetter, strlen(typesetter) + 1);
-    m->workfd = -1;
-    m->filename = NULL;   /* current opened file name in workspace */
-    m->pdffile = NULL;
-    m->workfile = NULL;
-    m->tmpdir = g_get_tmp_dir();
     m->errorline = 0;
     m->last_errorline = 0;
     m->update = 0;
     m->timer = 0;
-    m->no_pdf = FALSE;
     m->modified_since_compile = FALSE;
     return m;
-}
-
-void motion_create_environment(GuMotion* mc, gchar* filename) {
-    L_F_DEBUG;
-    gchar tname[BUFSIZ];
-    snprintf(tname, BUFSIZ, "%s/gummi_XXXXXXX", mc->tmpdir);
-
-    if (mc->workfd != -1) {
-        close(mc->workfd);
-    } // close previous work file using its file descriptor
-
-    motion_set_filename(mc, filename);
-    
-    mc->workfd = g_mkstemp(tname); 
-    if (mc->workfile) g_free(mc->workfile);
-    mc->workfile = g_strdup(tname);
-
-    if (mc->pdffile) g_free(mc->pdffile);
-    mc->pdffile =  g_strdup_printf("%s.pdf", tname);
-
-    /* This is important */
-    mc->no_pdf = TRUE;
-    motion_initial_preview(mc);
-
-    if (!mc->no_pdf && config_get_value("compile_status"))
-        motion_start_updatepreview(mc);
-    if (config_get_value("autosaving"))
-        iofunctions_reset_autosave(filename);
-    
-    slog(L_INFO, "Environment created for:\n");
-    slog(L_INFO, "TEX: %s\n", mc->filename);
-    slog(L_INFO, "TMP: %s\n", mc->workfile);
-    slog(L_INFO, "PDF: %s\n", mc->pdffile); 
-    gui_update_title();
-}
-
-void motion_set_filename(GuMotion* mc, const gchar* name) {
-    L_F_DEBUG;
-    if (mc->filename) g_free(mc->filename);
-    if (name)
-        mc->filename = g_strdup(name);
-    else
-        mc->filename = NULL;
 }
 
 void motion_initial_preview(GuMotion* mc) {
@@ -121,10 +75,10 @@ void motion_initial_preview(GuMotion* mc) {
     motion_update_errortags(mc);
 
     /* check for error and see if need to go into error mode */
-    if (mc->no_pdf)
+    if (mc->errorline)
         motion_setup_preview_error_mode(mc);
     else {
-        preview_set_pdffile(mc->b_preview, mc->pdffile);
+        preview_set_pdffile(mc->b_preview, mc->b_finfo->pdffile);
         motion_updatepreview(mc);
     }
 }
@@ -147,7 +101,7 @@ void motion_update_workfile(GuMotion* mc) {
     gtk_text_buffer_select_range(
             GTK_TEXT_BUFFER(mc->b_editor->sourcebuffer), &start, &end);
     
-    fp = fopen(mc->workfile, "w");
+    fp = fopen(mc->b_finfo->workfile, "w");
     
     if(fp == NULL) {
         slog(L_ERROR, "unable to create workfile in tmpdir");
@@ -169,13 +123,13 @@ void motion_update_pdffile(GuMotion* mc) {
                                       "-halt-on-error "
                                       "-output-directory='%s' '%s'", \
                                       mc->typesetter,
-                                      mc->tmpdir, mc->workfile);
+                                      mc->b_finfo->tmpdir,
+                                      mc->b_finfo->workfile);
 
     pdata cresult = utils_popen_r(command);
     errorbuffer_set_text(cresult.data);
     mc->errorline = 0;
 
-    mc->no_pdf = (gboolean)cresult.ret;
     mc->modified_since_compile = FALSE;
 
     /* find error line */
@@ -241,7 +195,8 @@ void motion_update_auxfile(GuMotion* mc) {
                                       "-interaction=nonstopmode "
                                       "--output-directory='%s' '%s'", \
                                       mc->typesetter,
-                                      mc->tmpdir, mc->workfile);
+                                      mc->b_finfo->tmpdir,
+                                      mc->b_finfo->workfile);
     utils_popen_r(command);
 }
 
@@ -253,7 +208,7 @@ void motion_export_pdffile(GuMotion* mc, const gchar* path) {
         snprintf(savepath, PATH_MAX, "%s.pdf", path);
     else
         strncpy(savepath, path, PATH_MAX);
-    utils_copy_file(mc->pdffile, savepath);
+    utils_copy_file(mc->b_finfo->pdffile, savepath);
 }
 
 void motion_update_errortags(GuMotion* mc) {
@@ -307,14 +262,14 @@ void on_error_button_press(GtkWidget* widget, GdkEventButton* event, void* m) {
     motion_update_pdffile(mc);
     motion_update_errortags(mc);
 
-    if (!mc->no_pdf) {
+    if (!mc->errorline) {
         gtk_container_remove(GTK_CONTAINER(mc->b_preview->preview_viewport),
                 widget);
         gtk_container_add(GTK_CONTAINER(mc->b_preview->preview_viewport),
                 GTK_WIDGET(mc->b_preview->drawarea));
         if (config_get_value("compile_status") &&
             0 == strcmp(config_get_value("compile_scheme"), "on_idle")) {
-            preview_set_pdffile(mc->b_preview, mc->pdffile);
+            preview_set_pdffile(mc->b_preview, mc->b_finfo->pdffile);
             motion_updatepreview(mc);
         }
     }

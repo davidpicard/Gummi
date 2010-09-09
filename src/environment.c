@@ -27,14 +27,16 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#include "configfile.h"
 #include "environment.h"
-
 #include "utils.h"
 
-Gummi* gummi_init(GummiGui *gu, GuEditor* ed, GuImporter* im, GuMotion* mo,
-        GuPreview* prev, GuBiblio* bib, GuTemplate* tpl) {
+Gummi* gummi_init(GummiGui* gu, GuFileInfo* fc, GuEditor* ed, GuImporter* im,
+        GuMotion* mo, GuPreview* prev, GuBiblio* bib, GuTemplate* tpl) {
+    L_F_DEBUG;
     Gummi* g = (Gummi*)g_malloc(sizeof(Gummi));
     g->gui = gu;
+    g->finfo = fc;
     g->editor = ed;
     g->importer = im;
     g->motion = mo;
@@ -42,4 +44,25 @@ Gummi* gummi_init(GummiGui *gu, GuEditor* ed, GuImporter* im, GuMotion* mo,
     g->biblio = bib;
     g->templ = tpl;
     return g;
+}
+
+void gummi_create_environment(Gummi* gc, gchar* filename) {
+    L_F_DEBUG;
+
+    fileinfo_update(gc->finfo, filename);
+    slog(L_INFO, "Environment created for:\n");
+    slog(L_INFO, "TEX: %s\n", gc->finfo->filename);
+    slog(L_INFO, "TMP: %s\n", gc->finfo->workfile);
+    slog(L_INFO, "PDF: %s\n", gc->finfo->pdffile); 
+
+    /* This is important */
+    gc->motion->errorline = 1;
+    motion_initial_preview(gc->motion);
+
+    if (!gc->motion->errorline && config_get_value("compile_status"))
+        motion_start_updatepreview(gc->motion);
+    if (config_get_value("autosaving"))
+        iofunctions_reset_autosave(filename);
+
+    gui_update_title();
 }

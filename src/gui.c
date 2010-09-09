@@ -168,9 +168,9 @@ void gui_update_title(void) {
     gchar* basename = NULL;
     gchar* dirname = NULL;
     gchar* title = NULL;
-    if (gummi->motion->filename) {
-        basename = g_path_get_basename(gummi->motion->filename);
-        dirname = g_path_get_dirname(gummi->motion->filename);
+    if (gummi->finfo->filename) {
+        basename = g_path_get_basename(gummi->finfo->filename);
+        dirname = g_path_get_dirname(gummi->finfo->filename);
         title = g_strdup_printf("%s%s (%s) - %s",
                 (gtk_text_buffer_get_modified(g_e_buffer)? "*": ""),
                 basename, dirname, PACKAGE_NAME);
@@ -192,7 +192,7 @@ void on_menu_new_activate(GtkWidget *widget, void* user) {
     else if (GTK_RESPONSE_CANCEL == ret || GTK_RESPONSE_DELETE_EVENT == ret)
         return;
     iofunctions_load_default_text(gummi->editor);
-    motion_create_environment(gummi->motion, NULL);
+    gummi_create_environment(gummi, NULL);
 }
 
 void on_menu_template_activate(GtkWidget *widget, void * user) {
@@ -218,7 +218,7 @@ void on_menu_recent_activate(GtkWidget *widget, void * user) {
 
     if (utils_path_exists(gummi->gui->recent_list[index])) {
         iofunctions_load_file(gummi->editor, gummi->gui->recent_list[index]); 
-        motion_create_environment(gummi->motion,gummi->gui->recent_list[index]);
+        gummi_create_environment(gummi, gummi->gui->recent_list[index]);
     } else {
         ptr = g_strdup_printf(_("Error loading recent file: %s"),
                 gummi->gui->recent_list[index]);
@@ -246,7 +246,7 @@ void on_menu_open_activate(GtkWidget *widget, void* user) {
     filename = get_open_filename(FILTER_LATEX);
     if (filename != NULL) {
         iofunctions_load_file(gummi->editor, filename); 
-        motion_create_environment(gummi->motion, filename);
+        gummi_create_environment(gummi, filename);
 
         /* add to recent list */
         g_free(gummi->gui->recent_list[2]);
@@ -259,23 +259,23 @@ void on_menu_open_activate(GtkWidget *widget, void* user) {
 
 void on_menu_save_activate(GtkWidget *widget, void* user) {
     gchar* filename = NULL;
-    if (!gummi->motion->filename) {
+    if (!gummi->finfo->filename) {
         if ((filename = get_save_filename(FILTER_LATEX))) {
-            motion_set_filename(gummi->motion, filename);
+            fileinfo_set_filename(gummi->finfo, filename);
             iofunctions_write_file(gummi->editor, filename); 
         }
     } else
-        iofunctions_write_file(gummi->editor, gummi->motion->filename); 
+        iofunctions_write_file(gummi->editor, gummi->finfo->filename); 
     gui_update_title();
 }
 
 void on_menu_saveas_activate(GtkWidget *widget, void* user) {
     gchar* filename = NULL;
-    if (!gummi->motion->filename)
+    if (!gummi->finfo->filename)
         filename = get_save_filename(FILTER_LATEX);
     if (filename) {
         iofunctions_write_file(gummi->editor, filename); 
-        motion_create_environment(gummi->motion, filename);
+        gummi_create_environment(gummi, filename);
     }
 }
 
@@ -479,7 +479,7 @@ void on_button_template_ok_clicked(GtkWidget* widget, void* user) {
     const gchar* text = template_get(gummi->templ);
     if (text) {
         editor_fill_buffer(gummi->editor, text);
-        motion_create_environment(gummi->motion, NULL);
+        gummi_create_environment(gummi, NULL);
         gtk_widget_hide(GTK_WIDGET(gummi->templ->templatewindow));
     }
 }
@@ -938,7 +938,7 @@ void toggle_autosaving(GtkWidget* widget, void* user) {
         gint time = atoi(config_get_value("autosave_timer"));
         gtk_spin_button_set_value(gummi->gui->prefsgui->autosave_timer,
                 time / 60);
-        iofunctions_start_autosave(time, gummi->motion->filename);
+        iofunctions_start_autosave(time, gummi->finfo->filename);
     } else {
         gtk_widget_set_sensitive(
                 GTK_WIDGET(gummi->gui->prefsgui->autosave_timer), FALSE);
@@ -971,7 +971,7 @@ void on_autosave_value_changed(GtkWidget* widget, void* user) {
 
     snprintf(val_str, 16, "%d", newval);
     config_set_value("autosave_timer", val_str);
-    iofunctions_reset_autosave(gummi->motion->filename);
+    iofunctions_reset_autosave(gummi->finfo->filename);
 }
 
 void on_compile_value_changed(GtkWidget* widget, void* user) {

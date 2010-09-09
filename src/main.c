@@ -63,6 +63,7 @@ int main (int argc, char *argv[]) {
     gchar configname[128];
     GtkBuilder* builder;
     GummiGui* gui;
+    GuFileInfo* finfo;
     GuEditor* editor;
     GuImporter* importer;
     GuMotion* motion;
@@ -102,23 +103,25 @@ int main (int argc, char *argv[]) {
 
     /* initialize classes */
     gui = gui_init(builder);
+    finfo = fileinfo_init();
     editor = editor_init(builder);
     importer = importer_init(builder);
     preview = preview_init(builder);
-    motion = motion_init(builder, editor, preview); 
+    motion = motion_init(builder, finfo, editor, preview); 
     templ = template_init(builder);
     biblio = biblio_init(builder);
 
-    gummi = gummi_init(gui, editor, importer, motion, preview, biblio, templ);
+    gummi = gummi_init(gui, finfo, editor, importer, motion, preview, biblio,
+            templ);
 
     slog_set_gui_parent(gui->mainwindow);
 
     if (argc != 2) {
         iofunctions_load_default_text(editor);
-        motion_create_environment(motion, NULL);
+        gummi_create_environment(gummi, NULL);
     } else {
         iofunctions_load_file(editor, argv[1]);
-        motion_create_environment(motion, argv[1]);
+        gummi_create_environment(gummi, argv[1]);
     }
 
     gui_main(builder);

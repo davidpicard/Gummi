@@ -32,6 +32,7 @@
 #define GUMMI_UTILS
 
 #include <glib.h>
+#include <gtk/gtk.h>
 
 #define L_IS_TYPE(level, type) ((level & type) == type)
 #define L_IS_GUI(level) (level & 0xf0)

@@ -33,30 +33,26 @@
 #include <glib.h>
 
 #include "editor.h"
+#include "fileinfo.h"
 #include "preview.h"
 
 typedef struct _GuMotion {
+    GuFileInfo* b_finfo;
     GuEditor* b_editor;
     GuPreview* b_preview;
-    GtkToolButton* statuslight;
-    gint workfd;
+
     gchar* typesetter;
-    gchar* filename;
-    gchar* pdffile;
-    gchar* workfile;
-    const gchar* tmpdir;
+    GtkToolButton* statuslight;
     gint errorline;
     gint last_errorline;
     guint update;
     guint timer;
     guint shandlers[2];
-    gboolean no_pdf;
     gboolean modified_since_compile;
 } GuMotion;
 
-GuMotion* motion_init(GtkBuilder* builder, GuEditor* ec, GuPreview* pc);
-void motion_create_environment(GuMotion* mc, gchar* filename);
-void motion_set_filename(GuMotion* mc, const gchar* name);
+GuMotion* motion_init(GtkBuilder* builder, GuFileInfo* fc, GuEditor* ec,
+        GuPreview* pc);
 void motion_initial_preview(GuMotion* mc);
 void motion_update_workfile(GuMotion* mc);
 void motion_update_pdffile(GuMotion* mc);
