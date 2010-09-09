@@ -281,7 +281,7 @@ void editor_apply_errortags(GuEditor* ec, gint line) {
         gtk_text_buffer_get_iter_at_line(ec_sourcebuffer, &end, line);
         gtk_text_buffer_apply_tag(ec_sourcebuffer, ec->errortag, &start, &end);
         gtk_text_buffer_place_cursor(ec_sourcebuffer, &start);
-        gtk_text_view_scroll_to_iter(ec_sourceview, &start, 0.4, FALSE, 0, 0);
+        editor_scroll_to_cursor(ec);
     }
 }
 
@@ -297,6 +297,7 @@ void editor_jumpto_search_result(GuEditor* ec, gint direction) {
 void editor_start_search(GuEditor* ec, const gchar* term,
         gboolean backwards, gboolean wholeword, gboolean matchcase,
         gboolean cs) {
+    L_F_DEBUG;
     /* save options */
     if (ec->term != term) {
         if (ec->term) g_free(ec->term);
@@ -361,7 +362,7 @@ void editor_search_next(GuEditor* ec, gboolean inverse) {
             && gtk_text_iter_ends_word(&mend)))) {
         gtk_text_buffer_place_cursor(ec_sourcebuffer,
                 (ec->cur_swap ^ ec->backwards ^ inverse)? &mstart: &mend);
-        gtk_text_view_scroll_to_iter(ec_sourceview, &mstart, 0.4, FALSE, 0, 0);
+        editor_scroll_to_cursor(ec);
     }
 
     /* check if the top/bottom is reached */
@@ -390,6 +391,7 @@ void editor_search_next(GuEditor* ec, gboolean inverse) {
 void editor_start_replace_next(GuEditor* ec, const gchar* term,
         const gchar* rterm, gboolean backwards, gboolean wholeword,
         gboolean matchcase) {
+    L_F_DEBUG;
     GtkTextIter current, mstart, mend;
     gboolean ret = FALSE;
 
@@ -426,6 +428,7 @@ void editor_start_replace_next(GuEditor* ec, const gchar* term,
 void editor_start_replace_all(GuEditor* ec, const gchar* term,
         const gchar* rterm, gboolean backwards, gboolean wholeword,
         gboolean matchcase) {
+    L_F_DEBUG;
     GtkTextIter start, mstart, mend;
     gboolean ret = FALSE;
 
@@ -456,13 +459,23 @@ void editor_get_current_iter(GuEditor* ec, GtkTextIter* current) {
     gtk_text_buffer_get_iter_at_mark(ec_sourcebuffer, current, mark);
 }
 
+void editor_scroll_to_cursor(GuEditor* ec) {
+    L_F_DEBUG;
+    gtk_text_view_scroll_to_mark(ec_sourceview,
+                                 gtk_text_buffer_get_insert(ec_sourcebuffer),
+                                 0.25,
+                                 FALSE,
+                                 0.0,
+                                 0.0);
+}
+
 void editor_undo_change(GuEditor* ec) {
     L_F_DEBUG;
     GtkTextIter current;
     if (gtk_source_buffer_can_undo(ec->sourcebuffer)) {
         gtk_source_buffer_undo(ec->sourcebuffer);
         editor_get_current_iter(ec, &current);
-        gtk_text_view_scroll_to_iter(ec_sourceview, &current, 0.4, FALSE, 0, 0);
+        editor_scroll_to_cursor(ec);
         gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     }
 }
@@ -473,7 +486,7 @@ void editor_redo_change(GuEditor* ec) {
     if (gtk_source_buffer_can_redo(ec->sourcebuffer)) {
         gtk_source_buffer_redo(ec->sourcebuffer);
         editor_get_current_iter(ec, &current);
-        gtk_text_view_scroll_to_iter(ec_sourceview, &current, 0.4, FALSE, 0, 0);
+        editor_scroll_to_cursor(ec);
         gtk_text_buffer_set_modified(ec_sourcebuffer, TRUE);
     }
 }

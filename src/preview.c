@@ -97,7 +97,7 @@ void preview_refresh(GuPreview* pc) {
     GError *err = NULL;
 
     /* This is line is very important, if no pdf exist, preview will fail */
-    if (!utils_path_exists(pc->uri + 7)) return FALSE;
+    if (!pc->uri || !utils_path_exists(pc->uri + 7)) return FALSE;
 
     /* clean up */
     if (pc->page) g_object_unref(pc->page);
@@ -145,7 +145,7 @@ void preview_goto_page(GuPreview* pc, int page_number) {
 gboolean on_expose(GtkWidget* w, GdkEventExpose* e, GuPreview* pc) {
     L_F_DEBUG;
     /* This is line is very important, if no pdf exist, preview will fail */
-    if (!utils_path_exists(pc->uri + 7)) return FALSE;
+    if (!pc->uri || !utils_path_exists(pc->uri + 7)) return FALSE;
 
     GtkAllocation scrollwsize;
     cairo_t* cr;

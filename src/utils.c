@@ -133,6 +133,7 @@ gint utils_yes_no_dialog(const gchar* message) {
 
 gboolean utils_path_exists(const gchar* path) {
     gboolean result = FALSE;
+    if (NULL == path) return FALSE;
     GFile* file = g_file_new_for_path(path);
     result = g_file_query_exists(file, NULL);
     g_object_unref(file);

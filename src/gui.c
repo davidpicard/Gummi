@@ -1183,8 +1183,7 @@ gboolean statusbar_del_message(void* user) {
 void check_motion_timer(void) {
     L_F_DEBUG;
     if (config_get_value("compile_status") &&
-            0 == strcmp(config_get_value("compile_scheme"), "on_idle") &&
-            !gummi->motion->no_pdf) {
+            0 == strcmp(config_get_value("compile_scheme"), "on_idle")) {
         motion_start_timer(gummi->motion);
     }
     gtk_text_buffer_set_modified(g_e_buffer, TRUE);
