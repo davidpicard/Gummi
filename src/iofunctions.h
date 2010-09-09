@@ -34,7 +34,7 @@
 #include "editor.h"
 
 void iofunctions_load_default_text(GuEditor* ec);
-void iofunctions_load_file(GuEditor* ec, gchar*);
+void iofunctions_load_file(GuEditor* ec, gchar *filename);
 void iofunctions_write_file(GuEditor* ec, gchar *filename);
 void iofunctions_start_autosave(gint time, gchar* name);
 void iofunctions_stop_autosave(void);

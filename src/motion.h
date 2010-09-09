@@ -55,7 +55,7 @@ typedef struct _GuMotion {
 } GuMotion;
 
 GuMotion* motion_init(GtkBuilder* builder, GuEditor* ec, GuPreview* pc);
-void motion_create_environment(GuMotion* mc, const gchar* filename);
+void motion_create_environment(GuMotion* mc, gchar* filename);
 void motion_set_filename(GuMotion* mc, const gchar* name);
 void motion_initial_preview(GuMotion* mc);
 void motion_update_workfile(GuMotion* mc);

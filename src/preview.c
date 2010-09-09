@@ -97,7 +97,7 @@ void preview_refresh(GuPreview* pc) {
     GError *err = NULL;
 
     /* This is line is very important, if no pdf exist, preview will fail */
-    if (!pc->uri || !utils_path_exists(pc->uri + 7)) return FALSE;
+    if (!pc->uri || !utils_path_exists(pc->uri + 7)) return;
 
     /* clean up */
     if (pc->page) g_object_unref(pc->page);

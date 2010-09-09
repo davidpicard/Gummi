@@ -107,6 +107,7 @@ void iofunctions_write_file(GuEditor* ec, gchar *filename) {
         slog(L_G_ERROR, _("%s\nPlease try again later."), err->message);
         g_error_free(err);
     }
+    gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(ec->sourcebuffer), FALSE);
     g_free(encoded);
     g_free(text); 
 }
@@ -170,8 +171,11 @@ gboolean iofunctions_autosave_cb(void* name) {
     char buf[BUFSIZ];
     if (fname) {
         iofunctions_write_file(gummi->editor, fname);
+        gtk_text_buffer_set_modified(
+                GTK_TEXT_BUFFER(gummi->editor->sourcebuffer), FALSE);
         snprintf(buf, BUFSIZ, _("Autosaving file %s"), fname);
         statusbar_set_message(buf);
+        return TRUE;
     }
-    return TRUE;
+    return FALSE;
 }

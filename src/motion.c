@@ -40,6 +40,7 @@
 #include "configfile.h"
 #include "editor.h"
 #include "environment.h"
+#include "gui.h"
 #include "preview.h"
 #include "utils.h"
 
@@ -70,7 +71,7 @@ GuMotion* motion_init(GtkBuilder* builder, GuEditor* ec, GuPreview* pc) {
     return m;
 }
 
-void motion_create_environment(GuMotion* mc, const gchar* filename) {
+void motion_create_environment(GuMotion* mc, gchar* filename) {
     L_F_DEBUG;
     gchar tname[BUFSIZ];
     snprintf(tname, BUFSIZ, "%s/gummi_XXXXXXX", mc->tmpdir);
@@ -94,11 +95,14 @@ void motion_create_environment(GuMotion* mc, const gchar* filename) {
 
     if (!mc->no_pdf && config_get_value("compile_status"))
         motion_start_updatepreview(mc);
+    if (config_get_value("autosaving"))
+        iofunctions_reset_autosave(filename);
     
     slog(L_INFO, "Environment created for:\n");
     slog(L_INFO, "TEX: %s\n", mc->filename);
     slog(L_INFO, "TMP: %s\n", mc->workfile);
     slog(L_INFO, "PDF: %s\n", mc->pdffile); 
+    gui_update_title();
 }
 
 void motion_set_filename(GuMotion* mc, const gchar* name) {

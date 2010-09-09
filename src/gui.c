@@ -149,7 +149,7 @@ void gui_main(GtkBuilder* builder) {
     gtk_main();
 }
 
-gboolean gui_quit() {
+gboolean gui_quit(void) {
     gint ret = check_for_save();
     if (GTK_RESPONSE_YES == ret)
         on_menu_save_activate(NULL, NULL);  
@@ -162,6 +162,27 @@ gboolean gui_quit() {
             "  |)__)    I welcome your feedback at:\n"
             "  -\"-\"-    http://gummi.midnightcoding.org\n\n");
     return FALSE;
+}
+
+void gui_update_title(void) {
+    gchar* basename = NULL;
+    gchar* dirname = NULL;
+    gchar* title = NULL;
+    if (gummi->motion->filename) {
+        basename = g_path_get_basename(gummi->motion->filename);
+        dirname = g_path_get_dirname(gummi->motion->filename);
+        title = g_strdup_printf("%s%s (%s) - %s",
+                (gtk_text_buffer_get_modified(g_e_buffer)? "*": ""),
+                basename, dirname, PACKAGE_NAME);
+        g_free(basename);
+        g_free(dirname);
+    } else
+        title = g_strdup_printf("%sUnsaved Document - %s",
+                (gtk_text_buffer_get_modified(g_e_buffer)? "*": ""),
+                PACKAGE_NAME);
+
+    gtk_window_set_title(GTK_WINDOW(gummi->gui->mainwindow), title);
+    g_free(title);
 }
 
 void on_menu_new_activate(GtkWidget *widget, void* user) {
@@ -197,7 +218,7 @@ void on_menu_recent_activate(GtkWidget *widget, void * user) {
 
     if (utils_path_exists(gummi->gui->recent_list[index])) {
         iofunctions_load_file(gummi->editor, gummi->gui->recent_list[index]); 
-        //check_motion_timer();
+        motion_create_environment(gummi->motion,gummi->gui->recent_list[index]);
     } else {
         ptr = g_strdup_printf(_("Error loading recent file: %s"),
                 gummi->gui->recent_list[index]);
@@ -238,12 +259,14 @@ void on_menu_open_activate(GtkWidget *widget, void* user) {
 
 void on_menu_save_activate(GtkWidget *widget, void* user) {
     gchar* filename = NULL;
-    if (!gummi->motion->filename)
-        filename = get_save_filename(FILTER_LATEX);
-    if (filename) {
-        motion_set_filename(gummi->motion, filename);
-        iofunctions_write_file(gummi->editor, filename); 
-    }
+    if (!gummi->motion->filename) {
+        if ((filename = get_save_filename(FILTER_LATEX))) {
+            motion_set_filename(gummi->motion, filename);
+            iofunctions_write_file(gummi->editor, filename); 
+        }
+    } else
+        iofunctions_write_file(gummi->editor, gummi->motion->filename); 
+    gui_update_title();
 }
 
 void on_menu_saveas_activate(GtkWidget *widget, void* user) {
@@ -1182,11 +1205,13 @@ gboolean statusbar_del_message(void* user) {
 
 void check_motion_timer(void) {
     L_F_DEBUG;
+    gtk_text_buffer_set_modified(g_e_buffer, TRUE);
+    gummi->editor->replace_activated = FALSE;
+    gummi->motion->modified_since_compile = TRUE;
+    gui_update_title();
+
     if (config_get_value("compile_status") &&
             0 == strcmp(config_get_value("compile_scheme"), "on_idle")) {
         motion_start_timer(gummi->motion);
     }
-    gtk_text_buffer_set_modified(g_e_buffer, TRUE);
-    gummi->editor->replace_activated = FALSE;
-    gummi->motion->modified_since_compile = TRUE;
 }
