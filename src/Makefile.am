@@ -11,6 +11,7 @@ gummi_beta_SOURCES = biblio.c  biblio.h \
 		configfile.c configfile.h \
 		editor.c editor.h \
 		environment.c environment.h \
+		fileinfo.c fileinco.h \
 		gui.c gui.h \
 		importer.c importer.h \
 		iofunctions.c iofunctions.h \

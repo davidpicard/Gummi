@@ -46,10 +46,10 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_gummi_beta_OBJECTS = biblio.$(OBJEXT) configfile.$(OBJEXT) \
-	editor.$(OBJEXT) environment.$(OBJEXT) gui.$(OBJEXT) \
-	importer.$(OBJEXT) iofunctions.$(OBJEXT) main.$(OBJEXT) \
-	motion.$(OBJEXT) preview.$(OBJEXT) template.$(OBJEXT) \
-	updatecheck.$(OBJEXT) utils.$(OBJEXT)
+	editor.$(OBJEXT) environment.$(OBJEXT) fileinfo.$(OBJEXT) \
+	gui.$(OBJEXT) importer.$(OBJEXT) iofunctions.$(OBJEXT) \
+	main.$(OBJEXT) motion.$(OBJEXT) preview.$(OBJEXT) \
+	template.$(OBJEXT) updatecheck.$(OBJEXT) utils.$(OBJEXT)
 gummi_beta_OBJECTS = $(am_gummi_beta_OBJECTS)
 am__DEPENDENCIES_1 =
 gummi_beta_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -193,6 +193,7 @@ gummi_beta_SOURCES = biblio.c  biblio.h \
 		configfile.c configfile.h \
 		editor.c editor.h \
 		environment.c environment.h \
+		fileinfo.c fileinco.h \
 		gui.c gui.h \
 		importer.c importer.h \
 		iofunctions.c iofunctions.h \
@@ -289,6 +290,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/configfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/editor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/environment.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fileinfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gui.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/importer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iofunctions.Po@am__quote@
