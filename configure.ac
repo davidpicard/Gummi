@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.65)
-AC_INIT([Gummi beta],[0.5.0],[alexvandermey@gmail.com],[gummi-beta],[http://gummi.midnightcoding.org/])
+AC_INIT([Gummi beta], [0.5.0~lucid~100909], [alexvandermey@gmail.com], [gummi-beta], [http://gummi.midnightcoding.org/])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 
 # ls po/*.po | sort | sed 's/po\///g;s/.po//g'| sed ':a;N;s/\n/ /g;ta'
@@ -71,7 +71,12 @@ AC_CHECK_FUNCS([gethostbyname memset setlocale socket strstr])
 
 AC_SUBST(GUI_LIBS)
 AC_SUBST(GUI_CFLAGS)
-AC_CONFIG_FILES([Makefile src/Makefile data/Makefile po/Makefile.in])
+AC_CONFIG_FILES([Makefile
+		 src/Makefile
+		 data/Makefile
+		 po/Makefile.in
+		 data/$PACKAGE.desktop
+		 ])
 AC_OUTPUT
 
 echo
