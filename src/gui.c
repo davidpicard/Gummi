@@ -790,13 +790,13 @@ GuPrefsGui* prefsgui_init(GummiGui* gui) {
     gtk_container_remove(GTK_CONTAINER(hbox10), GTK_WIDGET(p->combo_languages));
 #endif
 
+    prefsgui_set_current_settings(p);
     gtk_builder_connect_signals(builder, NULL);
 
     return p;
 }
 
 void prefsgui_main(void) {
-    prefsgui_set_current_settings(gummi->gui->prefsgui);
     gtk_widget_show_all(GTK_WIDGET(gummi->gui->prefsgui->prefwindow));
 }
 

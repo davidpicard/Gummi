@@ -128,12 +128,13 @@ void motion_update_pdffile(GuMotion* mc) {
 
     pdata cresult = utils_popen_r(command);
     errorbuffer_set_text(cresult.data);
-    mc->errorline = 0;
-
+    mc->errorline = cresult.ret;
     mc->modified_since_compile = FALSE;
 
     /* find error line */
-    if (cresult.ret == 1 && strstr(cresult.data, "Fatal error")) {
+    if (cresult.ret == 1 &&
+            (strstr(cresult.data, "Fatal error") ||
+            (strstr(cresult.data, "No pages of output.")))) {
         gchar** result = 0;
         GError* error = NULL;
         GRegex* match_str = 0;
