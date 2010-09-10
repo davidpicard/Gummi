@@ -126,7 +126,7 @@ void editor_activate_spellchecking(GuEditor* ec, gboolean status) {
         if (!spell)
             slog(L_INFO, "gtkspell: %s\n", err->message);
         if (!gtkspell_set_language(spell, lang, &err2))
-            slog(L_INFO, "gtkspell: %s\n", err->message);
+            slog(L_INFO, "gtkspell: %s\n", err2->message);
     } else {
         GtkSpell* spell = gtkspell_get_from_text_view(ec_sourceview);
         if (spell)
