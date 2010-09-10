@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.4.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-09 12:13+0800\n"
+"POT-Creation-Date: 2010-09-10 10:02+0800\n"
 "PO-Revision-Date: 2010-05-23 14:45+0200\n"
 "Last-Translator: Marc Vinyals <marcvinyals@velodius.com>\n"
 "Language-Team: CA <marcvinyals@velodius.com>\n"
@@ -243,7 +243,7 @@ msgstr "Només coincideix la paraula sencera"
 msgid "Matrix"
 msgstr "Matriu"
 
-#: ../data/gummi.glade.h:66 ../src/gui.c:630
+#: ../data/gummi.glade.h:66 ../src/gui.c:653
 msgid "N/A"
 msgstr "N/D"
 
@@ -411,11 +411,11 @@ msgstr "(_V)isualitza"
 msgid "filter:"
 msgstr "filtre:"
 
-#: ../data/gummi.glade.h:108 ../src/gui.c:628
+#: ../data/gummi.glade.h:108 ../src/gui.c:651
 msgid "no bibliography file detected"
 msgstr "no s'ha detectat cap fitxer de bibliografia"
 
-#: ../data/gummi.glade.h:109 ../src/gui.c:629
+#: ../data/gummi.glade.h:109 ../src/gui.c:652
 msgid "none"
 msgstr "cap"
 
@@ -569,44 +569,44 @@ msgstr ""
 msgid "Bottom reached, search from top?"
 msgstr ""
 
-#: ../src/gui.c:202
+#: ../src/gui.c:223
 #, fuzzy, c-format
 msgid "Error loading recent file: %s"
 msgstr "S'ha produït un error mentre s'estava carregant el fitxer recent:"
 
-#: ../src/gui.c:591
+#: ../src/gui.c:614
 #, fuzzy
 msgid "Compiling bibliography file..."
 msgstr "S'està compilant la bibliografia.."
 
-#: ../src/gui.c:593
+#: ../src/gui.c:616
 msgid "bibliography compiled without errors"
 msgstr "s'ha compilat la bibliografia sense errors"
 
-#: ../src/gui.c:595
+#: ../src/gui.c:618
 #, fuzzy
 msgid "Error compiling bibliography file or none detected..."
 msgstr ""
 "S'ha produït un error mentre es compilava la bibliografia o no s'ha detectat"
 
-#: ../src/gui.c:598
+#: ../src/gui.c:621
 msgid "error compiling bibliography file"
 msgstr "s'ha produït un error mentre es compilava la bibliografia"
 
-#: ../src/gui.c:622
+#: ../src/gui.c:645
 #, c-format
 msgid "%s loaded"
 msgstr ""
 
-#: ../src/gui.c:1051
+#: ../src/gui.c:1074
 msgid "Do you want to save the changes you have made?"
 msgstr "Voleu desar els canvis?"
 
-#: ../src/gui.c:1060
+#: ../src/gui.c:1083
 msgid "Open File..."
 msgstr "Obre el fitxer..."
 
-#: ../src/gui.c:1082
+#: ../src/gui.c:1105
 msgid "Save File..."
 msgstr "Desa el fitxer..."
 
@@ -627,11 +627,11 @@ msgid ""
 "Please try again later."
 msgstr ""
 
-#: ../src/iofunctions.c:145
+#: ../src/iofunctions.c:146
 msgid "Can not convert text to UTF-8!\n"
 msgstr ""
 
-#: ../src/iofunctions.c:173
+#: ../src/iofunctions.c:176
 #, fuzzy, c-format
 msgid "Autosaving file %s"
 msgstr "S'està desant el fitxer"

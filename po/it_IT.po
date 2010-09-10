@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-09 12:13+0800\n"
+"POT-Creation-Date: 2010-09-10 10:02+0800\n"
 "PO-Revision-Date: 2010-06-09 10:02+0100\n"
 "Last-Translator: Salvatore Vassallo <vassallosalvatore@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -248,7 +248,7 @@ msgstr "Solo parole intere"
 msgid "Matrix"
 msgstr "Matrice"
 
-#: ../data/gummi.glade.h:66 ../src/gui.c:630
+#: ../data/gummi.glade.h:66 ../src/gui.c:653
 msgid "N/A"
 msgstr "N/A"
 
@@ -416,11 +416,11 @@ msgstr "Vista"
 msgid "filter:"
 msgstr "filtra:"
 
-#: ../data/gummi.glade.h:108 ../src/gui.c:628
+#: ../data/gummi.glade.h:108 ../src/gui.c:651
 msgid "no bibliography file detected"
 msgstr "nessuna bibliografia trovata"
 
-#: ../data/gummi.glade.h:109 ../src/gui.c:629
+#: ../data/gummi.glade.h:109 ../src/gui.c:652
 msgid "none"
 msgstr "nessuno"
 
@@ -574,43 +574,43 @@ msgstr ""
 msgid "Bottom reached, search from top?"
 msgstr ""
 
-#: ../src/gui.c:202
+#: ../src/gui.c:223
 #, fuzzy, c-format
 msgid "Error loading recent file: %s"
 msgstr "Errore nel caricare un file modificato di recente:"
 
-#: ../src/gui.c:591
+#: ../src/gui.c:614
 #, fuzzy
 msgid "Compiling bibliography file..."
 msgstr "Compilazione della bibliografia..."
 
-#: ../src/gui.c:593
+#: ../src/gui.c:616
 msgid "bibliography compiled without errors"
 msgstr "bibliografia compilata senza errori"
 
-#: ../src/gui.c:595
+#: ../src/gui.c:618
 #, fuzzy
 msgid "Error compiling bibliography file or none detected..."
 msgstr "Errore compilando la bibliografia o nessun file trovato..."
 
-#: ../src/gui.c:598
+#: ../src/gui.c:621
 msgid "error compiling bibliography file"
 msgstr "errore compilando la bibliografia"
 
-#: ../src/gui.c:622
+#: ../src/gui.c:645
 #, c-format
 msgid "%s loaded"
 msgstr ""
 
-#: ../src/gui.c:1051
+#: ../src/gui.c:1074
 msgid "Do you want to save the changes you have made?"
 msgstr "Salvare le modifiche al documento?"
 
-#: ../src/gui.c:1060
+#: ../src/gui.c:1083
 msgid "Open File..."
 msgstr "Apri file..."
 
-#: ../src/gui.c:1082
+#: ../src/gui.c:1105
 msgid "Save File..."
 msgstr "Salva file..."
 
@@ -631,11 +631,11 @@ msgid ""
 "Please try again later."
 msgstr ""
 
-#: ../src/iofunctions.c:145
+#: ../src/iofunctions.c:146
 msgid "Can not convert text to UTF-8!\n"
 msgstr ""
 
-#: ../src/iofunctions.c:173
+#: ../src/iofunctions.c:176
 #, fuzzy, c-format
 msgid "Autosaving file %s"
 msgstr "Salvataggio del file in corso"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-09 12:13+0800\n"
+"POT-Creation-Date: 2010-09-10 10:02+0800\n"
 "PO-Revision-Date: 2010-05-21 22:11+0800\n"
 "Last-Translator: AZ Huang <aitjcize@gmail.com>\n"
 "Language-Team: \n"
@@ -244,7 +244,7 @@ msgstr "只配對此單字"
 msgid "Matrix"
 msgstr "矩陣"
 
-#: ../data/gummi.glade.h:66 ../src/gui.c:630
+#: ../data/gummi.glade.h:66 ../src/gui.c:653
 msgid "N/A"
 msgstr "無"
 
@@ -412,11 +412,11 @@ msgstr "檢視(_V)"
 msgid "filter:"
 msgstr "篩選:"
 
-#: ../data/gummi.glade.h:108 ../src/gui.c:628
+#: ../data/gummi.glade.h:108 ../src/gui.c:651
 msgid "no bibliography file detected"
 msgstr "無法找到參考文獻"
 
-#: ../data/gummi.glade.h:109 ../src/gui.c:629
+#: ../data/gummi.glade.h:109 ../src/gui.c:652
 msgid "none"
 msgstr "無"
 
@@ -466,7 +466,7 @@ msgstr "顯示行號"
 
 #: ../data/prefs.glade.h:4
 msgid "Do not split words over two lines"
-msgstr "對於超過兩行的字禁用換行"
+msgstr "換行時不將字詞拆開"
 
 #: ../data/prefs.glade.h:5
 msgid "Editor"
@@ -490,7 +490,7 @@ msgstr "Gummi 偏好設定"
 
 #: ../data/prefs.glade.h:10
 msgid "Highlight current line"
-msgstr "高亮目前行的游標"
+msgstr "標示當前的行"
 
 #: ../data/prefs.glade.h:11
 msgid "Highlighting:"
@@ -568,41 +568,41 @@ msgstr "已達頁首, 從頁尾開始尋找?"
 msgid "Bottom reached, search from top?"
 msgstr "已達頁尾, 從頁首開始尋找?"
 
-#: ../src/gui.c:202
+#: ../src/gui.c:223
 #, c-format
 msgid "Error loading recent file: %s"
 msgstr "載入最近使用文件時發生錯誤: %s"
 
-#: ../src/gui.c:591
+#: ../src/gui.c:614
 msgid "Compiling bibliography file..."
 msgstr "正在編譯參考文獻..."
 
-#: ../src/gui.c:593
+#: ../src/gui.c:616
 msgid "bibliography compiled without errors"
 msgstr "參考文獻已成功編譯"
 
-#: ../src/gui.c:595
+#: ../src/gui.c:618
 msgid "Error compiling bibliography file or none detected..."
 msgstr "編譯過程中發生錯誤或無法找到參考文獻..."
 
-#: ../src/gui.c:598
+#: ../src/gui.c:621
 msgid "error compiling bibliography file"
 msgstr "編譯參考文獻過程發生錯誤"
 
-#: ../src/gui.c:622
+#: ../src/gui.c:645
 #, c-format
 msgid "%s loaded"
 msgstr "已載入%s"
 
-#: ../src/gui.c:1051
+#: ../src/gui.c:1074
 msgid "Do you want to save the changes you have made?"
 msgstr "是否儲存變更?"
 
-#: ../src/gui.c:1060
+#: ../src/gui.c:1083
 msgid "Open File..."
 msgstr "開啟..."
 
-#: ../src/gui.c:1082
+#: ../src/gui.c:1105
 msgid "Save File..."
 msgstr "儲存檔案..."
 
@@ -625,11 +625,11 @@ msgstr ""
 "%s\n"
 "請稍後重試."
 
-#: ../src/iofunctions.c:145
+#: ../src/iofunctions.c:146
 msgid "Can not convert text to UTF-8!\n"
 msgstr "無法轉換文字為UTF-8格式!\n"
 
-#: ../src/iofunctions.c:173
+#: ../src/iofunctions.c:176
 #, c-format
 msgid "Autosaving file %s"
 msgstr "正在儲存%s"
@@ -650,6 +650,7 @@ msgstr ""
 "%s"
 
 #: ../src/utils.c:88
+#, c-format
 msgid ""
 "\n"
 "Gummi has encountered a serious error and require restart, your can find "

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-09 12:13+0800\n"
+"POT-Creation-Date: 2010-09-10 10:02+0800\n"
 "PO-Revision-Date: 2010-05-23 16:18+0400\n"
 "Last-Translator: kruvalig <kruvalig@gmail.com>\n"
 "Language-Team: fedora-trans-ru\n"
@@ -251,7 +251,7 @@ msgstr "Полное совпадения слов"
 msgid "Matrix"
 msgstr "Матрица"
 
-#: ../data/gummi.glade.h:66 ../src/gui.c:630
+#: ../data/gummi.glade.h:66 ../src/gui.c:653
 msgid "N/A"
 msgstr "N/A"
 
@@ -420,11 +420,11 @@ msgstr "_Вид"
 msgid "filter:"
 msgstr "Фильтр:"
 
-#: ../data/gummi.glade.h:108 ../src/gui.c:628
+#: ../data/gummi.glade.h:108 ../src/gui.c:651
 msgid "no bibliography file detected"
 msgstr "Файл библиографии отсутствует"
 
-#: ../data/gummi.glade.h:109 ../src/gui.c:629
+#: ../data/gummi.glade.h:109 ../src/gui.c:652
 msgid "none"
 msgstr "отсутствует"
 
@@ -579,46 +579,46 @@ msgstr ""
 msgid "Bottom reached, search from top?"
 msgstr ""
 
-#: ../src/gui.c:202
+#: ../src/gui.c:223
 #, c-format
 msgid "Error loading recent file: %s"
 msgstr ""
 
-#: ../src/gui.c:591
+#: ../src/gui.c:614
 #, fuzzy
 msgid "Compiling bibliography file..."
 msgstr "_Скомпилировать библиографию"
 
-#: ../src/gui.c:593
+#: ../src/gui.c:616
 #, fuzzy
 msgid "bibliography compiled without errors"
 msgstr "Файл библиографии отсутствует"
 
-#: ../src/gui.c:595
+#: ../src/gui.c:618
 #, fuzzy
 msgid "Error compiling bibliography file or none detected..."
 msgstr "Файл библиографии отсутствует"
 
-#: ../src/gui.c:598
+#: ../src/gui.c:621
 #, fuzzy
 msgid "error compiling bibliography file"
 msgstr "_Скомпилировать библиографию"
 
-#: ../src/gui.c:622
+#: ../src/gui.c:645
 #, c-format
 msgid "%s loaded"
 msgstr ""
 
-#: ../src/gui.c:1051
+#: ../src/gui.c:1074
 msgid "Do you want to save the changes you have made?"
 msgstr ""
 
-#: ../src/gui.c:1060
+#: ../src/gui.c:1083
 #, fuzzy
 msgid "Open File..."
 msgstr "Открыть"
 
-#: ../src/gui.c:1082
+#: ../src/gui.c:1105
 msgid "Save File..."
 msgstr ""
 
@@ -639,11 +639,11 @@ msgid ""
 "Please try again later."
 msgstr ""
 
-#: ../src/iofunctions.c:145
+#: ../src/iofunctions.c:146
 msgid "Can not convert text to UTF-8!\n"
 msgstr ""
 
-#: ../src/iofunctions.c:173
+#: ../src/iofunctions.c:176
 #, fuzzy, c-format
 msgid "Autosaving file %s"
 msgstr "Однострочный"

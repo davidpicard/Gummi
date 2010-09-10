@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.4.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-09 12:13+0800\n"
+"POT-Creation-Date: 2010-09-10 10:02+0800\n"
 "PO-Revision-Date: 2010-05-23 23:05+0100\n"
 "Last-Translator: Jack Olsen jackolsendk@gmail.com\n"
 "Language-Team: Jack Olsen jackolsendk@gmail.com\n"
@@ -247,7 +247,7 @@ msgstr "Find kun blandt hele ord"
 msgid "Matrix"
 msgstr "Matrice"
 
-#: ../data/gummi.glade.h:66 ../src/gui.c:630
+#: ../data/gummi.glade.h:66 ../src/gui.c:653
 msgid "N/A"
 msgstr "N/A"
 
@@ -415,11 +415,11 @@ msgstr "_Vis"
 msgid "filter:"
 msgstr "filtrer:"
 
-#: ../data/gummi.glade.h:108 ../src/gui.c:628
+#: ../data/gummi.glade.h:108 ../src/gui.c:651
 msgid "no bibliography file detected"
 msgstr "ingen bibliografi-fil fundet"
 
-#: ../data/gummi.glade.h:109 ../src/gui.c:629
+#: ../data/gummi.glade.h:109 ../src/gui.c:652
 msgid "none"
 msgstr "ingen"
 
@@ -573,43 +573,43 @@ msgstr ""
 msgid "Bottom reached, search from top?"
 msgstr ""
 
-#: ../src/gui.c:202
+#: ../src/gui.c:223
 #, fuzzy, c-format
 msgid "Error loading recent file: %s"
 msgstr "Fejl ved indlæsning af nyere fil: "
 
-#: ../src/gui.c:591
+#: ../src/gui.c:614
 #, fuzzy
 msgid "Compiling bibliography file..."
 msgstr "Kompilerer bibliografi-filen"
 
-#: ../src/gui.c:593
+#: ../src/gui.c:616
 msgid "bibliography compiled without errors"
 msgstr "bibliografien kompilerede uden fejl"
 
-#: ../src/gui.c:595
+#: ../src/gui.c:618
 #, fuzzy
 msgid "Error compiling bibliography file or none detected..."
 msgstr "Fejl ved kompilering af bibliografi-filen eller ingen fundet..."
 
-#: ../src/gui.c:598
+#: ../src/gui.c:621
 msgid "error compiling bibliography file"
 msgstr "fejl ved kompilering af bibliografi-filen"
 
-#: ../src/gui.c:622
+#: ../src/gui.c:645
 #, c-format
 msgid "%s loaded"
 msgstr ""
 
-#: ../src/gui.c:1051
+#: ../src/gui.c:1074
 msgid "Do you want to save the changes you have made?"
 msgstr "Ønsker du at gemme dine ændringer?"
 
-#: ../src/gui.c:1060
+#: ../src/gui.c:1083
 msgid "Open File..."
 msgstr "Åben Fil..."
 
-#: ../src/gui.c:1082
+#: ../src/gui.c:1105
 msgid "Save File..."
 msgstr "Gem Fil..."
 
@@ -630,11 +630,11 @@ msgid ""
 "Please try again later."
 msgstr ""
 
-#: ../src/iofunctions.c:145
+#: ../src/iofunctions.c:146
 msgid "Can not convert text to UTF-8!\n"
 msgstr ""
 
-#: ../src/iofunctions.c:173
+#: ../src/iofunctions.c:176
 #, fuzzy, c-format
 msgid "Autosaving file %s"
 msgstr "Gemmer fil "
