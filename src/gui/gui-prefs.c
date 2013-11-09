@@ -97,8 +97,6 @@ GuPrefsGui* prefsgui_init (GtkWindow* mainwindow) {
         GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "autosave_timer"));
     p->combo_languages =
         GTK_COMBO_BOX (gtk_builder_get_object (builder, "combo_languages"));
-    p->list_languages =
-        GTK_LIST_STORE (gtk_builder_get_object (builder, "list_languages"));
     p->styleschemes_treeview =
         GTK_TREE_VIEW(gtk_builder_get_object(builder, "styleschemes_treeview"));
     p->list_styleschemes =
@@ -150,8 +148,6 @@ GuPrefsGui* prefsgui_init (GtkWindow* mainwindow) {
 
 #ifdef USE_GTKSPELL
     /* list available languages */
-
-
     if (g_file_test (
         g_find_program_in_path("enchant-lsmod"), G_FILE_TEST_EXISTS)) {
 
@@ -162,15 +158,13 @@ GuPrefsGui* prefsgui_init (GtkWindow* mainwindow) {
             int i;
 
             for(i = 0; output[i] != NULL; i++) {
-                GtkTreeIter iter;
                 elems = g_strsplit (output[i], " ", BUFSIZ);
                 if (elems[0] != NULL) {
-                    gtk_list_store_append (p->list_languages, &iter);
-                    gtk_list_store_set (p->list_languages, &iter, 0, elems[0], -1);
+                    gtk_combo_box_text_append_text (p->combo_languages, elems[0]);
                 }
             }
-        g_strfreev(output);
-        g_strfreev(elems);
+            g_strfreev(output);
+            g_strfreev(elems);
         }
         gtk_combo_box_set_active (p->combo_languages, 0);
         g_free ((gchar*)pret.second);
@@ -727,9 +721,9 @@ void on_synctex_toggled (GtkToggleButton* widget, void* user) {
 }
 
 G_MODULE_EXPORT
-void on_combo_language_changed (GtkWidget* widget, void* user) {
+void on_combo_language_changed (GtkComboBoxText* widget, void* user) {
 #ifdef USE_GTKSPELL
-    gchar* selected = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT (widget));
+    gchar* selected = gtk_combo_box_text_get_active_text ((widget));
     GList* tab = gummi->tabmanager->tabs;
     config_set_value ("spell_language", selected);
 
