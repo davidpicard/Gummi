@@ -111,10 +111,10 @@ void tabmanagergui_create_label (GuTabPage* tp, gchar* labeltext) {
     static unsigned count = 0;
     GtkRcStyle* rcstyle = NULL;
     GtkWidget* image = NULL;
-    GtkHBox* hbox;
+    GtkBox* hbox;
 
     tp->labelbox = gtk_event_box_new ();
-    hbox = GTK_HBOX (gtk_hbox_new (FALSE, 0));
+    hbox = GTK_BOX (gtk_hbox_new (FALSE, 0));
     tp->unsavednr = ++count;
 
     gtk_event_box_set_visible_window (GTK_EVENT_BOX (tp->labelbox), FALSE);

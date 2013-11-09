@@ -93,7 +93,7 @@ GummiGui* gui_init (GtkBuilder* builder) {
     g->statusbar =
         GTK_STATUSBAR (gtk_builder_get_object (builder, "statusbar"));
     g->rightpane =
-        (GtkVBox*) (gtk_builder_get_object (builder, "rightpanebox"));
+        GTK_BOX (gtk_builder_get_object (builder, "rightpanebox"));
     g->previewoff = GTK_TOGGLE_TOOL_BUTTON (
             gtk_builder_get_object (builder, "tool_previewoff"));
     g->errorview =

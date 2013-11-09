@@ -73,9 +73,9 @@ struct _GuPrefsGui {
 
     GtkComboBox* combo_animated_scroll;
 
-    GtkVBox* view_box;
-    GtkHBox* editor_box;
-    GtkHBox* compile_box;
+    GtkBox* view_box;
+    GtkBox* editor_box;
+    GtkBox* compile_box;
 };
 
 GuPrefsGui* prefsgui_init (GtkWindow* mainwindow);
