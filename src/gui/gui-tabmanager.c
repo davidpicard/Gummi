@@ -66,7 +66,7 @@ int tabmanagergui_create_page (GuTabContext* tc, GuEditor* editor) {
     gtk_container_add (GTK_CONTAINER (tp->scrollw),
                        GTK_WIDGET (editor->view));
 
-    tp->editorbox = gtk_vbox_new (FALSE, 0);
+    tp->editorbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 
     gtk_box_pack_start (GTK_BOX (tp->editorbox), tp->infobar, FALSE, FALSE, 0);
     gtk_box_pack_end (GTK_BOX (tp->editorbox), tp->scrollw, TRUE, TRUE, 0);
@@ -114,7 +114,7 @@ void tabmanagergui_create_label (GuTabPage* tp, gchar* labeltext) {
     GtkBox* hbox;
 
     tp->labelbox = gtk_event_box_new ();
-    hbox = GTK_BOX (gtk_hbox_new (FALSE, 0));
+    hbox = GTK_BOX (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0));
     tp->unsavednr = ++count;
 
     gtk_event_box_set_visible_window (GTK_EVENT_BOX (tp->labelbox), FALSE);

@@ -118,8 +118,7 @@ void tabmanager_create_tab (OpenAct act, const gchar* filename, gchar* opt) {
 
     if (current_tab_replaceable (act)) {
         pos = tabmanagergui_replace_page (g_active_tab, editor);
-    }
-    else {
+    } else {
         GuTabContext* tc = g_new0(GuTabContext, 1);
         tc->editor = editor;
         g_tabs = g_list_append(g_tabs, tc);
