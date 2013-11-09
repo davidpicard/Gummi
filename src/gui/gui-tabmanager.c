@@ -42,7 +42,7 @@ GuTabmanagerGui* tabmanagergui_init (GtkBuilder* builder) {
 
     tm->notebook =
         GTK_NOTEBOOK (gtk_builder_get_object (builder, "tab_notebook"));
-    g_object_set (tm->notebook, "tab-border", 0, NULL);
+    g_object_set (tm->notebook, "show-border", 1, NULL);
 
     tm->unsavednr = 0;
     return tm;
@@ -127,6 +127,26 @@ void tabmanagergui_create_label (GuTabPage* tp, gchar* labeltext) {
     tp->button = GTK_BUTTON (gtk_button_new());
     image = gtk_image_new_from_stock (GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU);
     gtk_button_set_image (tp->button, image);
+
+    // make it small, code borrowed from gedit :P
+    static const gchar button_style[] =
+      "* {\n"
+        "-GtkButton-default-border : 0;\n"
+        "-GtkButton-default-outside-border : 0;\n"
+        "-GtkButton-inner-border: 0;\n"
+        "-GtkWidget-focus-line-width : 0;\n"
+        "-GtkWidget-focus-padding : 0;\n"
+        "padding: 0;\n"
+      "}";
+
+    GtkCssProvider* css = gtk_css_provider_new();
+    gtk_css_provider_load_from_data (css, button_style, -1, NULL);
+	  GtkStyleContext* context = gtk_widget_get_style_context (GTK_WIDGET (
+          tp->button));
+    gtk_style_context_add_provider (context,
+	                                GTK_STYLE_PROVIDER (css),
+	                                GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
     g_object_set (tp->button, "relief", GTK_RELIEF_NONE,
                          "focus-on-click", FALSE, NULL);
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (tp->button), FALSE,FALSE,0);

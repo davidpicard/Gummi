@@ -96,7 +96,7 @@ GuPrefsGui* prefsgui_init (GtkWindow* mainwindow) {
     p->autosave_timer =
         GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "autosave_timer"));
     p->combo_languages =
-        GTK_COMBO_BOX (gtk_builder_get_object (builder, "combo_languages"));
+        GTK_COMBO_BOX_TEXT (gtk_builder_get_object (builder, "combo_languages"));
     p->styleschemes_treeview =
         GTK_TREE_VIEW(gtk_builder_get_object(builder, "styleschemes_treeview"));
     p->list_styleschemes =

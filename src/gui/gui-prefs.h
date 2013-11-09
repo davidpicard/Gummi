@@ -52,7 +52,7 @@ struct _GuPrefsGui {
     GtkCheckButton* spaces_instof_tabs;
     GtkCheckButton* autoindentation;
     GtkSpinButton* autosave_timer;
-    GtkComboBox* combo_languages;
+    GtkComboBoxText* combo_languages;
     GtkTreeView* styleschemes_treeview;
     GtkListStore* list_styleschemes;
     GtkTextView* default_text;
