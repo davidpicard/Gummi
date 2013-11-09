@@ -34,6 +34,7 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <gtksourceview/gtksource.h>
 
 #include "constants.h"
 #include "configfile.h"
@@ -141,9 +142,9 @@ GuPrefsGui* prefsgui_init (GtkWindow* mainwindow) {
     p->spin_cache_size =
         GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "spin_cache_size"));
 
-    p->view_box = GTK_VBOX (gtk_builder_get_object (builder, "view_box"));
-    p->editor_box = GTK_HBOX (gtk_builder_get_object (builder, "editor_box"));
-    p->compile_box = GTK_HBOX (gtk_builder_get_object (builder, "compile_box"));
+    p->view_box = (GtkVBox*)gtk_builder_get_object (builder, "view_box");
+    p->editor_box = (GtkHBox*)gtk_builder_get_object (builder, "editor_box");
+    p->compile_box = (GtkHBox*)gtk_builder_get_object (builder, "compile_box");
 
     gtk_window_set_transient_for (GTK_WINDOW (p->prefwindow), mainwindow);
 
@@ -728,7 +729,7 @@ void on_synctex_toggled (GtkToggleButton* widget, void* user) {
 G_MODULE_EXPORT
 void on_combo_language_changed (GtkWidget* widget, void* user) {
 #ifdef USE_GTKSPELL
-    gchar* selected = gtk_combo_box_get_active_text (GTK_COMBO_BOX (widget));
+    gchar* selected = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT (widget));
     GList* tab = gummi->tabmanager->tabs;
     config_set_value ("spell_language", selected);
 

@@ -34,7 +34,6 @@
 #include <string.h>
 
 #include <gtksourceview/gtksourcebuffer.h>
-#include <gtksourceview/gtksourceiter.h>
 #include <gtksourceview/gtksourcelanguagemanager.h>
 #include <gtksourceview/gtksourcestyleschememanager.h>
 #include <gtksourceview/gtksourceview.h>
@@ -326,21 +325,22 @@ void editor_sourceview_config (GuEditor* ec) {
 void editor_activate_spellchecking (GuEditor* ec, gboolean status) {
     const gchar* lang = config_get_value ("spell_language");
     GError* err = NULL;
-    GError* err2 = NULL;
-    GtkSpell* spell = 0;
+    GtkSpellChecker* spell = 0;
     if (status) {
-        if (! (spell = gtkspell_new_attach (ec_view, "en", &err))) {
-            slog (L_ERROR, "gtkspell_new_attach (): %s\n", err->message);
+        spell = gtk_spell_checker_new ();
+        if (!gtk_spell_checker_set_language (spell, lang, &err)) {
+            slog (L_ERROR, "gtk_spell_checker_set_language (): %s\n",
+                    err->message);
             g_error_free (err);
         }
-        if (!gtkspell_set_language (spell, lang, &err2)) {
-            slog (L_ERROR, "gtkspell_set_language (): %s\n", err2->message);
-            g_error_free (err2);
+        if (!gtk_spell_checker_attach (spell, ec_view)) {
+            slog (L_ERROR, "gtk_spell_checker_attach (): %s\n", err->message);
+            g_error_free (err);
         }
     } else {
-        GtkSpell* spell = gtkspell_get_from_text_view (ec_view);
+        GtkSpellChecker* spell = gtk_spell_checker_get_from_text_view (ec_view);
         if (spell)
-            gtkspell_detach (spell);
+            gtk_spell_checker_detach (spell);
     }
 }
 #endif
@@ -543,8 +543,8 @@ void editor_apply_searchtag (GuEditor* ec) {
     gtk_text_tag_table_add (ec->editortags, ec->searchtag);
 
     while (TRUE) {
-        ret = gtk_source_iter_forward_search (&start, ec->term,
-                (ec->matchcase? 0: GTK_SOURCE_SEARCH_CASE_INSENSITIVE),
+        ret = gtk_text_iter_forward_search (&start, ec->term,
+                (ec->matchcase? 0: GTK_TEXT_SEARCH_CASE_INSENSITIVE),
                 &mstart, &mend, NULL);
 
         if (ret && (!ec->wholeword || (ec->wholeword
@@ -564,13 +564,13 @@ void editor_search_next (GuEditor* ec, gboolean inverse) {
     editor_get_current_iter (ec, &current);
 
     if (ec->backwards ^ inverse) {
-        ret = gtk_source_iter_backward_search (&current, ec->term,
-                (ec->matchcase? 0: GTK_SOURCE_SEARCH_CASE_INSENSITIVE),
+        ret = gtk_text_iter_backward_search (&current, ec->term,
+                (ec->matchcase? 0: GTK_TEXT_SEARCH_CASE_INSENSITIVE),
                 &mstart, &mend, NULL);
     } else {
         gtk_text_iter_forward_chars (&current, strlen (ec->term));
-        ret = gtk_source_iter_forward_search (&current, ec->term,
-                (ec->matchcase? 0: GTK_SOURCE_SEARCH_CASE_INSENSITIVE),
+        ret = gtk_text_iter_forward_search (&current, ec->term,
+                (ec->matchcase? 0: GTK_TEXT_SEARCH_CASE_INSENSITIVE),
                 &mstart, &mend, NULL);
     }
 
@@ -619,12 +619,12 @@ void editor_start_replace_next (GuEditor* ec, const gchar* term,
     editor_get_current_iter (ec, &current);
 
     if (backwards)
-       ret = gtk_source_iter_backward_search (&current, term,
-                (matchcase? 0: GTK_SOURCE_SEARCH_CASE_INSENSITIVE),
+       ret = gtk_text_iter_backward_search (&current, term,
+                (matchcase? 0: GTK_TEXT_SEARCH_CASE_INSENSITIVE),
                 &mstart, &mend, NULL);
     else
-       ret = gtk_source_iter_forward_search (&current, term,
-                (matchcase? 0: GTK_SOURCE_SEARCH_CASE_INSENSITIVE),
+       ret = gtk_text_iter_forward_search (&current, term,
+                (matchcase? 0: GTK_TEXT_SEARCH_CASE_INSENSITIVE),
                 &mstart, &mend, NULL);
 
     if (ret && (!wholeword || (wholeword
@@ -648,8 +648,8 @@ void editor_start_replace_all (GuEditor* ec, const gchar* term,
     gtk_text_buffer_get_start_iter (ec_buffer, &start);
 
     while (TRUE) {
-        ret = gtk_source_iter_forward_search (&start, term,
-                (matchcase? 0: GTK_SOURCE_SEARCH_CASE_INSENSITIVE),
+        ret = gtk_text_iter_forward_search (&start, term,
+                (matchcase? 0: GTK_TEXT_SEARCH_CASE_INSENSITIVE),
                 &mstart, &mend, NULL);
 
         if (ret && (!wholeword || (wholeword

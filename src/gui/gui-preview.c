@@ -192,7 +192,7 @@ GuPreviewGui* previewgui_init (GtkBuilder * builder) {
     p->vadj = gtk_scrolled_window_get_vadjustment
                     (GTK_SCROLLED_WINDOW (p->scrollw));
 
-    gtk_widget_modify_bg (p->drawarea, GTK_STATE_NORMAL, &bg);
+    gtk_widget_override_background_color (p->drawarea, GTK_STATE_NORMAL, &bg);
 
     /* Install event handlers */
     gtk_widget_add_events (p->drawarea, GDK_SCROLL_MASK
@@ -213,7 +213,7 @@ GuPreviewGui* previewgui_init (GtkBuilder * builder) {
     p->on_resize_handler = g_signal_connect (p->scrollw, "size-allocate",
             G_CALLBACK (on_resize), p);
     g_signal_connect (p->drawarea, "scroll-event", G_CALLBACK (on_scroll), p);
-    p->on_expose_handler = g_signal_connect (p->drawarea, "expose-event",
+    p->on_expose_handler = g_signal_connect (p->drawarea, "draw",
             G_CALLBACK (on_expose), p);
 
     g_signal_connect (p->drawarea, "button-press-event",
@@ -316,13 +316,19 @@ static void unblock_handlers_current_page(GuPreviewGui* pc) {
 }
 
 inline static gboolean is_vscrollbar_visible(GuPreviewGui* pc) {
-    return pc->scrollw->allocation.width !=
-        GTK_WIDGET(pc->previewgui_viewport)->allocation.width;
+    GtkAllocation alloc1, alloc2;
+    gtk_widget_get_allocation(pc->scrollw, &alloc1);
+    gtk_widget_get_allocation(GTK_WIDGET (pc->previewgui_viewport), &alloc2);
+
+    return alloc1.width != alloc2.width;
 }
 
 inline static gboolean is_hscrollbar_visible(GuPreviewGui* pc) {
-    return pc->scrollw->allocation.height !=
-        GTK_WIDGET(pc->previewgui_viewport)->allocation.height;
+    GtkAllocation alloc1, alloc2;
+    gtk_widget_get_allocation(pc->scrollw, &alloc1);
+    gtk_widget_get_allocation(GTK_WIDGET (pc->previewgui_viewport), &alloc2);
+
+    return alloc1.height != alloc2.height;
 }
 
 G_MODULE_EXPORT
@@ -425,16 +431,16 @@ static void update_fit_scale(GuPreviewGui* pc) {
     gint hscrollbar_height = spacing + req.height;
 
 
-#if GTK_MINOR_VERSION >= 24 // gdk_window_get_width is gtk-2.24 or higher.
+#if GTK_CHECK_VERSION(2, 24, 0) // gdk_window_get_width is gtk-2.24 or higher.
     gint view_width_without_bar = gdk_window_get_width(
-            pc->previewgui_viewport->view_window);
+            gtk_viewport_get_view_window(pc->previewgui_viewport));
     gint view_height_without_bar = gdk_window_get_height(
-            pc->previewgui_viewport->view_window);
+            gtk_viewport_get_view_window(pc->previewgui_viewport));
 #else
-        gint view_width_without_bar, view_height_without_bar;
-        gdk_drawable_get_size (pc->previewgui_viewport->view_window,
-                                &view_width_without_bar,
-                                &view_height_without_bar);
+    gint view_width_without_bar, view_height_without_bar;
+    gdk_drawable_get_size (pc->previewgui_viewport->view_window,
+        &view_width_without_bar,
+        &view_height_without_bar);
 #endif
 
 
@@ -1813,7 +1819,7 @@ gboolean run_garbage_collector(GuPreviewGui* pc) {
 }
 
 G_MODULE_EXPORT
-gboolean on_expose (GtkWidget* w, GdkEventExpose* e, void* user) {
+gboolean on_expose (GtkWidget* w, cairo_t* cr, void* user) {
     GuPreviewGui* pc = GU_PREVIEW_GUI(user);
 
 //    slog(L_INFO, "paint document with scale %f, region (%i, %i), w=%i,
@@ -1822,7 +1828,6 @@ gboolean on_expose (GtkWidget* w, GdkEventExpose* e, void* user) {
     //slog(L_INFO, "scale: %f", pc->scale);
 
     if (!pc->uri || !utils_path_exists (pc->uri + usize)) {
-
         return FALSE;
     }
 
@@ -1832,7 +1837,7 @@ gboolean on_expose (GtkWidget* w, GdkEventExpose* e, void* user) {
     gdouble offset_x = MAX(get_document_margin(pc),
                           (page_width - pc->width_scaled) / 2);
 
-    cairo_t *cr = gdk_cairo_create(gtk_widget_get_window(w));
+    //cairo_t *cr = gdk_cairo_create(gtk_widget_get_window(w));
 
     if (is_continuous(pc)) {
 
@@ -1877,8 +1882,6 @@ gboolean on_expose (GtkWidget* w, GdkEventExpose* e, void* user) {
             page_offset_x(pc, pc->current_page, offset_x),
             page_offset_y(pc, pc->current_page, offset_y));
     }
-
-    cairo_destroy (cr);
 
     return TRUE;
 }

@@ -179,7 +179,7 @@ void on_page_input_changed (GtkEntry* entry, void* user);
 void on_next_page_clicked (GtkWidget* widget, void* user);
 void on_prev_page_clicked (GtkWidget* widget, void* user);
 void on_combo_sizes_changed (GtkWidget* widget, void* user);
-gboolean on_expose (GtkWidget* w, GdkEventExpose* e, void* user);
+gboolean on_expose (GtkWidget* w, cairo_t* cr, void* user);
 gboolean on_scroll (GtkWidget* w, GdkEventScroll* e, void* user);
 gboolean on_motion (GtkWidget* w, GdkEventMotion* e, void* user);
 gboolean on_resize (GtkWidget* w, GdkRectangle* r, void* user);
