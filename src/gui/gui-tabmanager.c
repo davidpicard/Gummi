@@ -125,7 +125,7 @@ void tabmanagergui_create_label (GuTabPage* tp, gchar* labeltext) {
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (tp->label), TRUE, TRUE, 5);
 
     tp->button = GTK_BUTTON (gtk_button_new());
-    image = gtk_image_new_from_stock (_("_Close"), GTK_ICON_SIZE_MENU);
+    image = gtk_image_new_from_stock (GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU);
     gtk_button_set_image (tp->button, image);
     g_object_set (tp->button, "relief", GTK_RELIEF_NONE,
                          "focus-on-click", FALSE, NULL);
