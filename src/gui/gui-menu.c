@@ -705,13 +705,13 @@ void on_menu_about_activate (GtkWidget *widget, void *user) {
     GdkPixbuf* icon = gdk_pixbuf_new_from_file_at_size (icon_file, 80, 80, &err);
     g_free (icon_file);
 
-    const gchar* authors[] = { "Alexander van der Mey\n"
+    const gchar* authors[] = { "Alexander van der Mey "
         "<alexvandermey@gmail.com>",
-        "Wei-Ning Huang\n"
+        "Wei-Ning Huang "
         "<aitjcize@gmail.com>",
-        "Dion Timmermann",
-        "<dion.timmermann@tu-harburg.de>",
-        "Robert Schroll",
+        "Dion Timmermann "
+        "<dion\.timmermann@tu-harburg.de>",
+        "Robert Schroll "
         "<rschroll@gmail.com>\n",
         "Former contributors:",
         "Thomas van der Burgt",
@@ -722,14 +722,14 @@ void on_menu_about_activate (GtkWidget *widget, void *user) {
         "**  contributing or updating a translation **\n"
         "\n"
         "Arabic: Hamad Mohammad\n"
-        "Brazilian-Portugese: Fernando Cruz & Alexandre Guimarães\n"
+        "Brazilian-Portugese: Fernando Cruz and Alexandre Guimarães\n"
         "Catalan: Marc Vinyals\n"
         "Chinese (Simplified): Mathlab pass\n"
         "Chinese (Traditional): Wei-Ning Huang\n"
         "Czech: Přemysl Janouch\n"
         "Danish: Jack Olsen\n"
         "Dutch: Alexander van der Mey\n"
-        "French: Yvan Duron & Olivier Brousse\n"
+        "French: Yvan Duron and Olivier Brousse\n"
         "German: Thomas Niederprüm\n"
         "Greek: Dimitris Leventeas\n"
         "Hungarian: Balázs Meskó\n"
@@ -737,9 +737,9 @@ void on_menu_about_activate (GtkWidget *widget, void *user) {
         "Polish: Hubert Kowalski\n"
         "Portugese: Alexandre Guimarães\n"
         "Romanian: Alexandru-Eugen Ichim\n"
-        "Russian: Kruvalig & Max Musatov\n"
+        "Russian: Kruvalig and Max Musatov\n"
         "Swedish: Kess Vargavind\n"
-        "Spanish: Carlos Salas Contreras & Francisco Javier Serrador\n";
+        "Spanish: Carlos Salas Contreras and Francisco Javier Serrador\n";
 
     const gchar* documenters[] = {"Guy Edwards", NULL};
 
