@@ -741,11 +741,13 @@ gint check_for_save (GuEditor* editor) {
                      GTK_MESSAGE_QUESTION,
                      GTK_BUTTONS_NONE,
                      _("Do you want to save the changes to %s?"),
-                     editor->filename != NULL ? g_path_get_basename (editor->filename) : _("this document"));
+                     editor->filename != NULL ?
+                     g_path_get_basename (editor->filename):
+                     _("this document"));
         gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-                                "_Cancel", GTK_RESPONSE_CANCEL,
-                                GTK_STOCK_DISCARD, GTK_RESPONSE_NO,
-                                "document-save", GTK_RESPONSE_YES,
+                                _("_Cancel"), GTK_RESPONSE_CANCEL,
+                                _("_Discard"), GTK_RESPONSE_NO,
+                                _("_Save"), GTK_RESPONSE_YES,
                                 NULL);
         gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_YES);
 
@@ -782,8 +784,8 @@ gchar* get_open_filename (GuFilterType type) {
                 chooser_title[type],
                 gui->mainwindow,
                 GTK_FILE_CHOOSER_ACTION_OPEN,
-                "_Cancel", GTK_RESPONSE_CANCEL,
-                GTK_STOCK_OPEN, GTK_RESPONSE_OK,
+                _("_Cancel"), GTK_RESPONSE_CANCEL,
+                _("_Open"), GTK_RESPONSE_OK,
                 NULL));
 
     file_dialog_set_filter (chooser, type);
@@ -820,8 +822,8 @@ gchar* get_save_filename (GuFilterType type) {
                 chooser_title[type],
                 gui->mainwindow,
                 GTK_FILE_CHOOSER_ACTION_SAVE,
-                "_Cancel", GTK_RESPONSE_CANCEL,
-                GTK_STOCK_SAVE, GTK_RESPONSE_OK,
+                _("_Cancel"), GTK_RESPONSE_CANCEL,
+                _("_Open"), GTK_RESPONSE_OK,
                 NULL));
 
     file_dialog_set_filter (chooser, type);

@@ -96,9 +96,9 @@ void tabmanagergui_create_infobar (GuTabPage* tp) {
     gtk_container_add (GTK_CONTAINER (area), message);
 
     gtk_info_bar_add_button (GTK_INFO_BAR (infobar),
-                            GTK_STOCK_YES, GTK_RESPONSE_YES);
+                            _("_Yes"), GTK_RESPONSE_YES);
     gtk_info_bar_add_button (GTK_INFO_BAR (infobar),
-                            GTK_STOCK_NO, GTK_RESPONSE_NO);
+                            _("_No"), GTK_RESPONSE_NO);
 
     gtk_info_bar_set_message_type (GTK_INFO_BAR (infobar),
                                   GTK_MESSAGE_WARNING);
@@ -125,7 +125,7 @@ void tabmanagergui_create_label (GuTabPage* tp, gchar* labeltext) {
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (tp->label), TRUE, TRUE, 5);
 
     tp->button = GTK_BUTTON (gtk_button_new());
-    image = gtk_image_new_from_stock (GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU);
+    image = gtk_image_new_from_stock (_("_Close"), GTK_ICON_SIZE_MENU);
     gtk_button_set_image (tp->button, image);
     g_object_set (tp->button, "relief", GTK_RELIEF_NONE,
                          "focus-on-click", FALSE, NULL);
