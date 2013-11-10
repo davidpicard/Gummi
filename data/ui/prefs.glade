@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Sun Nov 10 00:23:16 2013 -->
+<!-- Generated with glade 3.16.0 on Sun Nov 10 15:26:53 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkAdjustment" id="autosave_time">
@@ -850,7 +850,6 @@
                         <child>
                           <object class="GtkRadioButton" id="typ_latexmk">
                             <property name="label" translatable="yes">Latexmk</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
@@ -859,7 +858,6 @@
                             <property name="margin_left">12</property>
                             <property name="focus_on_click">False</property>
                             <property name="xalign">0</property>
-                            <property name="active">True</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="on_typ_latexmk_toggled" swapped="no"/>
                           </object>
@@ -872,7 +870,6 @@
                         <child>
                           <object class="GtkRadioButton" id="typ_rubber">
                             <property name="label" translatable="yes">Rubber</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
@@ -881,8 +878,8 @@
                             <property name="margin_left">12</property>
                             <property name="focus_on_click">False</property>
                             <property name="xalign">0</property>
-                            <property name="active">True</property>
                             <property name="draw_indicator">True</property>
+                            <property name="group">typ_xelatex</property>
                             <signal name="toggled" handler="on_typ_rubber_toggled" swapped="no"/>
                           </object>
                           <packing>
@@ -894,7 +891,6 @@
                         <child>
                           <object class="GtkRadioButton" id="typ_xelatex">
                             <property name="label" translatable="yes">TeXLive with XeTeX</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
@@ -903,8 +899,8 @@
                             <property name="margin_left">12</property>
                             <property name="focus_on_click">False</property>
                             <property name="xalign">0</property>
-                            <property name="active">True</property>
                             <property name="draw_indicator">True</property>
+                            <property name="group">typ_latexmk</property>
                             <signal name="toggled" handler="on_typ_xelatex_toggled" swapped="no"/>
                           </object>
                           <packing>
@@ -916,17 +912,15 @@
                         <child>
                           <object class="GtkRadioButton" id="typ_pdflatex">
                             <property name="label" translatable="yes">TeXLive with PdfTeX</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="tooltip_text" translatable="yes">This program was not found on your system.</property>
                             <property name="margin_left">12</property>
-                            <property name="focus_on_click">False</property>
                             <property name="xalign">0</property>
-                            <property name="active">True</property>
                             <property name="draw_indicator">True</property>
+                            <property name="group">typ_latexmk</property>
                             <signal name="toggled" handler="on_typ_pdflatex_toggled" swapped="no"/>
                           </object>
                           <packing>
@@ -1070,7 +1064,6 @@
                             <property name="receives_default">False</property>
                             <property name="margin_left">12</property>
                             <property name="xalign">0</property>
-                            <property name="active">True</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="on_method_texdvipspdf_toggled" swapped="no"/>
                           </object>
@@ -1089,8 +1082,8 @@
                             <property name="receives_default">False</property>
                             <property name="margin_left">12</property>
                             <property name="xalign">0</property>
-                            <property name="active">True</property>
                             <property name="draw_indicator">True</property>
+                            <property name="group">method_texdvipspdf</property>
                             <signal name="toggled" handler="on_method_texdvipdf_toggled" swapped="no"/>
                           </object>
                           <packing>
@@ -1108,8 +1101,8 @@
                             <property name="receives_default">False</property>
                             <property name="margin_left">12</property>
                             <property name="xalign">0</property>
-                            <property name="active">True</property>
                             <property name="draw_indicator">True</property>
+                            <property name="group">method_texdvipspdf</property>
                             <signal name="toggled" handler="on_method_texpdf_toggled" swapped="no"/>
                           </object>
                           <packing>
