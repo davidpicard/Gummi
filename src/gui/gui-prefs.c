@@ -382,7 +382,7 @@ static void set_tab_miscellaneous_settings(GuPrefsGui* prefs)
     const gchar* str_value;
     gtk_tree_model_get(combo_lang, &iter, 0, &str_value, -1);
     if (STR_EQU(lang, str_value)) {
-      gtk_combo_box_set_active(prefs->combo_languages, count);
+      gtk_combo_box_set_active(GTK_COMBO_BOX(prefs->combo_languages), count);
       break;
     }
     ++count;
