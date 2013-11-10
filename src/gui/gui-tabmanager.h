@@ -41,19 +41,19 @@
 typedef struct _GuTabPage GuTabPage;
 
 struct _GuTabPage {
-    GtkWidget* scrollw;
-    GtkWidget* editorbox;
+  GtkWidget* scrollw;
+  GtkWidget* editorbox;
 
-    GtkWidget* infobar;
-    GtkWidget* barlabel;
-    gint infosignal;
+  GtkWidget* infobar;
+  GtkWidget* barlabel;
+  gint infosignal;
 
-    GtkWidget* labelbox;
-    GtkLabel* label;
-    gint position;
-    GtkButton* button;
-    unsigned unsavednr;
-    gboolean bold;
+  GtkWidget* labelbox;
+  GtkLabel* label;
+  gint position;
+  GtkButton* button;
+  unsigned unsavednr;
+  gboolean bold;
 };
 
 
@@ -61,31 +61,31 @@ struct _GuTabPage {
 typedef struct _GuTabContext GuTabContext;
 
 struct _GuTabContext {
-    GuEditor* editor;
-    GuTabPage* page;
+  GuEditor* editor;
+  GuTabPage* page;
 };
 
 #define GU_TABMANAGER_GUI(x) ((GuTabmanagerGui*)x)
 typedef struct _GuTabmanagerGui GuTabmanagerGui;
 
 struct _GuTabmanagerGui {
-    GtkNotebook* notebook;
-    int unsavednr;
+  GtkNotebook* notebook;
+  int unsavednr;
 
 };
 
-GuTabmanagerGui* tabmanagergui_init (GtkBuilder* builder);
-int tabmanagergui_create_page (GuTabContext* tc, GuEditor* editor);
-void tabmanagergui_create_label (GuTabPage* tp, gchar* labeltext);
-void tabmanagergui_create_infobar (GuTabPage* tp);
+GuTabmanagerGui* tabmanagergui_init(GtkBuilder* builder);
+int tabmanagergui_create_page(GuTabContext* tc, GuEditor* editor);
+void tabmanagergui_create_label(GuTabPage* tp, gchar* labeltext);
+void tabmanagergui_create_infobar(GuTabPage* tp);
 
-gchar* tabmanagergui_get_labeltext (GuTabPage* tp);
-gint tabmanagergui_replace_page (GuTabContext* tc, GuEditor* newec);
-void tabmanagergui_set_current_page (gint position);
-gint tabmanagergui_get_current_page (void);
-gint tabmanagergui_get_n_pages (void);
-void tabmanagergui_update_label (GuTabPage* tp, const gchar* text);
-void tablabel_set_bold_text (GuTabPage* tp);
+gchar* tabmanagergui_get_labeltext(GuTabPage* tp);
+gint tabmanagergui_replace_page(GuTabContext* tc, GuEditor* newec);
+void tabmanagergui_set_current_page(gint position);
+gint tabmanagergui_get_current_page(void);
+gint tabmanagergui_get_n_pages(void);
+void tabmanagergui_update_label(GuTabPage* tp, const gchar* text);
+void tablabel_set_bold_text(GuTabPage* tp);
 
 
 #endif /* __GUMMI_GUI_TABMANAGER_H__ */

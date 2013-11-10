@@ -36,78 +36,81 @@
 
 gboolean lmk_detected = FALSE;
 
-void latexmk_init (void) {
+void latexmk_init(void)
+{
 
-    if (external_exists (C_LATEXMK)) {
-        // TODO: check if supported version
-        slog (L_INFO, "Typesetter detected: Latexmk %s\n",
-                       external_version (C_LATEXMK));
-        lmk_detected = TRUE;
-    }
+  if (external_exists(C_LATEXMK)) {
+    // TODO: check if supported version
+    slog(L_INFO, "Typesetter detected: Latexmk %s\n",
+         external_version(C_LATEXMK));
+    lmk_detected = TRUE;
+  }
 }
 
-gboolean latexmk_active (void) {
-    if (STR_EQU (config_get_value("typesetter"), C_LATEXMK)) {
-        return TRUE;
-    }
-    return FALSE;
+gboolean latexmk_active(void)
+{
+  if (STR_EQU(config_get_value("typesetter"), C_LATEXMK)) {
+    return TRUE;
+  }
+  return FALSE;
 }
 
-gboolean latexmk_detected (void) {
-    return lmk_detected;
+gboolean latexmk_detected(void)
+{
+  return lmk_detected;
 }
 
-gchar* latexmk_get_command (const gchar* method, gchar* workfile, gchar* basename) {
-    gchar* outdir = g_strdup("");
-    gchar* base;
+gchar* latexmk_get_command(const gchar* method, gchar* workfile,
+                           gchar* basename)
+{
+  gchar* outdir = g_strdup("");
+  gchar* base;
 
-    /* reroute output files to our temp directory */
-    if (!STR_EQU (C_TMPDIR, g_path_get_dirname (workfile))) {
-        base = g_path_get_basename (basename);
-        outdir = g_strdup_printf ("-jobname=\"%s/%s\"", C_TMPDIR, base);
-    }
+  /* reroute output files to our temp directory */
+  if (!STR_EQU(C_TMPDIR, g_path_get_dirname(workfile))) {
+    base = g_path_get_basename(basename);
+    outdir = g_strdup_printf("-jobname=\"%s/%s\"", C_TMPDIR, base);
+  }
 
-    const gchar* flags = latexmk_get_flags (method);
-    gchar* lmkcmd;
+  const gchar* flags = latexmk_get_flags(method);
+  gchar* lmkcmd;
 
-    lmkcmd = g_strdup_printf("latexmk %s %s \"%s\"", flags, outdir, workfile);
-    return lmkcmd;
+  lmkcmd = g_strdup_printf("latexmk %s %s \"%s\"", flags, outdir, workfile);
+  return lmkcmd;
 }
 
 
-gchar* latexmk_get_flags (const gchar *method) {
-    gchar* lmkwithoutput;
-    gchar* lmkflags;
+gchar* latexmk_get_flags(const gchar *method)
+{
+  gchar* lmkwithoutput;
+  gchar* lmkflags;
 
-    if (config_get_value("synctex")) {
-        if (STR_EQU (method, "texpdf")) {
-            lmkflags = g_strdup_printf("-e \"\\$pdflatex = 'pdflatex -synctex=1'\" -silent");
-        }
-        else {
-            lmkflags = g_strdup_printf("-e \"\\$latex = 'latex -synctex=1'\" -silent");
-        }
+  if (config_get_value("synctex")) {
+    if (STR_EQU(method, "texpdf")) {
+      lmkflags =
+        g_strdup_printf("-e \"\\$pdflatex = 'pdflatex -synctex=1'\" -silent");
+    } else {
+      lmkflags = g_strdup_printf("-e \"\\$latex = 'latex -synctex=1'\" -silent");
     }
-    else {
-        if (STR_EQU (method, "texpdf")) {
-            lmkflags = g_strdup_printf("-e \"\\$pdflatex = 'pdflatex -synctex=0'\" -silent");
-        }
-        else {
-            lmkflags = g_strdup_printf("-e \"\\$latex = 'latex -synctex=0'\" -silent");
-        }
+  } else {
+    if (STR_EQU(method, "texpdf")) {
+      lmkflags =
+        g_strdup_printf("-e \"\\$pdflatex = 'pdflatex -synctex=0'\" -silent");
+    } else {
+      lmkflags = g_strdup_printf("-e \"\\$latex = 'latex -synctex=0'\" -silent");
     }
+  }
 
-    if (STR_EQU (method, "texpdf")) {
-        lmkwithoutput = g_strconcat (lmkflags, " -pdf", NULL);
-    }
-    else if (STR_EQU (method, "texdvipdf")) {
-        lmkwithoutput = g_strconcat (lmkflags, " -pdfdvi", NULL);
-    }
-    else {
-        lmkwithoutput = g_strconcat (lmkflags, " -pdfps", NULL);
-    }
+  if (STR_EQU(method, "texpdf")) {
+    lmkwithoutput = g_strconcat(lmkflags, " -pdf", NULL);
+  } else if (STR_EQU(method, "texdvipdf")) {
+    lmkwithoutput = g_strconcat(lmkflags, " -pdfdvi", NULL);
+  } else {
+    lmkwithoutput = g_strconcat(lmkflags, " -pdfps", NULL);
+  }
 
-    g_free (lmkflags);
-    return lmkwithoutput;
+  g_free(lmkflags);
+  return lmkwithoutput;
 }
 
 

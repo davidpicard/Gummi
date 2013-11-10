@@ -34,29 +34,29 @@
 #include <gtk/gtk.h>
 
 typedef struct _templdata {
-    gchar* itemname;
-    gchar* itemdata;
+  gchar* itemname;
+  gchar* itemdata;
 } templdata;
 
 typedef struct _Template {
-    GtkWindow* templatewindow;
-    GtkTreeView* templateview;
-    GtkListStore* list_templates;
-    GtkCellRendererText* template_render;
-    GtkTreeViewColumn* template_col;
-    GtkLabel* template_label;
-    GtkWidget* template_add;
-    GtkWidget* template_remove;
-    GtkWidget* template_open;
+  GtkWindow* templatewindow;
+  GtkTreeView* templateview;
+  GtkListStore* list_templates;
+  GtkCellRendererText* template_render;
+  GtkTreeViewColumn* template_col;
+  GtkLabel* template_label;
+  GtkWidget* template_add;
+  GtkWidget* template_remove;
+  GtkWidget* template_open;
 } GuTemplate;
 
 
-GuTemplate* template_init (GtkBuilder* builder);
-void template_setup ();
-void template_add_new_entry (GuTemplate* t);
-void template_remove_entry (GuTemplate* t);
-void template_create_file (GuTemplate* t, gchar* filename, gchar* text);
-gchar* template_get_selected_path (GuTemplate* t);
+GuTemplate* template_init(GtkBuilder* builder);
+void template_setup();
+void template_add_new_entry(GuTemplate* t);
+void template_remove_entry(GuTemplate* t);
+void template_create_file(GuTemplate* t, gchar* filename, gchar* text);
+gchar* template_get_selected_path(GuTemplate* t);
 void template_data_free(templdata* data);
 
 #endif /* __GUMMI_TEMPLATE_H__ */

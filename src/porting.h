@@ -31,23 +31,23 @@
 #include <gdk/gdkkeysyms.h>
 
 #ifndef GDK_KEY_BackSpace
-    #define GDK_KEY_BackSpace GDK_BackSpace
+#define GDK_KEY_BackSpace GDK_BackSpace
 #endif
 
 #ifndef GDK_KEY_Escape
-    #define GDK_KEY_Escape GDK_Escape
+#define GDK_KEY_Escape GDK_Escape
 #endif
 
 #ifndef GDK_KEY_Tab
-    #define GDK_KEY_Tab GDK_Tab
+#define GDK_KEY_Tab GDK_Tab
 #endif
 
 #ifndef GDK_KEY_Delete
-    #define GDK_KEY_Delete GDK_Delete
+#define GDK_KEY_Delete GDK_Delete
 #endif
 
 #ifndef GDK_KEY_ISO_Left_Tab
-    #define GDK_KEY_ISO_Left_Tab GDK_ISO_Left_Tab
+#define GDK_KEY_ISO_Left_Tab GDK_ISO_Left_Tab
 #endif
 
 

@@ -30,16 +30,17 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-void gummi_signals_register (void) {
-    g_signal_new ("document-load",
-            G_TYPE_OBJECT, G_SIGNAL_RUN_FIRST,
-            0, NULL, NULL,
-            g_cclosure_marshal_VOID__POINTER,
-            G_TYPE_NONE, 1, G_TYPE_POINTER);
+void gummi_signals_register(void)
+{
+  g_signal_new("document-load",
+               G_TYPE_OBJECT, G_SIGNAL_RUN_FIRST,
+               0, NULL, NULL,
+               g_cclosure_marshal_VOID__POINTER,
+               G_TYPE_NONE, 1, G_TYPE_POINTER);
 
-    g_signal_new ("document-write",
-            G_TYPE_OBJECT, G_SIGNAL_RUN_FIRST,
-            0, NULL, NULL,
-            g_cclosure_marshal_VOID__POINTER,
-            G_TYPE_NONE, 1, G_TYPE_POINTER);
+  g_signal_new("document-write",
+               G_TYPE_OBJECT, G_SIGNAL_RUN_FIRST,
+               0, NULL, NULL,
+               g_cclosure_marshal_VOID__POINTER,
+               G_TYPE_NONE, 1, G_TYPE_POINTER);
 }

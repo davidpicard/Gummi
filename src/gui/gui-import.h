@@ -39,36 +39,36 @@
 typedef struct _GuImportGui GuImportGui;
 
 struct _GuImportGui {
-    GtkBox* import_panel;
+  GtkBox* import_panel;
 
-    GtkViewport* image_pane;
-    GtkViewport* table_pane;
-    GtkViewport* matrix_pane;
-    GtkViewport* biblio_pane;
+  GtkViewport* image_pane;
+  GtkViewport* table_pane;
+  GtkViewport* matrix_pane;
+  GtkViewport* biblio_pane;
 
-    GtkEntry* image_file;
-    GtkEntry* image_caption;
-    GtkEntry* image_label;
-    GtkSpinButton* image_scale;
-    GtkAdjustment* scaler;
+  GtkEntry* image_file;
+  GtkEntry* image_caption;
+  GtkEntry* image_label;
+  GtkSpinButton* image_scale;
+  GtkAdjustment* scaler;
 
-    GtkComboBox* table_comboalign;
-    GtkComboBox* table_comboborder;
-    GtkAdjustment* table_rows;
-    GtkAdjustment* table_cols;
+  GtkComboBox* table_comboalign;
+  GtkComboBox* table_comboborder;
+  GtkAdjustment* table_rows;
+  GtkAdjustment* table_cols;
 
-    GtkAdjustment* matrix_rows;
-    GtkAdjustment* matrix_cols;
-    GtkComboBox* matrix_combobracket;
+  GtkAdjustment* matrix_rows;
+  GtkAdjustment* matrix_cols;
+  GtkComboBox* matrix_combobracket;
 
-    GtkEntry* biblio_file;
+  GtkEntry* biblio_file;
 };
 
-GuImportGui* importgui_init (GtkBuilder* builder);
+GuImportGui* importgui_init(GtkBuilder* builder);
 //void on_import_tabs_switch_page (GtkNotebook* notebook, GtkNotebookPage* page,
 //        guint page_num, void* user);
 
-void on_image_file_activate (void);
-void importer_imagegui_set_sensitive (const gchar* name, gboolean mode);
+void on_image_file_activate(void);
+void importer_imagegui_set_sensitive(const gchar* name, gboolean mode);
 
 #endif /* __GUMMI_GUI_IMPORT_H__ */

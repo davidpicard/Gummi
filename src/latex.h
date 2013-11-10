@@ -39,33 +39,33 @@
 typedef struct _GuLatex GuLatex;
 
 struct _GuLatex {
-    gchar* typesetter;
-    /* use fixed size for errorlines in consider of performance */
-    gint errorlines[BUFSIZ];
-    gchar* compilelog;
-    gboolean modified_since_compile;
+  gchar* typesetter;
+  /* use fixed size for errorlines in consider of performance */
+  gint errorlines[BUFSIZ];
+  gchar* compilelog;
+  gboolean modified_since_compile;
 
-    int tex_version;
+  int tex_version;
 
 };
 
-GuLatex* latex_init (void);
-gboolean latex_precompile_check (gchar* editortext);
-gchar* latex_update_workfile (GuLatex* mc, GuEditor* ec);
-gboolean latex_update_pdffile (GuLatex* mc, GuEditor* ec);
-void latex_update_auxfile (GuLatex* mc, GuEditor* ec);
-void latex_export_pdffile (GuLatex* lc, GuEditor* ec, const gchar* path,
-        gboolean prompt_overrite);
+GuLatex* latex_init(void);
+gboolean latex_precompile_check(gchar* editortext);
+gchar* latex_update_workfile(GuLatex* mc, GuEditor* ec);
+gboolean latex_update_pdffile(GuLatex* mc, GuEditor* ec);
+void latex_update_auxfile(GuLatex* mc, GuEditor* ec);
+void latex_export_pdffile(GuLatex* lc, GuEditor* ec, const gchar* path,
+                          gboolean prompt_overrite);
 
-gboolean latex_typesetter_detected (GuLatex* lc, gchar* typesetter);
-gboolean latex_typesetter_active (gchar* typesetter);
-gboolean latex_method_active (gchar* method);
-gboolean latex_run_makeindex (GuEditor* ec);
-int latex_remove_auxfile (GuEditor* ec);
+gboolean latex_typesetter_detected(GuLatex* lc, gchar* typesetter);
+gboolean latex_typesetter_active(gchar* typesetter);
+gboolean latex_method_active(gchar* method);
+gboolean latex_run_makeindex(GuEditor* ec);
+int latex_remove_auxfile(GuEditor* ec);
 
-gboolean latex_can_synctex (void);
-gboolean latex_use_synctex (void);
+gboolean latex_can_synctex(void);
+gboolean latex_use_synctex(void);
 
-gboolean latex_use_shellescaping (void);
+gboolean latex_use_shellescaping(void);
 
 #endif /* __GUMMI_LATEX_H__ */

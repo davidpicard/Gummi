@@ -44,15 +44,15 @@ struct _GuIOFunc {
 
 
 /* Public functions */
-GuIOFunc* iofunctions_init (void);
-void iofunctions_load_default_text (gboolean loopedonce);
-void iofunctions_load_file (GuIOFunc* io, const gchar* filename);
-void iofunctions_save_file (GuIOFunc* io, gchar* filename, gchar *text);
-gchar* iofunctions_get_swapfile (const gchar* filename);
-gboolean iofunctions_has_swapfile (const gchar* filename);
-void iofunctions_start_autosave (void);
-void iofunctions_stop_autosave (void);
-void iofunctions_reset_autosave (const gchar* name);
-gboolean iofunctions_autosave_cb (void *user);
+GuIOFunc* iofunctions_init(void);
+void iofunctions_load_default_text(gboolean loopedonce);
+void iofunctions_load_file(GuIOFunc* io, const gchar* filename);
+void iofunctions_save_file(GuIOFunc* io, gchar* filename, gchar *text);
+gchar* iofunctions_get_swapfile(const gchar* filename);
+gboolean iofunctions_has_swapfile(const gchar* filename);
+void iofunctions_start_autosave(void);
+void iofunctions_stop_autosave(void);
+void iofunctions_reset_autosave(const gchar* name);
+gboolean iofunctions_autosave_cb(void *user);
 
 #endif /* __GUMMI_IOFUNCTIONS_H__ */

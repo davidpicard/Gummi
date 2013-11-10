@@ -35,12 +35,12 @@
 #include <signal.h>
 
 #ifndef WIN32
-    #include <sys/types.h>
-    #include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #endif
 
 #ifdef WIN32
-    #include <windows.h>
+#include <windows.h>
 #endif
 
 #include <glib.h>
@@ -58,9 +58,9 @@
 /* set up uri using appropriate formatting for OS
    http://en.wikipedia.org/wiki/File_URI_scheme#Linux */
 #ifdef WIN32
-    const gchar *urifrmt = "file:///";
+const gchar *urifrmt = "file:///";
 #else
-    const gchar *urifrmt = "file://";
+const gchar *urifrmt = "file://";
 #endif
 
 
@@ -70,248 +70,264 @@ extern Gummi* gummi;
 /* Typesetter pid */
 pid_t typesetter_pid = 0;
 
-GuMotion* motion_init (void) {
-    GuMotion* m = g_new0 (GuMotion, 1);
+GuMotion* motion_init(void)
+{
+  GuMotion* m = g_new0(GuMotion, 1);
 
-    m->key_press_timer = 0;
-    g_mutex_init(&m->signal_mutex);
-    g_mutex_init(&m->compile_mutex);
-    g_cond_init(&m->compile_cv);
-    m->keep_running = TRUE;
-    m->keep_running = FALSE;
-    m->typesetter_pid = &typesetter_pid;
+  m->key_press_timer = 0;
+  g_mutex_init(&m->signal_mutex);
+  g_mutex_init(&m->compile_mutex);
+  g_cond_init(&m->compile_cv);
+  m->keep_running = TRUE;
+  m->keep_running = FALSE;
+  m->typesetter_pid = &typesetter_pid;
 
-    return m;
+  return m;
 }
 
-void motion_start_compile_thread (GuMotion* m) {
-    m->keep_running = TRUE;
-    m->compile_thread = g_thread_new ("motion", motion_compile_thread, m);
+void motion_start_compile_thread(GuMotion* m)
+{
+  m->keep_running = TRUE;
+  m->compile_thread = g_thread_new("motion", motion_compile_thread, m);
 }
 
-void motion_stop_compile_thread (GuMotion* m) {
-    L_F_DEBUG;
+void motion_stop_compile_thread(GuMotion* m)
+{
+  L_F_DEBUG;
 
-    m->keep_running = FALSE;
-    motion_do_compile(m);
-    g_thread_join(m->compile_thread);
+  m->keep_running = FALSE;
+  motion_do_compile(m);
+  g_thread_join(m->compile_thread);
 }
 
-void motion_pause_compile_thread (GuMotion* m) {
-    L_F_DEBUG;
+void motion_pause_compile_thread(GuMotion* m)
+{
+  L_F_DEBUG;
 
-    m->pause = TRUE;
-    motion_do_compile(m);
+  m->pause = TRUE;
+  motion_do_compile(m);
 }
 
-void motion_resume_compile_thread (GuMotion* m) {
-    L_F_DEBUG;
+void motion_resume_compile_thread(GuMotion* m)
+{
+  L_F_DEBUG;
 
-    m->pause = FALSE;
-    motion_do_compile(m);
+  m->pause = FALSE;
+  motion_do_compile(m);
 }
 
-void motion_kill_typesetter (GuMotion* m) {
-    if (*m->typesetter_pid) {
-        gchar* command = NULL;
-        /* Kill children spawned by typesetter command/script, don't know
-         * how to do this programatically yet(glib doesn't not provides any
-         * function for killing a process), so use pkill for now. For
-         * win32 there's currently nothing we can do about it. */
+void motion_kill_typesetter(GuMotion* m)
+{
+  if (*m->typesetter_pid) {
+    gchar* command = NULL;
+    /* Kill children spawned by typesetter command/script, don't know
+     * how to do this programatically yet(glib doesn't not provides any
+     * function for killing a process), so use pkill for now. For
+     * win32 there's currently nothing we can do about it. */
 #ifndef WIN32
-        command = g_strdup_printf("pkill -15 -P %d", *m->typesetter_pid);
-        system(command);
-        g_free(command);
+    command = g_strdup_printf("pkill -15 -P %d", *m->typesetter_pid);
+    system(command);
+    g_free(command);
 
-        /* Make sure typesetter command is terminated */
-        if (kill(*m->typesetter_pid, 15)) {
-            slog(L_ERROR, "Could not kill process: %s\n",
-                                    g_strerror(errno));
-        }
+    /* Make sure typesetter command is terminated */
+    if (kill(*m->typesetter_pid, 15)) {
+      slog(L_ERROR, "Could not kill process: %s\n",
+           g_strerror(errno));
+    }
 #else
-        if (!TerminateProcess(*m->typesetter_pid, 0)) {
-            gchar *msg = g_win32_error_message(GetLastError());
-            slog (L_ERROR, "Could not kill process: %s\n",
-                                    msg ? msg : "(null)");
-            g_free(msg);
-        }
+    if (!TerminateProcess(*m->typesetter_pid, 0)) {
+      gchar *msg = g_win32_error_message(GetLastError());
+      slog(L_ERROR, "Could not kill process: %s\n",
+           msg ? msg : "(null)");
+      g_free(msg);
+    }
 
 #endif
 
 
-        slog(L_DEBUG, "Typeseter[pid=%d]: Killed\n", *m->typesetter_pid);
-        *m->typesetter_pid = 0;
+    slog(L_DEBUG, "Typeseter[pid=%d]: Killed\n", *m->typesetter_pid);
+    *m->typesetter_pid = 0;
 
-        /* XXX: Ugly hack: delay compile signal */
-        motion_start_timer (m);
-    }
+    /* XXX: Ugly hack: delay compile signal */
+    motion_start_timer(m);
+  }
 }
 
-gboolean motion_do_compile (gpointer user) {
-    L_F_DEBUG;
-    GuMotion* mc = GU_MOTION (user);
+gboolean motion_do_compile(gpointer user)
+{
+  L_F_DEBUG;
+  GuMotion* mc = GU_MOTION(user);
 
-    if (!g_mutex_trylock (&mc->signal_mutex)) goto ret;
-    g_cond_signal (&mc->compile_cv);
-    g_mutex_unlock (&mc->signal_mutex);
+  if (!g_mutex_trylock(&mc->signal_mutex)) goto ret;
+  g_cond_signal(&mc->compile_cv);
+  g_mutex_unlock(&mc->signal_mutex);
 
 ret:
-    return (STR_EQU (config_get_value ("compile_scheme"), "real_time"));
+  return (STR_EQU(config_get_value("compile_scheme"), "real_time"));
 }
 
-gpointer motion_compile_thread (gpointer data) {
-    L_F_DEBUG;
-    GuMotion* mc = GU_MOTION (data);
-    GuEditor* editor = NULL;
-    GuLatex* latex = NULL;
-    GuPreviewGui* pc = NULL;
-    GtkWidget* focus = NULL;
-    gboolean precompile_ok = FALSE;
-    gboolean compile_status = FALSE;
-    gchar *editortext;
+gpointer motion_compile_thread(gpointer data)
+{
+  L_F_DEBUG;
+  GuMotion* mc = GU_MOTION(data);
+  GuEditor* editor = NULL;
+  GuLatex* latex = NULL;
+  GuPreviewGui* pc = NULL;
+  GtkWidget* focus = NULL;
+  gboolean precompile_ok = FALSE;
+  gboolean compile_status = FALSE;
+  gchar *editortext;
 
-    latex = gummi_get_latex ();
-    pc = gui->previewgui;
+  latex = gummi_get_latex();
+  pc = gui->previewgui;
 
-    while (TRUE) {
-        if (!g_mutex_trylock (&mc->compile_mutex)) continue;
-        slog (L_DEBUG, "Compile thread sleeping...\n");
-        g_cond_wait (&mc->compile_cv, &mc->compile_mutex);
-        slog (L_DEBUG, "Compile thread awoke.\n");
+  while (TRUE) {
+    if (!g_mutex_trylock(&mc->compile_mutex)) continue;
+    slog(L_DEBUG, "Compile thread sleeping...\n");
+    g_cond_wait(&mc->compile_cv, &mc->compile_mutex);
+    slog(L_DEBUG, "Compile thread awoke.\n");
 
-        if (!(editor = gummi_get_active_editor ())) {
-            g_mutex_unlock (&mc->compile_mutex);
-            continue;
-        }
-        if (!mc->keep_running) {
-            g_mutex_unlock (&mc->compile_mutex);
-            g_thread_exit (NULL);
-        }
-
-        if (mc->pause) {
-            g_mutex_unlock (&mc->compile_mutex);
-            continue;
-        }
-
-        gdk_threads_enter ();
-        focus = gtk_window_get_focus (gui->mainwindow);
-        editortext = latex_update_workfile (latex, editor);
-
-        precompile_ok = latex_precompile_check (editortext);
-        g_free (editortext);
-
-        gtk_widget_grab_focus (focus);
-
-        if (!precompile_ok) {
-            motion_start_errormode (mc, "document_error");
-            gdk_threads_leave();
-            g_mutex_unlock (&mc->compile_mutex);
-            continue;
-        }
-        gdk_threads_leave();
-
-        compile_status = latex_update_pdffile (latex, editor);
-        *mc->typesetter_pid = 0;
-        g_mutex_unlock (&mc->compile_mutex);
-
-        if (!mc->keep_running)
-            g_thread_exit (NULL);
-
-        gdk_threads_enter ();
-        previewgui_update_statuslight(compile_status? "gtk-yes": "gtk-no");
-
-        /* Make sure the editor still exists after compile */
-        if (editor == gummi_get_active_editor()) {
-            editor_apply_errortags (editor, latex->errorlines);
-            gui_buildlog_set_text (latex->compilelog);
-
-            if (latex->errorlines[0]) {
-                motion_start_errormode  (mc, "compile_error");
-            } else {
-                if (!pc->uri) {
-
-                    char* uri = g_strconcat (urifrmt, editor->pdffile, NULL);
-                    previewgui_set_pdffile (pc, uri);
-                    g_free(uri);
-                } else {
-                    previewgui_refresh (gui->previewgui,
-                            editor->sync_to_last_edit ?
-                            &(editor->last_edit) : NULL, editor->workfile);
-                }
-                if (mc->errormode) motion_stop_errormode (mc);
-            }
-        }
-        gdk_threads_leave ();
+    if (!(editor = gummi_get_active_editor())) {
+      g_mutex_unlock(&mc->compile_mutex);
+      continue;
     }
+    if (!mc->keep_running) {
+      g_mutex_unlock(&mc->compile_mutex);
+      g_thread_exit(NULL);
+    }
+
+    if (mc->pause) {
+      g_mutex_unlock(&mc->compile_mutex);
+      continue;
+    }
+
+    gdk_threads_enter();
+    focus = gtk_window_get_focus(gui->mainwindow);
+    editortext = latex_update_workfile(latex, editor);
+
+    precompile_ok = latex_precompile_check(editortext);
+    g_free(editortext);
+
+    gtk_widget_grab_focus(focus);
+
+    if (!precompile_ok) {
+      motion_start_errormode(mc, "document_error");
+      gdk_threads_leave();
+      g_mutex_unlock(&mc->compile_mutex);
+      continue;
+    }
+    gdk_threads_leave();
+
+    compile_status = latex_update_pdffile(latex, editor);
+    *mc->typesetter_pid = 0;
+    g_mutex_unlock(&mc->compile_mutex);
+
+    if (!mc->keep_running)
+      g_thread_exit(NULL);
+
+    gdk_threads_enter();
+    previewgui_update_statuslight(compile_status ? "gtk-yes" : "gtk-no");
+
+    /* Make sure the editor still exists after compile */
+    if (editor == gummi_get_active_editor()) {
+      editor_apply_errortags(editor, latex->errorlines);
+      gui_buildlog_set_text(latex->compilelog);
+
+      if (latex->errorlines[0]) {
+        motion_start_errormode(mc, "compile_error");
+      } else {
+        if (!pc->uri) {
+
+          char* uri = g_strconcat(urifrmt, editor->pdffile, NULL);
+          previewgui_set_pdffile(pc, uri);
+          g_free(uri);
+        } else {
+          previewgui_refresh(gui->previewgui,
+                             editor->sync_to_last_edit ?
+                             & (editor->last_edit) : NULL, editor->workfile);
+        }
+        if (mc->errormode) motion_stop_errormode(mc);
+      }
+    }
+    gdk_threads_leave();
+  }
 }
 
-void motion_force_compile (GuMotion *mc) {
-    /* sort-of signal to force a compile run after certain actions that
-     * don't trigger the regular editor content change signals */
-    gummi->latex->modified_since_compile = TRUE;
-    motion_do_compile (mc);
+void motion_force_compile(GuMotion *mc)
+{
+  /* sort-of signal to force a compile run after certain actions that
+   * don't trigger the regular editor content change signals */
+  gummi->latex->modified_since_compile = TRUE;
+  motion_do_compile(mc);
 }
 
-void motion_start_errormode (GuMotion *mc, const gchar *msg) {
+void motion_start_errormode(GuMotion *mc, const gchar *msg)
+{
 
-    if (mc->errormode) {
-        infoscreengui_set_message (gui->infoscreengui, msg);
+  if (mc->errormode) {
+    infoscreengui_set_message(gui->infoscreengui, msg);
     return;
-    }
+  }
 
-    previewgui_save_position (gui->previewgui);
+  previewgui_save_position(gui->previewgui);
 
-    infoscreengui_enable (gui->infoscreengui, msg);
-    mc->errormode = TRUE;
+  infoscreengui_enable(gui->infoscreengui, msg);
+  mc->errormode = TRUE;
 }
 
-void motion_stop_errormode (GuMotion *mc) {
+void motion_stop_errormode(GuMotion *mc)
+{
 
-    if (!mc->errormode) return;
+  if (!mc->errormode) return;
 
-    previewgui_restore_position (gui->previewgui);
+  previewgui_restore_position(gui->previewgui);
 
-    infoscreengui_disable (gui->infoscreengui);
-    mc->errormode = FALSE;
+  infoscreengui_disable(gui->infoscreengui);
+  mc->errormode = FALSE;
 }
 
-gboolean motion_idle_cb (gpointer user) {
-    if (gui->previewgui->preview_on_idle)
-        motion_do_compile (GU_MOTION (user));
-    return FALSE;
+gboolean motion_idle_cb(gpointer user)
+{
+  if (gui->previewgui->preview_on_idle)
+    motion_do_compile(GU_MOTION(user));
+  return FALSE;
 }
 
-void motion_start_timer (GuMotion* mc) {
-    motion_stop_timer (mc);
-    mc->key_press_timer = g_timeout_add_seconds (atoi (
-                config_get_value ("compile_timer")), motion_idle_cb, mc);
+void motion_start_timer(GuMotion* mc)
+{
+  motion_stop_timer(mc);
+  mc->key_press_timer = g_timeout_add_seconds(atoi(
+                          config_get_value("compile_timer")), motion_idle_cb, mc);
 }
 
-void motion_stop_timer (GuMotion* mc) {
-    if (mc->key_press_timer > 0) {
-        g_source_remove (mc->key_press_timer);
-        mc->key_press_timer = 0;
-    }
+void motion_stop_timer(GuMotion* mc)
+{
+  if (mc->key_press_timer > 0) {
+    g_source_remove(mc->key_press_timer);
+    mc->key_press_timer = 0;
+  }
 }
 
-gboolean on_key_press_cb (GtkWidget* widget, GdkEventKey* event, void* user) {
-    if (!event->is_modifier) {
-        motion_stop_timer (GU_MOTION (user));
-    }
-    if (config_get_value("snippets") &&
-        snippets_key_press_cb (gummi_get_snippets (),
-                               gummi_get_active_editor (), event))
-        return TRUE;
-    return FALSE;
+gboolean on_key_press_cb(GtkWidget* widget, GdkEventKey* event, void* user)
+{
+  if (!event->is_modifier) {
+    motion_stop_timer(GU_MOTION(user));
+  }
+  if (config_get_value("snippets") &&
+      snippets_key_press_cb(gummi_get_snippets(),
+                            gummi_get_active_editor(), event))
+    return TRUE;
+  return FALSE;
 }
 
-gboolean on_key_release_cb (GtkWidget* widget, GdkEventKey* event, void* user) {
-    if (!event->is_modifier) {
-        motion_start_timer (GU_MOTION (user));
-    }
-    if (config_get_value("snippets") &&
-        snippets_key_release_cb (gummi_get_snippets (),
-                                 gummi_get_active_editor (), event))
-        return TRUE;
-    return FALSE;
+gboolean on_key_release_cb(GtkWidget* widget, GdkEventKey* event, void* user)
+{
+  if (!event->is_modifier) {
+    motion_start_timer(GU_MOTION(user));
+  }
+  if (config_get_value("snippets") &&
+      snippets_key_release_cb(gummi_get_snippets(),
+                              gummi_get_active_editor(), event))
+    return TRUE;
+  return FALSE;
 }

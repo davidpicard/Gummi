@@ -97,22 +97,22 @@
 typedef struct _Gummi Gummi;
 
 struct _Gummi {
-    /*< private >*/
-    GuEditor* editor;
-    GuIOFunc* io;
-    GuMotion* motion;
-    GuLatex* latex;
-    GuBiblio* biblio;
-    GuTemplate* templ;
-    GuSnippets* snippets;
-    GuTabmanager* tabmanager;
-    GuProject* project;
+  /*< private >*/
+  GuEditor* editor;
+  GuIOFunc* io;
+  GuMotion* motion;
+  GuLatex* latex;
+  GuBiblio* biblio;
+  GuTemplate* templ;
+  GuSnippets* snippets;
+  GuTabmanager* tabmanager;
+  GuProject* project;
 };
 
-Gummi* gummi_init (GuMotion* mo, GuIOFunc* io, GuLatex* latex, GuBiblio* bib,
-                   GuTemplate* tpl, GuSnippets* snip, GuTabmanager* tabm,
-                   GuProject* proj);
-GuEditor* gummi_new_environment (const gchar* filename);
+Gummi* gummi_init(GuMotion* mo, GuIOFunc* io, GuLatex* latex, GuBiblio* bib,
+                  GuTemplate* tpl, GuSnippets* snip, GuTabmanager* tabm,
+                  GuProject* proj);
+GuEditor* gummi_new_environment(const gchar* filename);
 
 /**
  * Following APIs is used to eliminate the need of exposing global Gummi to
@@ -120,18 +120,18 @@ GuEditor* gummi_new_environment (const gchar* filename);
  * Please only use this functions if not avoidable.
  */
 
-gboolean gummi_project_active (void);
+gboolean gummi_project_active(void);
 
-GummiGui* gummi_get_gui (void);
-GuEditor* gummi_get_active_editor (void);
-GuIOFunc* gummi_get_io (void);
-GuMotion* gummi_get_motion (void);
-GuLatex* gummi_get_latex (void);
-GuBiblio* gummi_get_biblio (void);
-GuTemplate* gummi_get_template (void);
-GuSnippets* gummi_get_snippets (void);
+GummiGui* gummi_get_gui(void);
+GuEditor* gummi_get_active_editor(void);
+GuIOFunc* gummi_get_io(void);
+GuMotion* gummi_get_motion(void);
+GuLatex* gummi_get_latex(void);
+GuBiblio* gummi_get_biblio(void);
+GuTemplate* gummi_get_template(void);
+GuSnippets* gummi_get_snippets(void);
 
-GList* gummi_get_all_tabs (void);
-GList* gummi_get_all_editors (void);
+GList* gummi_get_all_tabs(void);
+GList* gummi_get_all_editors(void);
 
 #endif /* GUMMI_ENVIRONMENT_H */

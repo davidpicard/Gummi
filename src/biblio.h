@@ -38,21 +38,21 @@
 typedef struct _GuBiblio GuBiblio;
 
 struct _GuBiblio {
-    GtkProgressBar* progressbar;
-    GtkAdjustment* progressmon;
-    GtkListStore* list_biblios;
-    GtkTreeView* biblio_treeview;
-    GtkLabel* filenm_label;
-    GtkLabel* refnr_label;
-    GtkEntry* list_filter;
-    gchar* basename;
-    double progressval;
+  GtkProgressBar* progressbar;
+  GtkAdjustment* progressmon;
+  GtkListStore* list_biblios;
+  GtkTreeView* biblio_treeview;
+  GtkLabel* filenm_label;
+  GtkLabel* refnr_label;
+  GtkEntry* list_filter;
+  gchar* basename;
+  double progressval;
 };
 
-GuBiblio* biblio_init (GtkBuilder* builder);
-gboolean biblio_detect_bibliography (GuBiblio* bc, GuEditor* ec);
-gboolean biblio_compile_bibliography (GuBiblio* bc, GuEditor* ec, GuLatex* lc);
-int biblio_parse_entries (GuBiblio* bc, gchar *bib_content);
+GuBiblio* biblio_init(GtkBuilder* builder);
+gboolean biblio_detect_bibliography(GuBiblio* bc, GuEditor* ec);
+gboolean biblio_compile_bibliography(GuBiblio* bc, GuEditor* ec, GuLatex* lc);
+int biblio_parse_entries(GuBiblio* bc, gchar *bib_content);
 
 
 #endif /* __GUMMI_BIBLIO_H__ */

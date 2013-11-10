@@ -59,31 +59,31 @@
  */
 typedef struct _LayeredRectangle LayeredRectangle;
 struct _LayeredRectangle {
-    gint x;
-    gint y;
-    gint width;
-    gint height;
-    gint layer;
+  gint x;
+  gint y;
+  gint width;
+  gint height;
+  gint layer;
 };
 
 enum GuPreviewFitMode {
-    FIT_NONE = 0,
-    FIT_WIDTH,
-    FIT_HEIGHT,
-    FIT_BOTH
+  FIT_NONE = 0,
+  FIT_WIDTH,
+  FIT_HEIGHT,
+  FIT_BOTH
 };
 
 #define GU_PREVIEW_PAGE(x) ((GuPreviewPage*)(x))
 typedef struct _GuPreviewPage GuPreviewPage;
 
 struct _GuPreviewPage {
-    cairo_surface_t* rendering;
+  cairo_surface_t* rendering;
 
-    double height;
-    double width;
+  double height;
+  double width;
 
-    LayeredRectangle inner; // Position of the page itself
-    LayeredRectangle outer; // Position of the page + border & shadow
+  LayeredRectangle inner; // Position of the page itself
+  LayeredRectangle outer; // Position of the page + border & shadow
 
 };
 
@@ -91,103 +91,106 @@ struct _GuPreviewPage {
 typedef struct _GuPreviewGui GuPreviewGui;
 
 struct _GuPreviewGui {
-    PopplerDocument* doc;
-    GtkViewport* previewgui_viewport;
-    GtkWidget* previewgui_toolbar;
-    GtkWidget* statuslight;
-    GtkWidget* drawarea;
-    GtkWidget* page_next;
-    GtkWidget* page_prev;
-    GtkWidget* page_label;
-    GtkWidget* page_input;
-    GtkWidget* scrollw;
-    GtkWidget* errorpanel;
-    GtkComboBox* combo_sizes;
+  PopplerDocument* doc;
+  GtkViewport* previewgui_viewport;
+  GtkWidget* previewgui_toolbar;
+  GtkWidget* statuslight;
+  GtkWidget* drawarea;
+  GtkWidget* page_next;
+  GtkWidget* page_prev;
+  GtkWidget* page_label;
+  GtkWidget* page_input;
+  GtkWidget* scrollw;
+  GtkWidget* errorpanel;
+  GtkComboBox* combo_sizes;
 
-    gulong page_input_changed_handler;
-    gulong combo_sizes_changed_handler;
-    gulong on_resize_handler;
-    gulong on_expose_handler;
-    gulong hvalue_changed_handler;
-    gulong vvalue_changed_handler;
-    gulong hchanged_handler;
-    gulong vchanged_handler;
+  gulong page_input_changed_handler;
+  gulong combo_sizes_changed_handler;
+  gulong on_resize_handler;
+  gulong on_expose_handler;
+  gulong hvalue_changed_handler;
+  gulong vvalue_changed_handler;
+  gulong hchanged_handler;
+  gulong vchanged_handler;
 
-    GtkRadioMenuItem *page_layout_single_page;
-    GtkRadioMenuItem *page_layout_one_column;
+  GtkRadioMenuItem *page_layout_single_page;
+  GtkRadioMenuItem *page_layout_one_column;
 
-    gchar *uri;
-    gint update_timer;
-    gboolean preview_on_idle;
+  gchar *uri;
+  gint update_timer;
+  gboolean preview_on_idle;
 
-    GtkAdjustment* hadj;
-    GtkAdjustment* vadj;
-    gdouble prev_x;
-    gdouble prev_y;
-    gdouble restore_x;
-    gdouble restore_y;
+  GtkAdjustment* hadj;
+  GtkAdjustment* vadj;
+  gdouble prev_x;
+  gdouble prev_y;
+  gdouble restore_x;
+  gdouble restore_y;
 
-    gint n_pages;
-    gint current_page;
-    gdouble max_page_height;
-    gdouble height_pages;
-    gdouble width_pages;
-    gdouble height_scaled;
-    gdouble width_scaled;
-    gdouble width_left;
-    gdouble width_no_scale;
-    gdouble scale;
-    PopplerPageLayout pageLayout;
-    GuPreviewPage *pages;
-    enum GuPreviewFitMode fit_mode;
-    gint cache_size;
+  gint n_pages;
+  gint current_page;
+  gdouble max_page_height;
+  gdouble height_pages;
+  gdouble width_pages;
+  gdouble height_scaled;
+  gdouble width_scaled;
+  gdouble width_left;
+  gdouble width_no_scale;
+  gdouble scale;
+  PopplerPageLayout pageLayout;
+  GuPreviewPage *pages;
+  enum GuPreviewFitMode fit_mode;
+  gint cache_size;
 
-    gint document_width_scaling;
-    gint document_height_scaling;
-    gint document_width_non_scaling;
-    gint document_height_non_scaling;
+  gint document_width_scaling;
+  gint document_height_scaling;
+  gint document_width_non_scaling;
+  gint document_height_non_scaling;
 
-    gint next_page;
-    gint prev_page;
+  gint next_page;
+  gint prev_page;
 
-    gint ascroll_steps_left;
-    gint ascroll_end_x;
-    gint ascroll_end_y;
-    gint ascroll_dist_x;
-    gint ascroll_dist_y;
+  gint ascroll_steps_left;
+  gint ascroll_end_x;
+  gint ascroll_end_y;
+  gint ascroll_dist_x;
+  gint ascroll_dist_y;
 
-    GSList *sync_nodes;
+  GSList *sync_nodes;
 };
 
-GuPreviewGui* previewgui_init (GtkBuilder * builder);
-void previewgui_update_statuslight (const gchar* type);
-void previewgui_set_pdffile (GuPreviewGui* prev, const gchar *uri);
-void previewgui_refresh (GuPreviewGui* prev, GtkTextIter *sync_to, gchar* tex_file);
-void previewgui_set_pagedata (GuPreviewGui* prev);
-void previewgui_goto_page (GuPreviewGui* prev, int page_number);
-void previewgui_scroll_to_page (GuPreviewGui* pc, int page);
-void previewgui_goto_xy (GuPreviewGui* pc, gdouble x, gdouble y);
-void previewgui_scroll_to_xy (GuPreviewGui* pc, gdouble x, gdouble y);
-void previewgui_save_position (GuPreviewGui* pc);
-void previewgui_restore_position (GuPreviewGui* pc);
-void previewgui_reset (GuPreviewGui* pc);
-void previewgui_cleanup_fds (GuPreviewGui* pc);
-void previewgui_start_preview (GuPreviewGui* pc);
-void previewgui_drawarea_resize (GuPreviewGui* pc);
-void previewgui_stop_preview (GuPreviewGui* pc);
-void on_page_input_changed (GtkEntry* entry, void* user);
-void on_next_page_clicked (GtkWidget* widget, void* user);
-void on_prev_page_clicked (GtkWidget* widget, void* user);
-void on_combo_sizes_changed (GtkWidget* widget, void* user);
-gboolean on_expose (GtkWidget* w, cairo_t* cr, void* user);
-gboolean on_scroll (GtkWidget* w, GdkEventScroll* e, void* user);
-gboolean on_motion (GtkWidget* w, GdkEventMotion* e, void* user);
-gboolean on_resize (GtkWidget* w, GdkRectangle* r, void* user);
+GuPreviewGui* previewgui_init(GtkBuilder * builder);
+void previewgui_update_statuslight(const gchar* type);
+void previewgui_set_pdffile(GuPreviewGui* prev, const gchar *uri);
+void previewgui_refresh(GuPreviewGui* prev, GtkTextIter *sync_to,
+                        gchar* tex_file);
+void previewgui_set_pagedata(GuPreviewGui* prev);
+void previewgui_goto_page(GuPreviewGui* prev, int page_number);
+void previewgui_scroll_to_page(GuPreviewGui* pc, int page);
+void previewgui_goto_xy(GuPreviewGui* pc, gdouble x, gdouble y);
+void previewgui_scroll_to_xy(GuPreviewGui* pc, gdouble x, gdouble y);
+void previewgui_save_position(GuPreviewGui* pc);
+void previewgui_restore_position(GuPreviewGui* pc);
+void previewgui_reset(GuPreviewGui* pc);
+void previewgui_cleanup_fds(GuPreviewGui* pc);
+void previewgui_start_preview(GuPreviewGui* pc);
+void previewgui_drawarea_resize(GuPreviewGui* pc);
+void previewgui_stop_preview(GuPreviewGui* pc);
+void on_page_input_changed(GtkEntry* entry, void* user);
+void on_next_page_clicked(GtkWidget* widget, void* user);
+void on_prev_page_clicked(GtkWidget* widget, void* user);
+void on_combo_sizes_changed(GtkWidget* widget, void* user);
+gboolean on_expose(GtkWidget* w, cairo_t* cr, void* user);
+gboolean on_scroll(GtkWidget* w, GdkEventScroll* e, void* user);
+gboolean on_motion(GtkWidget* w, GdkEventMotion* e, void* user);
+gboolean on_resize(GtkWidget* w, GdkRectangle* r, void* user);
 gboolean on_scroll_child(GtkScrolledWindow *scrolledwindow, GtkScrollType type,
                          gboolean isHorizontal, gpointer *user);
 void on_adj_changed(GtkAdjustment *adjustment, gpointer user);
-void previewgui_page_layout_radio_changed(GtkMenuItem *radioitem,gpointer data);
-void previewgui_set_page_layout(GuPreviewGui* pc, PopplerPageLayout pageLayout);
+void previewgui_page_layout_radio_changed(GtkMenuItem *radioitem,
+    gpointer data);
+void previewgui_set_page_layout(GuPreviewGui* pc,
+                                PopplerPageLayout pageLayout);
 
 gboolean run_garbage_collector(GuPreviewGui* pc);
 

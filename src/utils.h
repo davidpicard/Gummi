@@ -35,9 +35,9 @@
 #include <gtk/gtk.h>
 
 #ifdef WIN32
-	#define DIR_PERMS (S_IRWXU)
+#define DIR_PERMS (S_IRWXU)
 #else
-	#define DIR_PERMS (S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
+#define DIR_PERMS (S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
 #endif
 
 #define TO_BOOL(X) ((X)? TRUE: FALSE)
@@ -64,12 +64,12 @@
  * General purpose Tuple with 2 fields.
  */
 typedef struct _Tuple2 {
-    /*< private >*/
-    struct _Tuple2* next;
+  /*< private >*/
+  struct _Tuple2* next;
 
-    /*< public >*/
-    gpointer first;
-    gpointer second;
+  /*< public >*/
+  gpointer first;
+  gpointer second;
 } Tuple2;
 
 #define TUPLE2(x) ((Tuple2*)x)
@@ -83,13 +83,13 @@ typedef struct _Tuple2 {
  * General purpose Tuple with 3 fields.
  */
 typedef struct _Tuple3 {
-    /*< private >*/
-    struct _Tuple3* next;
+  /*< private >*/
+  struct _Tuple3* next;
 
-    /*< public >*/
-    gpointer first;
-    gpointer second;
-    gpointer third;
+  /*< public >*/
+  gpointer first;
+  gpointer second;
+  gpointer third;
 } Tuple3;
 
 #define TUPLE3(x) ((Tuple3*)x)
@@ -104,22 +104,22 @@ typedef struct _Tuple3 {
  * future.
  */
 typedef struct _slist {
-    /*< private >*/
-    struct _slist* next;
+  /*< private >*/
+  struct _slist* next;
 
-    /*< public >*/
-    gchar* first;
-    gchar* second;
+  /*< public >*/
+  gchar* first;
+  gchar* second;
 } slist;
 
-void slog_init (gint debug);
+void slog_init(gint debug);
 gboolean in_debug_mode();
-void slog_set_gui_parent (GtkWindow* p);
-void slog (gint level, const gchar *fmt, ...);
-gint utils_yes_no_dialog (const gchar* message);
-gboolean utils_path_exists (const gchar* path);
-gboolean utils_set_file_contents (const gchar *filename, const gchar *text,
-        gssize length);
+void slog_set_gui_parent(GtkWindow* p);
+void slog(gint level, const gchar *fmt, ...);
+gint utils_yes_no_dialog(const gchar* message);
+gboolean utils_path_exists(const gchar* path);
+gboolean utils_set_file_contents(const gchar *filename, const gchar *text,
+                                 gssize length);
 
 /**
  * utils_copy_file:
@@ -128,7 +128,8 @@ gboolean utils_set_file_contents (const gchar *filename, const gchar *text,
  *
  * Platform independent file copy operation.
  */
-gboolean utils_copy_file (const gchar* source, const gchar* dest, GError** err);
+gboolean utils_copy_file(const gchar* source, const gchar* dest,
+                         GError** err);
 
 /**
  * utils_popen_r:
@@ -138,7 +139,7 @@ gboolean utils_copy_file (const gchar* source, const gchar* dest, GError** err);
  *
  * Platform independent interface for calling popen ().
  */
-Tuple2 utils_popen_r (const gchar* cmd, const gchar* chdir);
+Tuple2 utils_popen_r(const gchar* cmd, const gchar* chdir);
 
 /**
  * utils_path_to_relative:
@@ -148,7 +149,7 @@ Tuple2 utils_popen_r (const gchar* cmd, const gchar* chdir);
  *
  * Transforms target to path relative to root.
  */
-gchar* utils_path_to_relative (const gchar* root, const gchar* target);
+gchar* utils_path_to_relative(const gchar* root, const gchar* target);
 
 /**
  * utils_subinstr:
@@ -157,13 +158,13 @@ gchar* utils_path_to_relative (const gchar* root, const gchar* target);
  * argument is a substring of the second argument. When the case_sens arg
  * is passed as TRUE, case sensitivity of the two strings is ignored.
  */
-gboolean utils_subinstr (const gchar* substr, const gchar* target,
-        gboolean case_sens);
+gboolean utils_subinstr(const gchar* substr, const gchar* target,
+                        gboolean case_sens);
 
-gchar* utils_get_tmp_tmp_dir (void); /* TODO: remove when we can */
+gchar* utils_get_tmp_tmp_dir(void);  /* TODO: remove when we can */
 
 
-gboolean utils_glist_is_member (GList *list, gchar* item);
+gboolean utils_glist_is_member(GList *list, gchar* item);
 
 gchar* g_substr(gchar* src, gint start, gint end);
 
@@ -178,9 +179,10 @@ gchar* g_substr(gchar* src, gint start, gint end);
  *
  * Find term in slist.
  */
-slist* slist_find (slist* head, const gchar* term, gboolean n, gboolean create);
+slist* slist_find(slist* head, const gchar* term, gboolean n,
+                  gboolean create);
 
-slist* slist_append (slist* head, slist* node);
-slist* slist_remove (slist* head, slist* node);
+slist* slist_append(slist* head, slist* node);
+slist* slist_remove(slist* head, slist* node);
 
 #endif /* __GUMMI_UTILS__ */

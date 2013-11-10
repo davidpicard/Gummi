@@ -38,19 +38,19 @@
 typedef struct _GuInfoscreenGui GuInfoscreenGui;
 
 struct _GuInfoscreenGui {
-    GtkViewport* viewport;
-    GtkWidget* errorpanel;
-    GtkWidget* drawarea;
+  GtkViewport* viewport;
+  GtkWidget* errorpanel;
+  GtkWidget* drawarea;
 
-    GtkLabel *header;
-    GtkImage *image;
-    GtkLabel *details;
+  GtkLabel *header;
+  GtkImage *image;
+  GtkLabel *details;
 };
 
-GuInfoscreenGui* infoscreengui_init (GtkBuilder* builder);
-void infoscreengui_enable (GuInfoscreenGui *is, const gchar *msg);
-void infoscreengui_disable (GuInfoscreenGui *is);
-void infoscreengui_set_message (GuInfoscreenGui *is, const gchar *msg);
+GuInfoscreenGui* infoscreengui_init(GtkBuilder* builder);
+void infoscreengui_enable(GuInfoscreenGui *is, const gchar *msg);
+void infoscreengui_disable(GuInfoscreenGui *is);
+void infoscreengui_set_message(GuInfoscreenGui *is, const gchar *msg);
 
 
 #endif /* __GUMMI_GUI_ERRORSCREEN_H__ */

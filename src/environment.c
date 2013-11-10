@@ -35,92 +35,106 @@
 Gummi* gummi = 0;
 GummiGui* gui = 0;
 
-Gummi* gummi_init (GuMotion* mo, GuIOFunc* io, GuLatex* latex, GuBiblio* bib,
-                   GuTemplate* tpl, GuSnippets* snip, GuTabmanager* tabm,
-                   GuProject* proj) {
+Gummi* gummi_init(GuMotion* mo, GuIOFunc* io, GuLatex* latex, GuBiblio* bib,
+                  GuTemplate* tpl, GuSnippets* snip, GuTabmanager* tabm,
+                  GuProject* proj)
+{
 
-    Gummi* g = g_new0 (Gummi, 1);
-    g->io = io;
-    g->motion = mo;
-    g->latex = latex;
-    g->biblio = bib;
-    g->templ = tpl;
-    g->snippets = snip;
-    g->tabmanager = tabm;
-    g->project = proj;
+  Gummi* g = g_new0(Gummi, 1);
+  g->io = io;
+  g->motion = mo;
+  g->latex = latex;
+  g->biblio = bib;
+  g->templ = tpl;
+  g->snippets = snip;
+  g->tabmanager = tabm;
+  g->project = proj;
 
-    return g;
+  return g;
 }
 
-gboolean gummi_project_active (void) {
-    if (gummi->project->projfile) return TRUE;
-    return FALSE;
+gboolean gummi_project_active(void)
+{
+  if (gummi->project->projfile) return TRUE;
+  return FALSE;
 }
 
-gchar* gummi_get_projectfile (void) {
-    return gummi->project->projfile;
+gchar* gummi_get_projectfile(void)
+{
+  return gummi->project->projfile;
 }
 
-GuEditor* gummi_new_environment (const gchar* filename) {
-    GuEditor* ec = editor_new (gummi->motion);
-    editor_fileinfo_update (ec, filename);
+GuEditor* gummi_new_environment(const gchar* filename)
+{
+  GuEditor* ec = editor_new(gummi->motion);
+  editor_fileinfo_update(ec, filename);
 
-    slog (L_INFO, "\n");
-    slog (L_INFO, "Environment created for:\n");
-    slog (L_INFO, "TEX: %s\n", ec->filename);
-    slog (L_INFO, "TMP: %s\n", ec->workfile);
-    slog (L_INFO, "PDF: %s\n", ec->pdffile);
-    return ec;
+  slog(L_INFO, "\n");
+  slog(L_INFO, "Environment created for:\n");
+  slog(L_INFO, "TEX: %s\n", ec->filename);
+  slog(L_INFO, "TMP: %s\n", ec->workfile);
+  slog(L_INFO, "PDF: %s\n", ec->pdffile);
+  return ec;
 }
 
-GummiGui* gummi_get_gui (void) {
-    return gui;
+GummiGui* gummi_get_gui(void)
+{
+  return gui;
 }
 
-GuEditor* gummi_get_active_editor (void) {
-    return g_active_editor;
+GuEditor* gummi_get_active_editor(void)
+{
+  return g_active_editor;
 }
 
-GList* gummi_get_all_tabs (void) {
-    return gummi->tabmanager->tabs;
+GList* gummi_get_all_tabs(void)
+{
+  return gummi->tabmanager->tabs;
 }
 
-GList* gummi_get_all_editors (void) {
-    int tabtotal, i;
-    GuEditor* ec;
-    GList* editors = NULL;
+GList* gummi_get_all_editors(void)
+{
+  int tabtotal, i;
+  GuEditor* ec;
+  GList* editors = NULL;
 
-    GList *tabs = gummi_get_all_tabs();
-    tabtotal = g_list_length(tabs);
+  GList *tabs = gummi_get_all_tabs();
+  tabtotal = g_list_length(tabs);
 
-    for (i = 0; i < tabtotal; ++i) {
-        ec = GU_TAB_CONTEXT (g_list_nth_data (tabs, i))->editor;
-        editors = g_list_append (editors, ec);
-    }
-    return editors;
+  for (i = 0; i < tabtotal; ++i) {
+    ec = GU_TAB_CONTEXT(g_list_nth_data(tabs, i))->editor;
+    editors = g_list_append(editors, ec);
+  }
+  return editors;
 }
 
-GuIOFunc* gummi_get_io (void) {
-    return gummi->io;
+GuIOFunc* gummi_get_io(void)
+{
+  return gummi->io;
 }
 
-GuMotion* gummi_get_motion (void) {
-    return gummi->motion;
+GuMotion* gummi_get_motion(void)
+{
+  return gummi->motion;
 }
 
-GuLatex* gummi_get_latex (void) {
-    return gummi->latex;
+GuLatex* gummi_get_latex(void)
+{
+  return gummi->latex;
 }
 
-GuBiblio* gummi_get_biblio (void) {
-    return gummi->biblio;
+GuBiblio* gummi_get_biblio(void)
+{
+  return gummi->biblio;
 }
 
-GuTemplate* gummi_get_template (void) {
-    return gummi->templ;
+GuTemplate* gummi_get_template(void)
+{
+  return gummi->templ;
 }
 
-GuSnippets* gummi_get_snippets (void) {
-    return gummi->snippets;
+GuSnippets* gummi_get_snippets(void)
+{
+  return gummi->snippets;
 }
 

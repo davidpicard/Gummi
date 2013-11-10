@@ -36,45 +36,49 @@
 
 gboolean rub_detected = FALSE;
 
-void rubber_init (void) {
+void rubber_init(void)
+{
 
-    if (external_exists (C_RUBBER)) {
-        // TODO: check if supported version
-        slog (L_INFO, "Typesetter detected: Rubber %s\n",
-                       external_version (C_RUBBER));
-        rub_detected = TRUE;
-    }
+  if (external_exists(C_RUBBER)) {
+    // TODO: check if supported version
+    slog(L_INFO, "Typesetter detected: Rubber %s\n",
+         external_version(C_RUBBER));
+    rub_detected = TRUE;
+  }
 }
 
-gboolean rubber_active (void) {
-    if (STR_EQU (config_get_value("typesetter"), C_RUBBER)) {
-        return TRUE;
-    }
-    return FALSE;
+gboolean rubber_active(void)
+{
+  if (STR_EQU(config_get_value("typesetter"), C_RUBBER)) {
+    return TRUE;
+  }
+  return FALSE;
 }
 
-gboolean rubber_detected (void) {
-    return rub_detected;
+gboolean rubber_detected(void)
+{
+  return rub_detected;
 }
 
-gchar* rubber_get_command (const gchar* method, gchar* workfile) {
+gchar* rubber_get_command(const gchar* method, gchar* workfile)
+{
 
-    const gchar* outdir = g_strdup_printf ("--into=\"%s\"", C_TMPDIR);
-    const gchar* flags = rubber_get_flags (method);
-    gchar* rubcmd;
+  const gchar* outdir = g_strdup_printf("--into=\"%s\"", C_TMPDIR);
+  const gchar* flags = rubber_get_flags(method);
+  gchar* rubcmd;
 
-    rubcmd = g_strdup_printf("rubber %s %s \"%s\"", flags, outdir, workfile);
+  rubcmd = g_strdup_printf("rubber %s %s \"%s\"", flags, outdir, workfile);
 
-    return rubcmd;
+  return rubcmd;
 }
 
-gchar* rubber_get_flags (const gchar *method) {
-    gchar *rubflags;
-    if (STR_EQU (method, "texpdf")) {
-        rubflags = g_strdup_printf("-d -q");
-    }
-    else {
-        rubflags = g_strdup_printf("-p -d -q");
-    }
-    return rubflags;
+gchar* rubber_get_flags(const gchar *method)
+{
+  gchar *rubflags;
+  if (STR_EQU(method, "texpdf")) {
+    rubflags = g_strdup_printf("-d -q");
+  } else {
+    rubflags = g_strdup_printf("-p -d -q");
+  }
+  return rubflags;
 }

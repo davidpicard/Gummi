@@ -98,7 +98,8 @@ typedef _synctex_scanner_t *  synctex_scanner_t;
  *  The new "parse" argument is available since version 1.5. In general, use 1.
  *  Use 0 only if you do not want to parse the content but just check the existence.
  */
-synctex_scanner_t synctex_scanner_new_with_output_file(const char * output, const char * build_directory, int parse);
+synctex_scanner_t synctex_scanner_new_with_output_file(const char * output,
+    const char * build_directory, int parse);
 
 /*  This is the designated method to delete a synctex scanner object.
  *  Frees all the memory, you must call it when you are finished with the scanner.
@@ -162,8 +163,9 @@ synctex_scanner_t synctex_scanner_parse(synctex_scanner_t scanner);
  *  Sumatra-PDF, Skim, iTeXMac2 and Texworks are examples of open source software that use this library.
  *  You can browse their code for a concrete implementation.
  */
-int synctex_display_query(synctex_scanner_t scanner,const char *  name,int line,int column);
-int synctex_edit_query(synctex_scanner_t scanner,int page,float h,float v);
+int synctex_display_query(synctex_scanner_t scanner, const char *  name,
+                          int line, int column);
+int synctex_edit_query(synctex_scanner_t scanner, int page, float h, float v);
 synctex_node_t synctex_next_result(synctex_scanner_t scanner);
 
 /*  Display all the information contained in the scanner object.
@@ -203,8 +205,8 @@ float synctex_scanner_magnification(synctex_scanner_t scanner);
  *  The synctex is the real name of the synctex file,
  *  it was obtained from output by setting the proper file extension.
  */
-const char * synctex_scanner_get_name(synctex_scanner_t scanner,int tag);
-int synctex_scanner_get_tag(synctex_scanner_t scanner,const char * name);
+const char * synctex_scanner_get_name(synctex_scanner_t scanner, int tag);
+int synctex_scanner_get_tag(synctex_scanner_t scanner, const char * name);
 synctex_node_t synctex_scanner_input(synctex_scanner_t scanner);
 const char * synctex_scanner_get_output(synctex_scanner_t scanner);
 const char * synctex_scanner_get_synctex(synctex_scanner_t scanner);
@@ -236,22 +238,22 @@ synctex_node_t synctex_node_sheet(synctex_node_t node);
 synctex_node_t synctex_node_child(synctex_node_t node);
 synctex_node_t synctex_node_sibling(synctex_node_t node);
 synctex_node_t synctex_node_next(synctex_node_t node);
-synctex_node_t synctex_sheet_content(synctex_scanner_t scanner,int page);
+synctex_node_t synctex_sheet_content(synctex_scanner_t scanner, int page);
 
 /*  These are the types of the synctex nodes */
 typedef enum {
-	synctex_node_type_error = 0,
-	synctex_node_type_input,
-	synctex_node_type_sheet,
-	synctex_node_type_vbox,
-	synctex_node_type_void_vbox,
-	synctex_node_type_hbox,
-	synctex_node_type_void_hbox,
-	synctex_node_type_kern,
-	synctex_node_type_glue,
-	synctex_node_type_math,
-	synctex_node_type_boundary,
-	synctex_node_number_of_types
+  synctex_node_type_error = 0,
+  synctex_node_type_input,
+  synctex_node_type_sheet,
+  synctex_node_type_vbox,
+  synctex_node_type_void_vbox,
+  synctex_node_type_hbox,
+  synctex_node_type_void_hbox,
+  synctex_node_type_kern,
+  synctex_node_type_glue,
+  synctex_node_type_math,
+  synctex_node_type_boundary,
+  synctex_node_number_of_types
 } synctex_node_type_t;
 
 /*  synctex_node_type gives the type of a given node,
@@ -328,13 +330,17 @@ typedef _synctex_updater_t * synctex_updater_t;
 /*  Designated initializer.
  *  Once you are done with your whole job,
  *  free the updater */
-synctex_updater_t synctex_updater_new_with_output_file(const char * output, const char * directory);
+synctex_updater_t synctex_updater_new_with_output_file(const char * output,
+    const char * directory);
 
 /*  Use the next functions to append records to the synctex file,
  *  no consistency tests made on the arguments */
-void synctex_updater_append_magnification(synctex_updater_t updater, char *  magnification);
-void synctex_updater_append_x_offset(synctex_updater_t updater, char *  x_offset);
-void synctex_updater_append_y_offset(synctex_updater_t updater, char *  y_offset);
+void synctex_updater_append_magnification(synctex_updater_t updater,
+    char *  magnification);
+void synctex_updater_append_x_offset(synctex_updater_t updater,
+                                     char *  x_offset);
+void synctex_updater_append_y_offset(synctex_updater_t updater,
+                                     char *  y_offset);
 
 /*  You MUST free the updater, once everything is properly appended */
 void synctex_updater_free(synctex_updater_t updater);

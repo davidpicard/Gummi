@@ -39,18 +39,18 @@
 typedef struct _GuMenuGui GuMenuGui;
 
 struct _GuMenuGui {
-    GtkMenuItem* menu_projcreate;
-    GtkMenuItem* menu_projopen;
-    GtkMenuItem* menu_projclose;
-    GtkMenuItem* menu_cut;
-    GtkMenuItem* menu_copy;
+  GtkMenuItem* menu_projcreate;
+  GtkMenuItem* menu_projopen;
+  GtkMenuItem* menu_projclose;
+  GtkMenuItem* menu_cut;
+  GtkMenuItem* menu_copy;
 };
 
-GuMenuGui* menugui_init (GtkBuilder* builder);
-void on_menu_close_activate (GtkWidget *widget, void* user);
+GuMenuGui* menugui_init(GtkBuilder* builder);
+void on_menu_close_activate(GtkWidget *widget, void* user);
 
 #ifdef WIN32
-	void on_menu_donate_activate (GtkWidget *widget, void* user);
+void on_menu_donate_activate(GtkWidget *widget, void* user);
 #endif
 
 #endif /* __GUMMI_GUI_MENU_H__ */

@@ -32,16 +32,17 @@
 
 #include <glib.h>
 
-int texlive_init (void);
+int texlive_init(void);
 
-gboolean texlive_active (void);
-gboolean pdflatex_active (void);
-gboolean xelatex_active (void);
+gboolean texlive_active(void);
+gboolean pdflatex_active(void);
+gboolean xelatex_active(void);
 
-gboolean pdflatex_detected (void);
-gboolean xelatex_detected (void);
+gboolean pdflatex_detected(void);
+gboolean xelatex_detected(void);
 
-gchar* texlive_get_command (const gchar* method, gchar* workfile, gchar* basename);
-gchar* texlive_get_flags (const gchar *method);
+gchar* texlive_get_command(const gchar* method, gchar* workfile,
+                           gchar* basename);
+gchar* texlive_get_flags(const gchar *method);
 
 #endif /* __GUMMI_COMPILE_TEXLIVE_H__ */

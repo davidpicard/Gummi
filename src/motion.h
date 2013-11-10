@@ -37,36 +37,36 @@
 typedef struct _GuMotion GuMotion;
 
 struct _GuMotion {
-    gint key_press_timer;
-    GMutex signal_mutex;
-    GMutex compile_mutex;
-    GThread* compile_thread;
-    GCond compile_cv;
-    pid_t* typesetter_pid;
+  gint key_press_timer;
+  GMutex signal_mutex;
+  GMutex compile_mutex;
+  GThread* compile_thread;
+  GCond compile_cv;
+  pid_t* typesetter_pid;
 
-    gboolean keep_running;
-    gboolean pause;
-    gboolean errormode;
+  gboolean keep_running;
+  gboolean pause;
+  gboolean errormode;
 };
 
-GuMotion* motion_init (void);
-void motion_start_compile_thread (GuMotion* m);
-void motion_stop_compile_thread (GuMotion* m);
-void motion_pause_compile_thread (GuMotion* m);
-void motion_resume_compile_thread (GuMotion* m);
-gboolean motion_do_compile (gpointer user);
-void motion_force_compile (GuMotion *mc);
-gpointer motion_compile_thread (gpointer data);
-gboolean motion_idle_cb (gpointer user);
-void motion_start_timer (GuMotion* mc);
-void motion_stop_timer (GuMotion* mc);
-void motion_kill_typesetter (GuMotion* m);
+GuMotion* motion_init(void);
+void motion_start_compile_thread(GuMotion* m);
+void motion_stop_compile_thread(GuMotion* m);
+void motion_pause_compile_thread(GuMotion* m);
+void motion_resume_compile_thread(GuMotion* m);
+gboolean motion_do_compile(gpointer user);
+void motion_force_compile(GuMotion *mc);
+gpointer motion_compile_thread(gpointer data);
+gboolean motion_idle_cb(gpointer user);
+void motion_start_timer(GuMotion* mc);
+void motion_stop_timer(GuMotion* mc);
+void motion_kill_typesetter(GuMotion* m);
 
-void motion_start_errormode (GuMotion *mc, const gchar *msg);
-void motion_stop_errormode (GuMotion *mc);
+void motion_start_errormode(GuMotion *mc, const gchar *msg);
+void motion_stop_errormode(GuMotion *mc);
 
-gboolean on_key_press_cb (GtkWidget* widget, GdkEventKey* event, void* user);
-gboolean on_key_release_cb (GtkWidget* widget, GdkEventKey* event, void* user);
+gboolean on_key_press_cb(GtkWidget* widget, GdkEventKey* event, void* user);
+gboolean on_key_release_cb(GtkWidget* widget, GdkEventKey* event, void* user);
 
 
 #endif /* __GUMMI_MOTION_H__ */

@@ -39,37 +39,37 @@
 #define g_tabs gummi->tabmanager->tabs
 
 typedef enum _OpenAct {
-    A_NONE = 0,
-    A_DEFAULT,
-    A_LOAD,
-    A_LOAD_OPT,
+  A_NONE = 0,
+  A_DEFAULT,
+  A_LOAD,
+  A_LOAD_OPT,
 } OpenAct;
 
 #define GU_TABMANAGER(x) ((GuTabmanager*)x)
 typedef struct _GuTabmanager GuTabmanager;
 
 struct _GuTabmanager {
-    GuEditor* active_editor;
-    GuTabContext* active_tab;
-    GList* tabs;
+  GuEditor* active_editor;
+  GuTabContext* active_tab;
+  GList* tabs;
 };
 
-GuTabmanager* tabmanager_init (void);
+GuTabmanager* tabmanager_init(void);
 
-void tabmanager_foreach_editor (GFunc func, gpointer user_data);
+void tabmanager_foreach_editor(GFunc func, gpointer user_data);
 
-gchar* tabmanager_get_tabname (GuTabContext* tc);
-void tabmanager_set_active_tab (int position);
+gchar* tabmanager_get_tabname(GuTabContext* tc);
+void tabmanager_set_active_tab(int position);
 
-gboolean tabmanager_remove_tab (GuTabContext* tab);
+gboolean tabmanager_remove_tab(GuTabContext* tab);
 
 /*------------------------------------------------------------------------*/
 
-void tabmanager_create_tab (OpenAct act, const gchar* filename, gchar* opt);
-void tabmanager_update_tab (const gchar* filename);
-gboolean tabmanager_has_tabs ();
-gboolean tabmanager_check_exists (const gchar* filename);
+void tabmanager_create_tab(OpenAct act, const gchar* filename, gchar* opt);
+void tabmanager_update_tab(const gchar* filename);
+gboolean tabmanager_has_tabs();
+gboolean tabmanager_check_exists(const gchar* filename);
 
-void tabmanager_set_content (OpenAct act, const gchar* filename, gchar* opt);
+void tabmanager_set_content(OpenAct act, const gchar* filename, gchar* opt);
 
 #endif /* __GUMMI_TABMANAGER_H__ */

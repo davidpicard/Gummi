@@ -41,27 +41,27 @@
 typedef struct _GuProjectGui GuProjectGui;
 
 struct _GuProjectGui {
-    GtkListStore* list_projfiles;
-    GtkTreeView* proj_treeview;
+  GtkListStore* list_projfiles;
+  GtkTreeView* proj_treeview;
 
-    GtkButton* proj_addbutton;
-    GtkButton* proj_rembutton;
+  GtkButton* proj_addbutton;
+  GtkButton* proj_rembutton;
 
-    GtkLabel* proj_name;
-    GtkLabel* proj_path;
-    GtkLabel* proj_nroffiles;
+  GtkLabel* proj_name;
+  GtkLabel* proj_path;
+  GtkLabel* proj_nroffiles;
 
 };
 
-GuProjectGui* projectgui_init (GtkBuilder* builder);
+GuProjectGui* projectgui_init(GtkBuilder* builder);
 
-void projectgui_enable (GuProject* pr, GuProjectGui* prgui);
-void projectgui_disable (GuProject* pr, GuProjectGui* prgui);
+void projectgui_enable(GuProject* pr, GuProjectGui* prgui);
+void projectgui_disable(GuProject* pr, GuProjectGui* prgui);
 
-GdkPixbuf* projectgui_get_status_pixbuf (int status);
+GdkPixbuf* projectgui_get_status_pixbuf(int status);
 
-void projectgui_set_rootfile (gint position);
+void projectgui_set_rootfile(gint position);
 
-int projectgui_list_projfiles (gchar* active_proj);
+int projectgui_list_projfiles(gchar* active_proj);
 
 #endif /* __GUMMI_GUI_PROJECT_H__ */

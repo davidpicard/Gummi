@@ -55,13 +55,13 @@
 /* Platform dependant constants : */
 
 #ifdef WIN32
-    #define C_TMPDIR utils_get_tmp_tmp_dir()
-    #define C_CMDSEP "&&"
-    #define C_TEXSEC ""
+#define C_TMPDIR utils_get_tmp_tmp_dir()
+#define C_CMDSEP "&&"
+#define C_TEXSEC ""
 #else
-    #define C_TMPDIR g_get_tmp_dir()
-    #define C_CMDSEP ";"
-    #define C_TEXSEC "env openout_any=a"
+#define C_TMPDIR g_get_tmp_dir()
+#define C_CMDSEP ";"
+#define C_TEXSEC "env openout_any=a"
 #endif
 
 #endif /* __GUMMI_CONSTANTS_H__ */

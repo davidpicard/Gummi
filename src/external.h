@@ -33,25 +33,25 @@
 #include <glib.h>
 
 typedef struct {
-    gboolean exists;
-    gchar* version;
+  gboolean exists;
+  gchar* version;
 } External;
 
 typedef enum _ExternalProg {
-    EX_TEXLIVE = 0,
-    EX_LATEX,
-    EX_PDFLATEX,
-    EX_XELATEX,
-    EX_RUBBER,
-    EX_LATEXMK,
-    EX_TEXCOUNT
+  EX_TEXLIVE = 0,
+  EX_LATEX,
+  EX_PDFLATEX,
+  EX_XELATEX,
+  EX_RUBBER,
+  EX_LATEXMK,
+  EX_TEXCOUNT
 } ExternalProg;
 
 
-gboolean external_exists (const gchar* program);
-gboolean external_hasflag (const gchar* program, const gchar* flag);
+gboolean external_exists(const gchar* program);
+gboolean external_hasflag(const gchar* program, const gchar* flag);
 
-gchar* external_version (const gchar* program);
-gdouble external_version2 (ExternalProg program);
+gchar* external_version(const gchar* program);
+gdouble external_version2(ExternalProg program);
 
 #endif /* __GUMMI_EXTERNAL_H__ */
