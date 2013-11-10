@@ -82,13 +82,13 @@ int _synctex_error(const char * reason, ...)
   va_start(arg, reason);
 #	ifdef SYNCTEX_RECENT_WINDOWS
   {/*	This code is contributed by William Blum.
-               As it does not work on some older computers,
-               the _WIN32 conditional here is replaced with a SYNCTEX_RECENT_WINDOWS one.
-               According to http://msdn.microsoft.com/en-us/library/aa363362(VS.85).aspx
-               Minimum supported client	Windows 2000 Professional
-               Minimum supported server	Windows 2000 Server
-               People running Windows 2K standard edition will not have OutputDebugStringA.
-               JL.*/
+                 As it does not work on some older computers,
+                 the _WIN32 conditional here is replaced with a SYNCTEX_RECENT_WINDOWS one.
+                 According to http://msdn.microsoft.com/en-us/library/aa363362(VS.85).aspx
+                 Minimum supported client	Windows 2000 Professional
+                 Minimum supported server	Windows 2000 Server
+                 People running Windows 2K standard edition will not have OutputDebugStringA.
+                 JL.*/
     char *buff;
     size_t len;
     OutputDebugStringA("SyncTeX ERROR: ");

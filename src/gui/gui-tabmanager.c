@@ -113,7 +113,6 @@ void tabmanagergui_create_infobar(GuTabPage* tp)
 void tabmanagergui_create_label(GuTabPage* tp, gchar* labeltext)
 {
   static unsigned count = 0;
-  GtkRcStyle* rcstyle = NULL;
   GtkWidget* image = NULL;
   GtkBox* hbox;
 
@@ -129,8 +128,12 @@ void tabmanagergui_create_label(GuTabPage* tp, gchar* labeltext)
   gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(tp->label), TRUE, TRUE, 5);
 
   tp->button = GTK_BUTTON(gtk_button_new());
-  image = gtk_image_new_from_stock(GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU);
+  image = gtk_image_new_from_icon_name("window-close", GTK_ICON_SIZE_MENU);
   gtk_button_set_image(tp->button, image);
+
+  g_object_set(tp->button, "relief", GTK_RELIEF_NONE,
+               "focus-on-click", FALSE, NULL);
+  gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(tp->button), FALSE, FALSE, 0);
 
   // make it small, code borrowed from gedit :P
   static const gchar button_style[] =
@@ -150,15 +153,6 @@ void tabmanagergui_create_label(GuTabPage* tp, gchar* labeltext)
   gtk_style_context_add_provider(context,
                                  GTK_STYLE_PROVIDER(css),
                                  GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-
-  g_object_set(tp->button, "relief", GTK_RELIEF_NONE,
-               "focus-on-click", FALSE, NULL);
-  gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(tp->button), FALSE, FALSE, 0);
-
-  rcstyle = gtk_rc_style_new();
-  rcstyle->xthickness = rcstyle->ythickness = 0;
-  gtk_widget_modify_style(GTK_WIDGET(tp->button), rcstyle);
-  g_object_unref(rcstyle);
 
   gtk_widget_show_all(GTK_WIDGET(hbox));
 }

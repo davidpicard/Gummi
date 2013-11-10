@@ -163,7 +163,7 @@ GuPreviewGui* previewgui_init(GtkBuilder * builder)
   g_return_val_if_fail(GTK_IS_BUILDER(builder), NULL);
 
   GuPreviewGui* p = g_new0(GuPreviewGui, 1);
-  GdkRGBA bg = {0, 0xed00, 0xec00, 0xeb00};
+  GdkRGBA bg = {0.90, 0.90, 0.90, 1.0};
   p->previewgui_viewport =
     GTK_VIEWPORT(gtk_builder_get_object(builder, "preview_vport"));
   p->previewgui_toolbar =
