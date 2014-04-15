@@ -339,7 +339,9 @@ GuSnippetInfo* snippets_parse (char* snippet) {
     const gchar* holders[] = { "\\$([0-9]+)", "\\${([0-9]*):?([^}]*)}",
                                "\\$(FILENAME)", "\\${(FILENAME)}",
                                "\\$(BASENAME)", "\\${(BASENAME)}",
-                               "\\$(SELECTED_TEXT)", "\\${(SELECTED_TEXT)}"
+                               "\\$(SELECTED_TEXT)", "\\${(SELECTED_TEXT)}",
+                               "\\$(COMMENT)", "\\${(COMMENT)}",
+                               "\\$(UNCOMMENT)", "\\${(UNCOMMENT)}"
                                /* Anyway to combine these? */
                             };
 
@@ -557,7 +559,7 @@ void snippet_info_initial_expand (GuSnippetInfo* info, GuEditor* ec) {
     GHashTable* map = NULL;
     GList* current = NULL;
     gchar* text = NULL;
-    gint key = 0;
+    gint key = 0, line;
 
     map = g_hash_table_new (NULL, NULL);
     current = g_list_first (info->einfo);
@@ -602,7 +604,39 @@ void snippet_info_initial_expand (GuSnippetInfo* info, GuEditor* ec) {
             gtk_text_buffer_delete (ec_buffer, &start, &end);
             gtk_text_buffer_insert (ec_buffer, &start, basename, -1);
             g_free (basename);
-        } else {
+        } else if (STR_EQU (text, "COMMENT")) { 
+            GtkTextIter ls, sel;
+            /* get first line */
+            line = gtk_text_iter_get_line (&start);
+	    gtk_text_buffer_delete (ec_buffer, &start, &end);
+            /* get last line */
+            gtk_text_buffer_get_iter_at_mark (ec_buffer, &sel, &info->sel_start);
+            gtk_text_iter_forward_chars (&sel, strlen (info->sel_text));
+            gint lend = gtk_text_iter_get_line (&sel);
+            /* insert % for each line */
+            while (line <= lend) {
+            	gtk_text_buffer_get_iter_at_line (ec_buffer, &ls, line++);
+            	gtk_text_buffer_insert (ec_buffer, &ls, "%", -1);
+            }
+        } else if (STR_EQU (text, "UNCOMMENT")) { 
+            GtkTextIter ls, lsp1, sel;
+            /* get first line */
+            line = gtk_text_iter_get_line (&start);
+	    gtk_text_buffer_delete (ec_buffer, &start, &end);
+            /* get last line */
+            gtk_text_buffer_get_iter_at_mark (ec_buffer, &sel, &info->sel_start);
+            gtk_text_iter_forward_chars (&sel, strlen (info->sel_text));
+            gint lend = gtk_text_iter_get_line (&sel);
+            while (line <= lend) {
+		gtk_text_buffer_get_iter_at_line (ec_buffer, &ls, line++);
+                /* check line starts with % before deleting a char */
+		if (gtk_text_iter_get_char (&ls) == '%') {
+			lsp1 = ls;
+			gtk_text_iter_forward_chars (&lsp1, 1);
+			gtk_text_buffer_delete (ec_buffer, &ls, &lsp1);
+		}
+	    }
+	} else {
             /* Expand text of same group with with text of group leader */
             gtk_text_buffer_delete (ec_buffer, &start, &end);
             gtk_text_buffer_insert (ec_buffer, &start, value->text, -1);
